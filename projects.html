@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="Projects">Projects Management</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="darkmode.css" />
+    <link rel="stylesheet" href="projects.css" />
+    <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+       <nav class="main-menu">
+    <button onclick="window.location.href = 'index.html'"><i class="fas fa-layer-group"></i> <span data-key="General">General</span></button>
+    <button onclick="window.location.href = 'geotech.html'"><i class="fas fa-mountain"></i> <span data-key="Geotechnical">Geotechnical</span></button>
+    <button onclick="window.location.href = 'calibration.html'"><i class="fas fa-ruler"></i> <span data-key="Calibration">Calibration</span></button>
+    <button onclick="window.location.href = 'fleet.html'"><i class="fas fa-truck-fast"></i> <span data-key="Fleet">Fleet</span></button>
+    <button onclick="window.location.href = 'dashboards.html'"><i class="fas fa-chart-pie"></i> <span data-key="Dashboards">Dashboards</span></button>
+    <button onclick="window.location.href = 'security.html'"><i class="fas fa-user-shield"></i> <span data-key="Security">Security</span></button>
+    <button onclick="window.location.href = 'options.html'"><i class="fas fa-gear"></i> <span data-key="Options">Options</span></button>
+</nav>
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div id="navbar-placeholder"></div>
+
+        <main class="main-content">
+            <section id="projects-section" class="section-content active">
+                <div class="icon-toolbar">
+                    <div>
+                        <button title="Add" onclick="openProjectModal()" class="btn-icon"><i class="fas fa-file"></i></button>
+                        <button title="Edit" onclick="handleEditProject()" class="btn-icon"><i class="fas fa-pen"></i></button>
+                        <button title="Delete" onclick="deleteSelectedProjects()" class="btn-icon"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="icon-separator"></div>
+                    <div>
+                        <button title="File Manager" onclick="goToProjectFiles()" class="btn-icon"><i class="fas fa-folder-open"></i> </button>
+                        <button title="Export to Excel" id="exportProjectsExcelBtn" class="btn-icon"><i class="fa-solid fa-table"></i></button>
+                        <button title="Print" id="printProjectsTableBtn" onclick="printProjectsTable()" class="btn-icon"><i class="fas fa-print"></i></button>
+                    </div>
+                </div>
+
+                <div class="table-responsive-container">
+                    <table id="projectsTable" class="project-table display responsive nowrap" data-ignore-lang>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAllProjects" onclick="toggleSelectAll(this)" /></th>
+                                <th>Project ID<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Name<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Arabic Name<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Legal Name<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Project Type<br>
+                                    <select class="column-filter">
+                                        <option value="">All</option>
+                                        <option value="Contractor">Contractor</option>
+                                        <option value="Consultant">Consultant</option>
+                                    </select>
+                                </th>
+                                <th>Registration Date<br><input type="date" placeholder="Search..." class="column-filter"></th>
+                                <th>Country<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>City<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Email<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Mobile<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div id="projectModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeProjectModal()">&times;</span>
+                    <h2>Project Details</h2>
+                    <div class="tab-buttons">
+                        <button id="project-btn" onclick="switchTab('project')"><i class="fas fa-user"></i> Project</button>
+                        <button id="contact-btn" onclick="switchTab('contact')"><i class="fas fa-address-book"></i> Contacts</button>
+                    </div>
+
+                    <form id="projectForm" onsubmit="saveProject(event)">
+                        <div id="projectTab" class="form-tab-content">
+                            <label for="projectId">Project ID:</label>
+                            <input type="text" id="projectId" readonly>
+
+                            <label for="projectName">Name: <span class="required-star">*</span></label>
+                            <input type="text" id="projectName" required>
+
+                            <label for="projectArabicName">Arabic Name:</label>
+                            <input type="text" id="projectArabicName">
+
+                            <label for="projectLegalName">Legal Name:</label>
+                            <input type="text" id="projectLegalName">
+
+                            <label for="projectType">Project Type: <span class="required-star">*</span></label>
+                            <select id="projectType" required>
+                                <option value="">Select Type</option>
+                                <option value="Contractor">Contractor</option>
+                                <option value="Consultant">Consultant</option>
+                            </select>
+
+                            <label for="registrationDate">Registration Date: <span class="required-star">*</span></label>
+                            <input type="date" id="registrationDate" required>
+
+                            <label for="projectCountry">Country:</label>
+                            <input type="text" id="projectCountry">
+
+                            <label for="projectCity">City: <span class="required-star">*</span></label>
+                            <input type="text" id="projectCity" required>
+
+                            <label for="projectEmail">Email:</label>
+                            <input type="email" id="projectEmail"
+                            placeholder="e.g., mail@example.com">
+
+                            <label for="projectPhone">Phone: <span class="required-star">*</span></label>
+                            <input type="tel" id="projectPhone" required
+                            placeholder="e.g., +9665XXXXXXXX"
+                            pattern="\+\d{10,15}"
+                            title="يجب أن يكون الرقم بصيغة دولية (يبدأ بـ +) وبطول 10 إلى 15 رقماً">
+                        </div>
+
+                        <div id="contactTab" class="form-tab-content" style="display: none;">
+                            <p>Contact management features will go here.</p>
+                            <label for="contactName">Contact Person Name:</label>
+                            <input type="text" id="contactName">
+
+                            <label for="contactEmail">Contact Person Email:</label>
+                            <input type="email" id="contactEmail" placeholder="e.g., contact@example.com">
+
+                            <label for="contactPhone">Contact Person Phone:</label>
+                            <input type="tel" id="contactPhone"
+                                         placeholder="e.g., +9665XXXXXXXX"
+                                         pattern="\+\d{10,15}"
+                                         title="يجب أن يكون الرقم بصيغة دولية (يبدأ بـ +) وبطول 10 إلى 15 رقماً">
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit">Save</button>
+                            <button type="button" class="reset" onclick="resetProjectForm()">Reset</button>
+                            <button type="button" class="cancel" onclick="closeProjectModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="modal-container"></div>
+            <div id="dynamicContent"></div>
+            <div id="customDialogModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeCustomDialog()">&times;</span>
+                    <h3 id="customDialogTitle"></h3>
+                    <p id="customDialogMessage"></p>
+                    <div class="form-buttons" id="customDialogButtons">
+                    </div>
+                </div>
+            </div>
+            </main>
+    </div>
+
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script src="main.js" type="text/javascript"></script>
+    <script src="projects.js" type="text/javascript"></script>
+
+    <script>
+        // هذا السكريبت سيضمن تهيئة DataTables ووظائف الصفحة بعد تحميل كل المحتوى الديناميكي
+        $(function(){
+            let headerLoaded = false;
+            let navbarLoaded = false;
+
+            // تحميل header.html
+            $("#header-placeholder").load("header.html", function() {
+                headerLoaded = true;
+                console.log("Header loaded.");
+                initializeAfterContentLoad();
+            });
+
+            // تحميل navbar.html
+            $("#navbar-placeholder").load("navbar.html", function() {
+                navbarLoaded = true;
+                console.log("Navbar loaded.");
+                initializeAfterContentLoad();
+            });
+
+            // هذه الدالة تُستدعى بعد تحميل الـ header والـ navbar
+            function initializeAfterContentLoad() {
+                if (headerLoaded && navbarLoaded) {
+                    console.log("Header and Navbar loaded. Initializing page elements.");
+
+                    // تطبيق وضع Dark Mode
+                    if (localStorage.getItem('darkMode') === 'enabled') {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+
+                    // تطبيق اللغة المحفوظة
+                    const savedLang = localStorage.getItem('language');
+                    if (savedLang) {
+                        setLanguage(savedLang);
+                    } else {
+                        setLanguage('en'); // اللغة الافتراضية
+                    }
+
+                    // تحديث حالة الأزرار بناءً على اللغة الحالية
+                    const currentLang = localStorage.getItem('language') || 'en';
+                    document.querySelectorAll('.main-header button').forEach(button => {
+                        if (button.onclick && button.onclick.toString().includes(`setLanguage('${currentLang}')`)) {
+                            button.classList.add('active');
+                        } else {
+                            button.classList.remove('active');
+                        }
+                    });
+
+                    // تحديث حالة أزرار القائمة الجانبية
+                    const currentPageFileName = window.location.pathname.split('/').pop();
+                    document.querySelectorAll('.main-menu button').forEach(button => {
+                        if (button.onclick) {
+                            const targetPageMatch = button.onclick.toString().match(/window\.location\.href = '(.+?)'/);
+                            if (targetPageMatch) {
+                                const targetFileName = targetPageMatch[1].split('/').pop();
+                                if (currentPageFileName === targetFileName) {
+                                    button.classList.add('active');
+                                } else {
+                                    button.classList.remove('active');
+                                }
+                            }
+                        }
+                    });
+
+                    // تحديث Placeholder/Title attributes
+                    if (typeof updatePlaceholderAndTitleAttributes === 'function') {
+                        updatePlaceholderAndTitleAttributes();
+                    }
+
+                    // الأهم: تهيئة DataTables هنا بعد التأكد من تحميل كل شيء
+                    if (typeof initializeProjectsTable === 'function') {
+                        console.log("Calling initializeProjectsTable()");
+                        initializeProjectsTable();
+                    } else {
+                        console.error("initializeProjectsTable function is not defined.");
+                    }
+                }
+            }
+        });
+
+        // ربط الأحداث بالأزرار والنماذج باستخدام DOMContentLoaded لضمان وجود العناصر
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // تم تعديل هذا الجزء لربط الأحداث بالـ IDs الجديدة (هذه الأزرار لديها IDs فعلاً)
+            document.getElementById('exportProjectsExcelBtn')?.addEventListener('click', exportProjectsTableToExcel);
+            document.getElementById('printProjectsTableBtn')?.addEventListener('click', printProjectsTable);
+
+
+            document.getElementById('projectModal')?.addEventListener('click', (e) => {
+                if (e.target === document.getElementById('projectModal')) {
+                    closeProjectModal();
+                }
+            });
+
+            document.getElementById('project-btn')?.addEventListener('click', () => switchTab('project'));
+            document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact'));
+
+            document.getElementById('selectAllProjects')?.addEventListener('change', (event) => toggleSelectAll(event.target));
+        });
+
+        // هذه الدوال تحتاج إلى تعريفها في ملف projects.js أو في هذا السكريبت إذا لم تكن موجودة
+        function exportProjectsTableToExcel() {
+            exportTableToExcel('projectsTable');
+        }
+
+        function printProjectsTable() {
+            printTable('projectsTable');
+        }
+    </script>
+</body>
+</html>

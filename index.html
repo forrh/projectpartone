@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIMS Control Panel</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="darkmode.css" />
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+</head>
+<!----------------------------------------------------------------------------------------------->
+<body>
+     <nav class="main-menu">
+    <button onclick="window.location.href = 'index.html'"><i class="fas fa-layer-group"></i> <span data-key="General">General</span></button>
+    <button onclick="window.location.href = 'geotech.html'"><i class="fas fa-mountain"></i> <span data-key="Geotechnical">Geotechnical</span></button>
+    <button onclick="window.location.href = 'calibration.html'"><i class="fas fa-ruler"></i> <span data-key="Calibration">Calibration</span></button>
+    <button onclick="window.location.href = 'fleet.html'"><i class="fas fa-truck-fast"></i> <span data-key="Fleet">Fleet</span></button>
+    <button onclick="window.location.href = 'dashboards.html'"><i class="fas fa-chart-pie"></i> <span data-key="Dashboards">Dashboards</span></button>
+    <button onclick="window.location.href = 'security.html'"><i class="fas fa-user-shield"></i> <span data-key="Security">Security</span></button>
+    <button onclick="window.location.href = 'options.html'"><i class="fas fa-gear"></i> <span data-key="Options">Options</span></button>
+</nav>
+<!-------------------------------------------------Transactions---------------------------------------------->
+  <section id="general" class="section-content active">
+    <h2>
+      <i class="fas fa-file-contract"></i>
+      <span data-key="Transactions">Transactions</span>
+    </h2>
+    <div class="general-grid">
+      <div class="general-card" onclick="window.location.href = 'customers.html'">
+        <i class="fas fa-hard-hat"></i>
+        <span data-key="Customers">Customers</span>
+      </div>
+      <div class="general-card"><i class="fas fa-diagram-project"></i><span data-key="Projects">Projects</span></div>
+      
+      
+      
+      <div class="general-card" onclick="window.location.href = 'quotation.html'">
+        <i class="fas fa-file-signature"></i>
+        <span data-key="Quotations">Quotations</span></div>
+      
+      
+      
+      
+      <div class="general-card"><i class="fas fa-file-invoice-dollar"></i><span data-key="Invoices">Invoices</span></div>
+      <div class="general-card"><i class="fas fa-truck"></i><span data-key="Deliveries">Deliveries</span></div>
+      <div class="general-card"><i class="fas fa-envelope-open-text"></i><span data-key="Mail Campaigns">Mail Campaigns</span></div>
+      <div class="general-card"><i class="fas fa-circle-question"></i><span data-key="Inquiries">Inquiries</span></div>
+      <div class="general-card"><i class="fas fa-check-double"></i><span data-key="Confirmations">Confirmations</span></div>
+    </div>
+  </section>
+<!----------------------------------------------------Setup------------------------------------------->
+  <section id="setup" class="section-content active">
+    <h2>
+      <i class="fas fa-sliders-h"></i>
+      <span data-key="Setup">Setup</span>
+    </h2>
+    <div class="general-grid">
+      <div class="general-card"><i class="fas fa-tags"></i><span data-key="Customer Types">Customer Types</span></div>
+      <div class="general-card"><i class="fas fa-coins"></i><span data-key="Price Lists">Price Lists</span></div>
+      <div class="general-card"><i class="fas fa-hand-holding-usd"></i><span data-key="Payment Terms">Payment Terms</span></div>
+      <div class="general-card"><i class="fas fa-file-alt"></i><span data-key="Field Settings">Field Settings</span></div>
+      <div class="general-card"><i class="fas fa-industry"></i><span data-key="Project Categories">Project Categories</span></div>
+      <div class="general-card"><i class="fas fa-sitemap"></i><span data-key="Business Units">Business Units</span></div>
+    </div>
+  </section>
+<!----------------------------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------------------------->
+  <div id="modal-container"></div>
+  <div id="dynamicContent"></div>
+<!----------------------------------------------------------------------------------------------->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="main.js"></script>
+
+</body>
+</html>
