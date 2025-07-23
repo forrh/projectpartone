@@ -6,7 +6,11 @@
 // =====================================================================
 let quotationDataTable;
 let quotationLinesDataTable; // DataTable instance for Quote Lines
-let priceListDataTable; // NEW: DataTable instance for Price List Modal
+let priceListDataTable;      // NEW: DataTable instance for Price List Modal
+let lastQuotationNumbers = {
+    'proposal_geotechnical': 1000,
+    'proposal_material_testing': 2000
+};
 
 // =====================================================================
 // DOM Element Cache
@@ -15,23 +19,43 @@ let priceListDataTable; // NEW: DataTable instance for Price List Modal
 // =====================================================================
 const DOM = {
     quotationModal: document.getElementById("quotationModal"),
+
+    // --- Header Info Section ---
     quoteCategory: document.getElementById('quoteCategory'),
+    showCategoryListBtn: document.getElementById('showCategoryListBtn'),
+    categoryDropdown: document.getElementById('categoryDropdown'),
     quoteNo: document.getElementById('quoteNo'),
     quoteRev: document.getElementById('quoteRev'),
     quoteDate: document.getElementById('quoteDate'),
-    quoteProjectCode: document.getElementById('quoteProjectCode'),
     quoteLegacyNo: document.getElementById('quoteLegacyNo'),
     quoteLegacyDate: document.getElementById('quoteLegacyDate'),
-    quoteCustomer: document.getElementById('quoteCustomer'),
-    quoteProject: document.getElementById('quoteProject'),
     quoteProjectDetails: document.getElementById('quoteProjectDetails'),
     quoteSubject: document.getElementById('quoteSubject'),
-    quoteContactFrom: document.getElementById('quoteContactFrom'),
-    quoteInquiry: document.getElementById('quoteInquiry'),
-    quoteContactPerson: document.getElementById('quoteContactPerson'),
-    quoteContactTo: document.getElementById('quoteContactTo'),
-    quoteAttnTo: document.getElementById('quoteAttnTo'),
-    quoteAttnPos: document.getElementById('quoteAttnPos'),
+
+    // --- Project/Customer Info Section ---
+    quoteProjectCodeInput: document.getElementById('quoteProjectCodeInput'), // هذا هو حقل إدخال كود المشروع
+    projectCodeDropdown: document.getElementById('projectCodeDropdown'), // القائمة المنسدلة لأكواد المشاريع
+    showProjectCodeListBtn: document.getElementById('showProjectCodeListBtn'), // زر إظهار قائمة أكواد المشاريع
+    quoteCustomer: document.getElementById('quoteCustomer'), // حقل العميل (customer)
+    quoteProject: document.getElementById('quoteProject'), // **تعديل**: هذا هو حقل "Project Name" في HTML
+
+    // --- Contact Info Section (تعريفات موحدة ومُعدّلة بناءً على HTML) ---
+    quoteContactFrom: document.getElementById('quoteContactFrom'), // حقل "From"
+    showEmployeesListBtnEmployee: document.getElementById('showEmployeesListBtnEmployee'), // زر إظهار قائمة الموظفين (متعلق بـ From)
+    employeeDropdown: document.getElementById('employeeDropdown'), // القائمة المنسدلة للموظفين (متعلق بـ From)
+
+    quoteInquiry: document.getElementById('quoteInquiry'), // حقل "Inquiry"
+    quoteContactPerson: document.getElementById('quoteContactPerson'), // حقل اسم جهة الاتصال (contact)
+    contactPersonDropdown: document.getElementById('contactPersonDropdown'), // القائمة المنسدلة لجهة الاتصال
+    showContactPersonListBtn: document.getElementById('showContactPersonListBtn'), // زر إظهار قائمة جهات الاتصال
+
+    quoteContactTo: document.getElementById('quoteContactTo'), // حقل "To" (Textarea)
+    quoteAttnTo: document.getElementById('quoteAttnTo'), // حقل "Attn. To"
+    quoteAttnPos: document.getElementById('quoteAttnPos'), // حقل "Attn. Pos"
+    quoteContactEmail: document.getElementById('quoteContactEmail'), // حقل بريد جهة الاتصال
+    quoteContactMobile: document.getElementById('quoteContactMobile'), // حقل جوال جهة الاتصال
+
+    // --- Terms and Other Controls Section ---
     quoteDiscount: document.getElementById('quoteDiscount'),
     quoteVAT: document.getElementById('quoteVAT'),
     quoteValidity: document.getElementById('quoteValidity'),
@@ -41,17 +65,16 @@ const DOM = {
     paymentTermsDropdown: document.getElementById('paymentTermsDropdown'),
     quoteMethod: document.getElementById('quoteMethod'),
     quoteUseAltForm: document.getElementById('quoteUseAltForm'),
+
+    // --- Additional Info Section ---
     quoteRemarks: document.getElementById('quoteRemarks'),
-    quoteQuoteFileText: document.getElementById('quoteQuoteFileText'),
-    quoteQuoteFileInput: document.getElementById('quoteQuoteFileInput'),
-    quoteQuoteFileBtn: document.getElementById('quoteQuoteFileBtn'),
+    quoteQuoteFile: document.getElementById('quoteQuoteFile'), // **تعديل**: استخدام ID الموجود في HTML
     quoteFileStatus: document.getElementById('quoteFileStatus'),
     quoteDeclined: document.getElementById('quoteDeclined'),
     quoteDeclinedMessage: document.getElementById('quoteDeclinedMessage'),
-    newQuotationBtn: document.getElementById('newQuotationBtn'), // Button to open new quotation modal
-    showEmployeesListBtnEmployee: document.getElementById('showEmployeesListBtnEmployee'),
-    employeeDropdown: document.getElementById('employeeDropdown'),
 
+    // --- Buttons & Main Table Elements (لا تغيير هنا) ---
+    newQuotationBtn: document.getElementById('newQuotationBtn'),
     // Financials for Header Tab
     financialTotalLines: document.getElementById('financialTotalLines'),
     financialDiscountAmount: document.getElementById('financialDiscountAmount'),
@@ -80,9 +103,10 @@ const DOM = {
     closeLinesTabBtn: document.getElementById('closeLinesTabBtn'),
     saveAndCloseLinesTabBtn: document.getElementById('saveAndCloseLinesTabBtn'),
 
-    // Main Quotation Table Elements (assuming they exist)
+    // Main Quotation Table Elements
     masterCheckbox: document.getElementById('selectAllQuotations'),
-    quotationTable: document.getElementById('quotationTable'), // Assuming the main table ID is quotationTable
+    quotationTable: document.getElementById('quotationTable'),
+    fixedPaginationContainer: document.getElementById('quotation-pagination-fixed-bottom'),
 
     // Quote Lines Table Elements
     quotationLinesTable: document.getElementById('quotationLinesTable'),
@@ -90,7 +114,7 @@ const DOM = {
 
     // Price List Modal Elements
     priceListModal: document.getElementById("priceListModal"),
-    priceListTable: document.getElementById('priceListTable'), 
+    priceListTable: document.getElementById('priceListTable'),
     priceListTableBody: document.getElementById('priceListTableBody'),
     addSelectedItemsBtn: document.getElementById('addSelectedItemsBtn'),
     selectAllPriceListItems: null, // Initialized dynamically
@@ -99,12 +123,11 @@ const DOM = {
     priceListFilterMethod: document.getElementById('priceListFilterMethod'),
     clearPriceListFiltersBtn: document.getElementById('clearPriceListFiltersBtn'),
     refreshPriceListBtn: document.getElementById('refreshPriceListBtn'),
-    priceListResetButtonContainer: document.getElementById('priceListResetButtonContainer'), // هذا يجب أن يشير إلى حاوية زر إعادة التعيين
+    priceListResetButtonContainer: document.getElementById('priceListResetButtonContainer'),
 
-  
-  
+    // Dynamically added elements (like PDF button from initializeDynamicDOMElements)
+    generatePdfButton: null,
 };
-
 
 // =====================================================================
 // Helper Functions
@@ -286,12 +309,42 @@ function resetQuotationForm() {
     if (DOM.quoteCategory) DOM.quoteCategory.value = '';
     if (DOM.quoteNo) DOM.quoteNo.value = '';
     if (DOM.quoteRev) DOM.quoteRev.value = '';
-    if (DOM.quoteDate) DOM.quoteDate.value = '';
-    if (DOM.quoteProjectCode) DOM.quoteProjectCode.value = '';
+    
+    // --- بداية التعديل: تعيين تاريخ اليوم الحالي لحقلي التاريخ ---
+    const today = new Date();
+    const year = today.getFullYear();
+    let month = (today.getMonth() + 1).toString();
+    let day = today.getDate().toString();
+
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+    }
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // تعيين قيمة تاريخ الاقتباس
+    if (DOM.quoteDate) {
+        DOM.quoteDate.value = formattedDate;
+    }
+    // تعيين قيمة تاريخ الاستحقاق (إذا كان لديك حقل له)
+    if (DOM.quoteDueDate) { 
+        DOM.quoteDueDate.value = formattedDate;
+    }
+    // --- نهاية التعديل ---
+
+    // --- بداية التعديل الجديد: مسح حقول المشروع والعميل ---
+    if (DOM.quoteProjectCodeInput) DOM.quoteProjectCodeInput.value = ''; // مسح حقل Project Code Input
+    // تأكد من مسح حقول اسم المشروع والعميل إذا كانت موجودة وتتأثر باختيار Project Code
+    if (DOM.quoteProject) DOM.quoteProject.value = ''; // مسح حقل اسم المشروع (إن وجد)
+    if (DOM.quoteCustomer) DOM.quoteCustomer.value = ''; // مسح حقل العميل (إن وجد)
+    // --- نهاية التعديل الجديد ---
+
     if (DOM.quoteLegacyNo) DOM.quoteLegacyNo.value = '';
     if (DOM.quoteLegacyDate) DOM.quoteLegacyDate.value = '';
-    if (DOM.quoteCustomer) DOM.quoteCustomer.value = '';
-    if (DOM.quoteProject) DOM.quoteProject.value = '';
+    // تم التعامل مع DOM.quoteCustomer أعلاه
+    // تم التعامل مع DOM.quoteProject أعلاه
     if (DOM.quoteProjectDetails) DOM.quoteProjectDetails.value = '';
     if (DOM.quoteSubject) DOM.quoteSubject.value = '';
 
@@ -349,7 +402,6 @@ function resetQuotationForm() {
         label.classList.remove('required-field-missing');
     });
 }
-
 /**
  * Handles tab switching within the quotation modal.
  * @param {Event | null} evt - The click event object, or null if called programmatically.
@@ -609,6 +661,143 @@ function getPriceListData() {
     ];
 }
 
+function initializeProjectCodeDropdown() {
+    // 1. جلب عناصر DOM المطلوبة
+    const projectCodeInputField = DOM.quoteProjectCodeInput;     // حقل إدخال رمز المشروع
+    const projectCodeDropdown = DOM.projectCodeDropdown;           // حاوية القائمة المنسدلة (مثال: div)
+    const showProjectCodeListBtn = DOM.showProjectCodeListBtn;    // زر فتح/إغلاق القائمة
+
+    // التحقق الأساسي: التأكد من وجود جميع العناصر الضرورية
+    if (!projectCodeInputField || !projectCodeDropdown || !showProjectCodeListBtn) {
+        console.error("خطأ: لم يتم العثور على جميع عناصر DOM المطلوبة لقائمة رمز المشروع المنسدلة. الرجاء التحقق من الـ IDs التالية: quoteProjectCodeInput, projectCodeDropdown, showProjectCodeListBtn.");
+        return; // إيقاف تنفيذ الدالة إذا كانت العناصر غير موجودة
+    }
+
+    // 2. بيانات المشاريع: هنا قائمة بمشاريع مختبرات هندسية (بيانات وهمية حالياً)
+    // في تطبيق حقيقي، سيتم جلب هذه البيانات من خادم أو قاعدة بيانات
+    const projectOptions = [
+        { code: "GEO-001", name: "فحص تربة لمشروع مبنى سكني", customer: "شركة البناء الحديثة" },
+        { code: "MAT-002", name: "اختبار جودة الخرسانة لمشروع جسر", customer: "المؤسسة الوطنية للمقاولات" },
+        { code: "HYD-003", name: "تحليل عينات مياه لمشروع صرف صحي", customer: "أمانة مدينة الرياض" },
+        { code: "STR-004", name: "اختبارات غير إتلافية لهيكل خرساني", customer: "الشركة العربية للمباني" },
+        { code: "ASPH-005", name: "تحليل مكونات الأسفلت لمشروع طريق", customer: "إدارة الطرق والنقل" },
+        { code: "LAB-006", name: "معايرة أجهزة مختبرية دورية", customer: "مختبر الجودة والتحليل" },
+        { code: "GEO-007", name: "دراسات جيوتقنية لموقع صناعي", customer: "مجموعة الصناعات المتقدمة" },
+        { code: "MAT-008", name: "اختبارات مقاومة شد للحديد", customer: "مصنع هياكل الحديد" },
+        { code: "ENV-009", name: "فحص تلوث الهواء في منطقة صناعية", customer: "المركز البيئي الوطني" },
+        { code: "CONS-010", name: "استشارات فنية لمشاكل التربة", customer: "مكتب المهندس الاستشاري" },
+    ];
+
+    /**
+     * 3. دالة مساعدة: تقوم بعرض قائمة المشاريع داخل القائمة المنسدلة.
+     * @param {Array} dataToRender - مصفوفة كائنات المشاريع المراد عرضها.
+     */
+    function renderProjectCodeDropdown(dataToRender) {
+        projectCodeDropdown.innerHTML = ''; // مسح أي محتوى قديم داخل القائمة
+
+        // *** بداية التعديل: إضافة صف الرأس ***
+        const headerRow = document.createElement('div');
+        headerRow.classList.add('custom-dropdown-header-row'); // استخدم نفس الفئة المخصصة في الـ CSS
+
+        headerRow.innerHTML = `
+            <span class="dropdown-column-code dropdown-column-name-header">Project Code</span>
+            <span class="dropdown-column-name dropdown-column-name-header">Project Name </span>
+            <span class="dropdown-column-customer dropdown-column-name-header">Customer</span>
+        `;
+        projectCodeDropdown.appendChild(headerRow);
+        // *** نهاية التعديل: إضافة صف الرأس ***
+
+        // إذا لم تكن هناك نتائج، اعرض رسالة مناسبة
+        if (dataToRender.length === 0) {
+            const noResultsItem = document.createElement('div');
+            noResultsItem.classList.add('custom-dropdown-item', 'no-results'); // أضف فئة no-results للتنسيق
+            noResultsItem.textContent = "لا توجد مشاريع متاحة.";
+            projectCodeDropdown.appendChild(noResultsItem);
+            projectCodeDropdown.style.display = 'block';
+            return;
+        }
+
+        // إنشاء عنصر لكل مشروع وإضافته إلى القائمة المنسدلة
+        dataToRender.forEach(project => {
+            const item = document.createElement('div');
+            item.classList.add('custom-dropdown-item');
+
+            // تصميم عرض العنصر داخل القائمة المنسدلة (الكود، الاسم، العميل)
+            item.innerHTML = `
+                <span class="dropdown-column-code">${project.code}</span>
+                <span class="dropdown-column-name">${project.name}</span>
+                <span class="dropdown-column-customer">${project.customer}</span>
+            `;
+
+            // حفظ بيانات المشروع كـ data attributes
+            item.setAttribute('data-code', project.code);
+            item.setAttribute('data-name', project.name);
+            item.setAttribute('data-customer', project.customer);
+
+            // إضافة مستمع حدث للنقر على كل عنصر مشروع
+            item.addEventListener('click', function() {
+                // تعبئة حقل إدخال رمز المشروع بالرمز المختار
+                projectCodeInputField.value = project.code;
+                projectCodeDropdown.style.display = 'none'; // إخفاء القائمة المنسدلة بعد الاختيار
+
+                // إزالة أي علامات "حقل مطلوب" إذا كانت لديك دالة markRequiredField
+                if (typeof markRequiredField === 'function') {
+                    markRequiredField(projectCodeInputField, false);
+                }
+
+                // *** تعبئة الحقول المرتبطة: DOM.quoteProject و DOM.quoteCustomer ***
+                // هذا الجزء يعبئ الحقلين تلقائيًا كما طلبت
+                if (DOM.quoteProject) {
+                    DOM.quoteProject.value = project.name;
+                }
+                if (DOM.quoteCustomer) {
+                    DOM.quoteCustomer.value = project.customer;
+                }
+                console.log(`تم اختيار المشروع: ${project.code} - ${project.name} للعميل: ${project.customer}`);
+            });
+            projectCodeDropdown.appendChild(item); // إضافة العنصر إلى القائمة
+        });
+
+        projectCodeDropdown.style.display = 'block'; // إظهار القائمة بعد ملئها
+    }
+
+    // 4. إعداد مستمعات الأحداث الرئيسية للقائمة المنسدلة:
+
+    // أ. مستمع لحدث النقر على حقل رمز المشروع لفتح/إغلاق القائمة
+    projectCodeInputField.addEventListener('click', function() {
+        if (projectCodeDropdown.style.display !== 'block') {
+            renderProjectCodeDropdown(projectOptions); // عرض جميع المشاريع
+        } else {
+            projectCodeDropdown.style.display = 'none'; // إغلاق القائمة إذا كانت مفتوحة
+        }
+    });
+
+    // ب. مستمع لحدث النقر على زر السهم لفتح/إغلاق القائمة
+    showProjectCodeListBtn.addEventListener('click', function(event) {
+        event.stopPropagation(); // منع الحدث من الانتشار وإغلاق القائمة
+        if (projectCodeDropdown.style.display === 'block') {
+            projectCodeDropdown.style.display = 'none'; // إغلاق القائمة
+        } else {
+            renderProjectCodeDropdown(projectOptions); // فتح وعرض جميع المشاريع
+            projectCodeInputField.focus(); // إعادة التركيز على حقل الإدخال
+        }
+    });
+
+    // ج. مستمع لحدث النقر على المستند بأكمله لإغلاق القائمة إذا تم النقر خارجها
+    document.addEventListener('click', function(event) {
+        if (event.target !== projectCodeInputField &&
+            event.target !== showProjectCodeListBtn &&
+            !projectCodeDropdown.contains(event.target)) {
+            projectCodeDropdown.style.display = 'none';
+        }
+    });
+
+    // 5. الحالة الأولية: إخفاء القائمة المنسدلة عند التهيئة
+    projectCodeDropdown.style.display = 'none';
+
+    console.log("تم تهيئة قائمة رمز المشروع المنسدلة (وضع العرض فقط) بنجاح.");
+}
+
 // =====================================================================
 // Custom Dropdown for 'From' field (Vanilla JavaScript)
 // =====================================================================
@@ -697,6 +886,8 @@ function initializeEmployeeDropdown() {
     employeeDropdown.style.display = 'none';
 }
 
+
+
 // =====================================================================
 // Custom Dropdown for Payment Terms (Vanilla JavaScript)
 // =====================================================================
@@ -784,6 +975,340 @@ function initializePaymentTermsDropdown() {
     paymentTermsDropdown.style.display = 'none'; // Initially hidden
 }
 
+/**
+ * Initializes the custom dropdown for the Category field.
+ * Manages rendering options and handling selection for automatic quote number generation.
+ */
+/**
+ * تقوم بتهيئة القائمة المنسدلة المخصصة لحقل "الفئة" (Category).
+ * تدير عملية عرض الخيارات، ومعالجة أحداث النقر، والتحكم في الإغلاق عند النقر خارجها.
+ */
+ 
+ function initializeContactPersonDropdown() {
+    // 1. جلب عناصر DOM المطلوبة
+    const contactInputField = DOM.quoteContactPerson;
+    const contactDropdown = DOM.contactPersonDropdown;
+    const showContactListBtn = DOM.showContactPersonListBtn;
+
+    // الحقول الإضافية التي ستُملأ (تأكد من مطابقة الـ IDs هنا مع HTML)
+    const quoteContactToField = DOM.quoteContactTo;      // حقل "To:"
+    const quoteAttnToField = DOM.quoteAttnTo;          // حقل "Attn. To:"
+    const quoteAttnPosField = DOM.quoteAttnPos;        // حقل "Attn. Pos:"
+    const quoteContactEmailField = DOM.quoteContactEmail; // حقل "Contact Email:"
+    const quoteContactMobileField = DOM.quoteContactMobile; // حقل "Contact Mobile:"
+
+    // التحقق الأساسي: التأكد من وجود جميع العناصر الضرورية
+    if (!contactInputField || !contactDropdown || !showContactListBtn ||
+        !quoteContactToField || !quoteAttnToField || !quoteAttnPosField ||
+        !quoteContactEmailField || !quoteContactMobileField) {
+        console.error("خطأ: لم يتم العثور على جميع عناصر DOM المطلوبة لقائمة جهة الاتصال المنسدلة. الرجاء التحقق من الـ IDs التالية: quoteContactPerson, contactPersonDropdown, showContactPersonListBtn, quoteContactTo, quoteAttnTo, quoteAttnPos, quoteContactEmail, quoteContactMobile.");
+        return;
+    }
+
+    // 2. بيانات جهات الاتصال (مع أمثلةك: ابراهيم، رائد، خالد)
+   const contactOptions = [
+    { name: "ابراهيم", title: "Engineer", email: "ibrahim.eng@example.com", mobile: "051111111", location: "الرياض" },
+    { name: "رائد", title: "Project Manager", email: "raed.pm@example.com", mobile: "055111111", location: "جدة" },
+    { name: "خالد", title: "Technician", email: "kha.idch@example.com", mobile: "052222222", location: "الدمام" },
+   
+];
+
+    /**
+     * 3. دالة مساعدة: تقوم بعرض قائمة جهات الاتصال داخل القائمة المنسدلة.
+     * @param {Array} dataToRender - مصفوفة كائنات جهات الاتصال المراد عرضها.
+     */
+    function renderContactDropdown(dataToRender) {
+        contactDropdown.innerHTML = ''; // مسح أي محتوى قديم
+
+        // إضافة صف الرأس (Headers)
+        const headerRow = document.createElement('div');
+        headerRow.classList.add('custom-dropdown-header-row');
+        headerRow.innerHTML = `
+            <span class="dropdown-column-contact-name dropdown-column-contact-name-header">Name</span>
+            <span class="dropdown-column-contact-title dropdown-column-contact-title-header">Title</span>
+            <span class="dropdown-column-contact-email dropdown-column-contact-email-header">Email</span>
+            <span class="dropdown-column-contact-mobile dropdown-column-contact-mobile-header">Mobile</span>
+            <span class="dropdown-column-contact-location dropdown-column-contact-location-header">Location</span>
+        `;
+        contactDropdown.appendChild(headerRow);
+
+        // إذا لم تكن هناك نتائج، اعرض رسالة مناسبة
+        if (dataToRender.length === 0) {
+            const noResultsItem = document.createElement('div');
+            noResultsItem.classList.add('custom-dropdown-item', 'no-results');
+            noResultsItem.textContent = "لا توجد جهات اتصال متاحة.";
+            contactDropdown.appendChild(noResultsItem);
+            contactDropdown.style.display = 'block';
+            return;
+        }
+
+        // إنشاء عنصر لكل جهة اتصال وإضافته إلى القائمة المنسدلة
+        dataToRender.forEach(contact => {
+            const item = document.createElement('div');
+            item.classList.add('custom-dropdown-item');
+
+            // تصميم عرض العنصر داخل القائمة المنسدلة
+            item.innerHTML = `
+                <span class="dropdown-column-contact-name">${contact.name}</span>
+                <span class="dropdown-column-contact-title">${contact.title}</span>
+                <span class="dropdown-column-contact-email">${contact.email}</span>
+                <span class="dropdown-column-contact-mobile">${contact.mobile}</span>
+                <span class="dropdown-column-contact-location">${contact.location}</span>
+            `;
+
+            // حفظ بيانات جهة الاتصال كـ data attributes
+            item.setAttribute('data-name', contact.name);
+            item.setAttribute('data-title', contact.title);
+            item.setAttribute('data-email', contact.email);
+            item.setAttribute('data-mobile', contact.mobile);
+            item.setAttribute('data-location', contact.location);
+
+            // إضافة مستمع حدث للنقر على كل عنصر جهة اتصال
+            item.addEventListener('click', function() {
+                // تعبئة حقل إدخال جهة الاتصال بالاسم المختار
+                contactInputField.value = contact.name;
+                contactDropdown.style.display = 'none'; // إخفاء القائمة المنسدلة بعد الاختيار
+
+                // تعبئة الحقول الإضافية تلقائيًا
+                if (quoteAttnToField) quoteAttnToField.value = contact.name;      // Attn. To: الاسم
+                if (quoteAttnPosField) quoteAttnPosField.value = contact.title;  // Attn. Pos: الوظيفة
+                if (quoteContactToField) quoteContactToField.value = `${contact.location} ${contact.email} `; 
+                // *** نهاية التعديل ***
+                if (quoteContactEmailField) quoteContactEmailField.value = contact.email; // Contact Email
+                if (quoteContactMobileField) quoteContactMobileField.value = contact.mobile; // Contact Mobile
+
+                // إزالة أي علامات "حقل مطلوب" إذا كانت لديك دالة markRequiredField
+                if (typeof markRequiredField === 'function') {
+                    markRequiredField(contactInputField, false);
+                }
+
+                console.log(`تم اختيار جهة الاتصال: ${contact.name} - ${contact.title}`);
+            });
+            contactDropdown.appendChild(item); // إضافة العنصر إلى القائمة
+        });
+
+        contactDropdown.style.display = 'block'; // إظهار القائمة بعد ملئها
+    }
+
+    // 4. إعداد مستمعات الأحداث الرئيسية للقائمة المنسدلة:
+
+    // أ. مستمع لحدث الكتابة (input) على حقل جهة الاتصال للبحث/التصفية
+    contactInputField.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const filteredContacts = contactOptions.filter(contact =>
+            contact.name.toLowerCase().includes(searchTerm) ||
+            contact.title.toLowerCase().includes(searchTerm) ||
+            contact.email.toLowerCase().includes(searchTerm) ||
+            contact.mobile.toLowerCase().includes(searchTerm) ||
+            contact.location.toLowerCase().includes(searchTerm)
+        );
+        renderContactDropdown(filteredContacts);
+        contactDropdown.style.display = 'block'; // للتأكد أن القائمة تظل مفتوحة أثناء الكتابة
+
+        // إزالة علامة الحقل المطلوب عند الكتابة
+        if (typeof markRequiredField === 'function') {
+            markRequiredField(this, false);
+        }
+    });
+
+    // ب. مستمع لحدث النقر على حقل جهة الاتصال لفتح/إغلاق القائمة (إذا لم تكن في وضع الكتابة)
+    contactInputField.addEventListener('click', function() {
+        if (contactDropdown.style.display !== 'block') {
+            renderContactDropdown(contactOptions); // عرض جميع جهات الاتصال
+        } else if (this.value.trim() === '') { // فقط إذا كان الحقل فارغًا، أعد إغلاقها بالنقر مرة أخرى
+            contactDropdown.style.display = 'none';
+        }
+    });
+
+    // ج. مستمع لحدث النقر على زر السهم لفتح/إغلاق القائمة
+    showContactListBtn.addEventListener('click', function(event) {
+        event.stopPropagation(); // منع الحدث من الانتشار وإغلاق القائمة
+        if (contactDropdown.style.display === 'block') {
+            contactDropdown.style.display = 'none';
+        } else {
+            renderContactDropdown(contactOptions); // فتح وعرض جميع جهات الاتصال
+            contactInputField.focus(); // إعادة التركيز على حقل الإدخال
+        }
+    });
+
+    // د. مستمع لحدث النقر على المستند بأكمله لإغلاق القائمة إذا تم النقر خارجها
+    document.addEventListener('click', function(event) {
+        if (event.target !== contactInputField &&
+            event.target !== showContactListBtn &&
+            !contactDropdown.contains(event.target)) {
+            contactDropdown.style.display = 'none';
+        }
+    });
+
+    // 5. الحالة الأولية: إخفاء القائمة المنسدلة عند التهيئة
+    contactDropdown.style.display = 'none';
+
+    console.log("تم تهيئة قائمة جهة الاتصال المنسدلة بنجاح.");
+}
+function initializeCategoryDropdown() {
+    // الحصول على عناصر DOM. تأكد من تهيئة كائن DOM بشكل صحيح في مكان آخر.
+    const categoryInputField = DOM.quoteCategory; // حقل إدخال الفئة
+    const showCategoryListButton = DOM.showCategoryListBtn; // زر إظهار القائمة المنسدلة
+    const categoryDropdownList = DOM.categoryDropdown; // حاوية القائمة المنسدلة نفسها
+
+    // تحقق أساسي: تأكد من العثور على جميع عناصر DOM المطلوبة قبل المتابعة.
+    if (!categoryInputField || !showCategoryListButton || !categoryDropdownList) {
+        console.error("لم يتم العثور على عناصر DOM المطلوبة للقائمة المنسدلة للفئة. يرجى التحقق من معرفات (IDs) 'quoteCategory', 'showCategoryListBtn', 'categoryDropdown'.");
+        return; // الخروج من الدالة إذا كانت العناصر مفقودة.
+    }
+
+    // --- بداية التعديل الجديد: تعريف categoryOptions ---
+    // مصفوفة خيارات الفئات. (يمكن تعريفها كـ const عامة في أعلى ملف JavaScript لسهولة الوصول إليها عالمياً)
+    const categoryOptions = [
+        { type: "AAM-GT", value: "proposal_geotechnical", text: "Proposal for Geotechnical" },
+        { type: "AAM-MT", value: "proposal_material_testing", text: "Proposal for Material Testing" }
+    ];
+    // --- نهاية التعديل الجديد ---
+
+    /**
+     * تقوم بعرض خيارات الفئات داخل القائمة المنسدلة،
+     * وتُظهرها في عمودين: 'النوع' (Type) و 'اسم الفئة' (Category Name).
+     * @param {Array} optionsToRender - مصفوفة من كائنات الفئة {type, value, text}.
+     */
+    function renderCategoryDropdown(optionsToRender) {
+        // 1. مسح أي محتوى موجود حالياً في القائمة المنسدلة لتجنب التكرار عند إعادة العرض.
+        categoryDropdownList.innerHTML = '';
+
+        // 2. إذا لم تكن هناك خيارات لعرضها، قم بإخفاء القائمة والخروج.
+        if (optionsToRender.length === 0) {
+            categoryDropdownList.style.display = 'none';
+            return;
+        }
+
+        // --- بداية التعديل الجديد: إضافة صف الرأس للعمودين ---
+        // 3. إنشاء وإلحاق صف الرأس لجدول القائمة المنسدلة (اختياري لكن موصى به للوضوح).
+        const headerRow = document.createElement('div');
+        headerRow.classList.add('custom-dropdown-header-row'); // إضافة فئة CSS لتنسيق الرأس.
+        headerRow.innerHTML = `<div class="dropdown-column-type-header">theType </div><div class="dropdown-column-name-header">Category</div>`;
+        categoryDropdownList.appendChild(headerRow);
+        // --- نهاية التعديل الجديد ---
+
+        // 4. المرور على كل خيار لإنشاء صفه الخاص في القائمة المنسدلة.
+        optionsToRender.forEach(option => {
+            const item = document.createElement('div');
+            item.classList.add('custom-dropdown-item'); // إضافة فئة CSS لتنسيق صف العنصر.
+            item.setAttribute('data-value', option.value); // تخزين قيمة البيانات الفعلية (مثلاً "proposal_geotechnical").
+
+            // --- بداية التعديل الجديد: إنشاء وتعبئة عمودين لكل عنصر ---
+            // إنشاء العمود الأول لـ 'النوع' (Type).
+            const typeCol = document.createElement('div');
+            typeCol.classList.add('dropdown-column-type'); // إضافة فئة CSS لتنسيق عمود 'النوع'.
+            typeCol.textContent = option.type; // تعيين المحتوى إلى "AAM-GT" أو "AAM-MT".
+
+            // إنشاء العمود الثاني لـ 'اسم الفئة' (Category Name).
+            const nameCol = document.createElement('div');
+            nameCol.classList.add('dropdown-column-name'); // إضافة فئة CSS لتنسيق عمود 'اسم الفئة'.
+            nameCol.textContent = option.text; // تعيين المحتوى إلى "Proposal for Geotechnical" وما إلى ذلك.
+
+            // إلحاق العمودين بصف العنصر.
+            item.appendChild(typeCol);
+            item.appendChild(nameCol);
+            // --- نهاية التعديل الجديد ---
+
+            // 5. إضافة مستمع حدث النقر لكل عنصر في القائمة المنسدلة.
+            item.addEventListener('click', function() {
+                // تحديث حقل الإدخال بالنص المقروء.
+                categoryInputField.value = option.text;
+                // تخزين قيمة الفئة الفعلية في خاصية بيانات مخصصة للمنطق الداخلي.
+                categoryInputField.setAttribute('data-selected-value', option.value);
+                // إخفاء القائمة المنسدلة بعد الاختيار.
+                categoryDropdownList.style.display = 'none';
+                // استدعاء الدالة لتوليد رقم الاقتباس بناءً على القيمة المختارة.
+                generateQuotationNumber(option.value);
+
+                // إذا كان لديك دالة لتحديد الحقول المطلوبة، قم بإلغاء التعليق عليها واستخدامها:
+                // markRequiredField(categoryInputField, false);
+            });
+
+            // 6. إلحاق صف العنصر (الصف الذي يحتوي على الأعمدة) بحاوية القائمة المنسدلة.
+            categoryDropdownList.appendChild(item);
+        });
+
+        // 7. أخيراً، جعل القائمة المنسدلة مرئية.
+        categoryDropdownList.style.display = 'block';
+    }
+
+    // --- مستمعات الأحداث والحالة الأولية لهذه القائمة المنسدلة ---
+
+    // 1. مستمع حدث النقر لزر تبديل القائمة المنسدلة (زر إظهار القائمة).
+    showCategoryListButton.addEventListener('click', function(event) {
+        event.stopPropagation(); // منع الحدث من الانتشار إلى مستمع النقر على المستند أدناه.
+
+        if (categoryDropdownList.style.display === 'block') {
+            categoryDropdownList.style.display = 'none'; // إذا كانت مرئية حالياً، قم بإخفائها.
+        } else {
+            renderCategoryDropdown(categoryOptions); // إذا كانت مخفية، قم بعرضها وإظهارها.
+            // اختياري: تركيز على حقل الإدخال عند فتح القائمة المنسدلة:
+            // categoryInputField.focus();
+        }
+    });
+
+    // --- بداية التعديل الجديد: مستمع النقر على المستند والإخفاء الأولي الموحد ---
+    // 2. مستمع حدث لإغلاق القائمة المنسدلة عند النقر في أي مكان خارجها.
+    // يجب إضافة هذا المستمع مرة واحدة فقط أثناء التهيئة.
+    document.addEventListener('click', function(event) {
+        // التحقق مما إذا كان هدف النقر ليس حقل الإدخال، وليس زر التبديل،
+        // وليس داخل القائمة المنسدلة نفسها.
+        if (event.target !== categoryInputField &&
+            event.target !== showCategoryListButton &&
+            !categoryDropdownList.contains(event.target)) {
+            categoryDropdownList.style.display = 'none'; // إخفاء القائمة المنسدلة.
+        }
+    });
+
+    // 3. الحالة الأولية: التأكد من أن القائمة المنسدلة مخفية عند تحميل الصفحة لأول مرة.
+    // يجب تنفيذ هذا السطر مرة واحدة أيضاً أثناء التهيئة.
+    categoryDropdownList.style.display = 'none';
+    // --- نهاية التعديل الجديد ---
+}
+
+/**
+ * Generates a unique quotation number based on the selected category.
+ * Updates the 'Quote No.' input field (DOM.quoteNo).
+ * @param {string} categoryValue - The value of the selected category (e.g., 'proposal_geotechnical').
+ */
+function generateQuotationNumber(categoryValue) {
+    if (!categoryValue) {
+        DOM.quoteNo.value = '';
+        return;
+    }
+
+    let prefix = '';
+    let lastNum = 0;
+
+    switch (categoryValue) {
+        case 'proposal_geotechnical':
+            prefix = 'GT';
+            lastNum = lastQuotationNumbers.proposal_geotechnical;
+            break;
+        case 'proposal_material_testing':
+            prefix = 'MT';
+            lastNum = lastQuotationNumbers.proposal_material_testing;
+            break;
+        default:
+            DOM.quoteNo.value = '';
+            console.warn(`Unknown category selected: ${categoryValue}`);
+            return;
+    }
+
+    const nextNum = lastNum + 1;
+    const formattedNum = String(nextNum).padStart(4, '0');
+
+    if (categoryValue === 'proposal_geotechnical') {
+        lastQuotationNumbers.proposal_geotechnical = nextNum;
+    } else if (categoryValue === 'proposal_material_testing') {
+        lastQuotationNumbers.proposal_material_testing = nextNum;
+    }
+
+    DOM.quoteNo.value = `${prefix}-${formattedNum}`;
+    console.log(`Generated Quotation Number: ${DOM.quoteNo.value} for category: ${categoryValue}`);
+}
+
 
 // =====================================================================
 // Functions for File Handling and PDF Generation
@@ -818,6 +1343,7 @@ function generateQuotationPdf() {
 // =====================================================================
 function setupEventListeners() {
     // General Modal Open Button
+    
     if (DOM.newQuotationBtn) {
         DOM.newQuotationBtn.addEventListener('click', openQuotationModal);
     }
@@ -890,40 +1416,9 @@ function setupEventListeners() {
 // =====================================================================
 // Document Ready and Initialization
 // =====================================================================
-$(document).ready(function() {
-    // Initialize main DataTables (if applicable)
-    // initializeQuotationDataTable(); // You need to implement this function
 
-    // Initialize custom dropdowns
-    initializeEmployeeDropdown();
-    initializePaymentTermsDropdown();
+ 
 
-    // Initialize dynamically created DOM elements
-    
-
-    // Setup all event listeners for buttons and other interactive elements
-    setupEventListeners();
-
-    // Price List DataTable will be initialized when its modal is opened (usually in openPriceListModal function)
-    // initializePriceListModal(); // Call this here if modal is open by default or needs pre-init
-
-    // NEW: Add a global resize listener to adjust DataTables columns
-    window.addEventListener('resize', function() {
-        // Only adjust if the priceListModal is currently displayed
-        if (DOM.priceListModal && DOM.priceListModal.style.display === 'block' && priceListDataTable) { // Note: changed 'flex' to 'block' if modal display style is block
-            priceListDataTable.columns.adjust().draw();
-            console.log("Price List table columns adjusted on window resize.");
-        }
-        // Also adjust the quotationLinesTable if its tab is active
-        const linesTab = document.getElementById('linesTab');
-        if (linesTab && linesTab.classList.contains('active') && quotationLinesDataTable) {
-            quotationLinesDataTable.columns.adjust().draw();
-            console.log("Quotation Lines table columns adjusted on window resize.");
-        }
-    });
-
-    console.log("Document ready and initializations complete.");
-});
 
 // =====================================================================
 // Placeholder/Assumed External Functions (Implement these as needed)
@@ -931,38 +1426,38 @@ $(document).ready(function() {
 function initializeQuotationDataTable() {
     if (DOM.quotationTable && !$.fn.DataTable.isDataTable(DOM.quotationTable)) {
         quotationDataTable = $(DOM.quotationTable).DataTable({
-            "scrollX": true, // Keep horizontal scroll enabled for main table
-            "autoWidth": true, // Revert to autoWidth for main table
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "scrollCollapse": true, // Helps DataTables manage scrollable areas for main table
-            // Changed dom to 'lftip' to make length and filter align at top
-            // 'l': length changing input, 'f': filtering input, 't': table, 'i': table information, 'p': pagination
-            "dom": '<"top"lf>rt<"bottom"ip>', // Make length and filter on one line at top
+            "scrollX": true, // تفعيل التمرير الأفقي للجدول الرئيسي
+            "autoWidth": false, 
+            "autoWidth": true, // العودة إلى العرض التلقائي للجدول الرئيسي
+            "paging": true, // تفعيل التقسيم لصفحات
+            "searching": true, // تفعيل البحث العام
+            "ordering": true, // تفعيل الفرز حسب الأعمدة
+            "info": true, // إظهار معلومات الجدول (عدد الصفوف، الصفحات)
+            "scrollCollapse": true, // يساعد DataTables في إدارة مناطق التمرير للجدول الرئيسي
+            // 'l': مربع تغيير عدد الإدخالات، 'f': مربع الفلترة/البحث، 't': الجدول، 'i': معلومات الجدول، 'p': الترقيم
+            "dom": '<"top"lf>rt<"bottom"ip>', // وضع مربع البحث وتغيير الطول على سطر واحد في الأعلى
             "initComplete": function(settings, json) {
-                // Move the DataTables info and paginate elements to the fixed container
+                // نقل عناصر معلومات DataTables والترقيم إلى الحاوية الثابتة
                 if (DOM.fixedPaginationContainer) {
-                    const api = this.api(); // Get DataTables API instance
-                    const wrapper = $(api.table().container()); // Get the wrapper div
+                    const api = this.api(); // الحصول على نسخة DataTables API
+                    const wrapper = $(api.table().container()); // الحصول على عنصر div الغلاف للجدول
 
-                    const infoElement = wrapper.find('.dataTables_info');
-                    const paginateElement = wrapper.find('.dataTables_paginate');
+                    const infoElement = wrapper.find('.dataTables_info'); // عنصر المعلومات
+                    const paginateElement = wrapper.find('.dataTables_paginate'); // عنصر الترقيم
 
-                    // Clear any existing content in the fixed container first
+                    // مسح أي محتوى موجود مسبقًا في الحاوية الثابتة أولاً
                     DOM.fixedPaginationContainer.innerHTML = '';
 
-                    infoElement.appendTo(DOM.fixedPaginationContainer);
-                    paginateElement.appendTo(DOM.fixedPaginationContainer);
+                    infoElement.appendTo(DOM.fixedPaginationContainer); // نقل معلومات الجدول
+                    paginateElement.appendTo(DOM.fixedPaginationContainer); // نقل الترقيم
                     console.log("Main table pagination moved to fixed bottom bar.");
                 } else {
                     console.error("Fixed pagination container 'quotation-pagination-fixed-bottom' not found.");
                 }
             },
-            "responsive": false,
-            "pagingType": "full_numbers", // Show First, Previous, Next, Last buttons
-            // Set DataTables language to English
+            "responsive": false, // تعطيل الاستجابة التلقائية لتجنب مشاكل العرض مع scrollX
+            "pagingType": "full_numbers", // إظهار أزرار الأول، السابق، التالي، الأخير
+            // تعيين لغة DataTables إلى الإنجليزية (كما في الكود الأصلي)
             "language": {
                 "processing": "Processing...",
                 "search": "Search:",
@@ -985,10 +1480,79 @@ function initializeQuotationDataTable() {
                     "sortDescending": ": activate to sort column descending"
                 }
             },
+            // =====================================================================
+            // ** تعريف الأعمدة (Columns Definition) - تم إزالة 'title' لمعظم الأعمدة **
+            // =====================================================================
+            "columns": [
+                {
+                    "data": null, // هذا العمود لا يرتبط ببيانات مباشرة، بل بخانة اختيار
+                    // نحتفظ بـ 'title' هنا لأنه يحتوي على HTML مخصص لعنوان العمود
+                    "title": '<input type="checkbox" onclick="toggleSelectAllQuotations(this)" id="selectAllQuotations" />',
+                    "orderable": false, // لا يمكن فرز هذا العمود
+                    "searchable": false, // لا يمكن البحث في هذا العمود
+                    "defaultContent": '<input type="checkbox" class="select-row-checkbox"/>' // خانة اختيار لكل صف
+                },
+                // لبقية الأعمدة، سنقوم فقط بتحديد خاصية 'data'
+                // DataTables سيستخدم العناوين الموجودة في صف <th> الأول في HTML
+                { "data": "category" },
+                { "data": "quoteNo" },
+                { "data": "rev" },
+                { "data": "quoteDate" },
+                { "data": "projectCode" },
+                { "data": "legacyNo" },
+                { "data": "legacyDate" },
+                { "data": "customer" },
+                { "data": "projectName" },
+                { "data": "projectDetails" },
+                { "data": "subject" },
+                { "data": "from" },
+                { "data": "inquiry" },
+                { "data": "contact" },
+                { "data": "to" },
+                { "data": "attnTo" },
+                { "data": "attnPos" },
+                { "data": "discount", "className": "dt-body-right" }, // لمحاذاة الأرقام لليمين
+                { "data": "vat", "className": "dt-body-right" },
+                { "data": "validity", "className": "dt-body-right" },
+                { "data": "currency" },
+                { "data": "paymentTerms" },
+                { "data": "method" },
+                { "data": "remarks" },
+                { "data": "quoteFile" },
+                { "data": "fileStatus" },
+                {
+                    "data": "declined", // هذا العمود يعرض قيمة منطقية (true/false)
+                    "render": function(data, type, row) {
+                        // يعرض "Yes" أو "No" بناءً على قيمة declined
+                        return data ? 'Yes' : 'No';
+                    }
+                },
+                { "data": "declinedMessage" }
+                // إذا كان لديك عمود لـ "Actions" (مثل أزرار التعديل/الحذف)، أضفه هنا:
+                // {
+                //     "data": null,
+                //     "title": "Actions", // يمكن ترك 'title' هنا لأنه عمود غير موجود في HTML الأصلي
+                //     "orderable": false,
+                //     "searchable": false,
+                //     "render": function(data, type, row) {
+                //         return `<button class="btn btn-sm btn-info edit-quote-btn" data-id="${row.id}">Edit</button>
+                //                 <button class="btn btn-sm btn-danger delete-quote-btn" data-id="${row.id}">Delete</button>`;
+                //     }
+                // }
+            ]
+            // =====================================================================
         });
 
+        // هذا الجزء من الكود لربط فلاتر البحث لكل عمود:
+        // انتبه: الفهرس 'i' هنا يمثل فهرس حقل الإدخال في صف الفلتر (filter-row).
+        // بما أن العمود الأول في HTML (خانة الاختيار) لا يحتوي على input فلتر في صف الفلتر،
+        // فإن أول input (فهرس i=0) يقابل العمود الثاني في DataTables (فهرس 1) وهكذا.
         $('#quotationTable thead tr.filter-row input').each(function(i) {
-            var that = quotationDataTable.column(i);
+            // نستخدم i + 1 لأن أول input filter يقابل العمود الثاني في DataTables
+            // (العمود الأول هو خانة الاختيار التي لا تحتوي على input filter)
+            var targetColumnIndex = i + 1;
+            var that = quotationDataTable.column(targetColumnIndex);
+
             $(this).on('keyup change clear', function() {
                 if (that.search() !== this.value) {
                     that.search(this.value).draw();
@@ -1002,7 +1566,6 @@ function initializeQuotationDataTable() {
         console.error("DOM.quotationTable element not found. DataTables cannot be initialized.");
     }
 }
-
 // Function to initialize the quotation lines DataTable
 function initializeQuotationLinesDataTable() {
     if (DOM.quotationLinesTable && !$.fn.DataTable.isDataTable(DOM.quotationLinesTable)) {
@@ -1094,37 +1657,88 @@ function initializeQuotationLinesDataTable() {
     }
 }
 
+
 // Function to add a quotation to the main table (from Header Tab data)
 function addQuotationToTable() {
-    // This function would gather data from the header tab's input fields,
-    // validate it, and then add a new row to the main 'quotationDataTable'.
-    // Example validation:
+    // التحقق المبدئي للحقول المطلوبة
     if (!DOM.quoteCategory || !DOM.quoteCategory.value.trim()) {
         markRequiredField(DOM.quoteCategory, true);
+        console.error("Category is required.");
         return false;
     } else {
         markRequiredField(DOM.quoteCategory, false);
     }
-    // ... more validation for other required fields
+    if (!DOM.quoteSubject || !DOM.quoteSubject.value.trim()) {
+        markRequiredField(DOM.quoteSubject, true);
+        console.error("Subject is required.");
+        return false;
+    } else {
+        markRequiredField(DOM.quoteSubject, false);
+    }
+    if (!DOM.quoteContactFrom || !DOM.quoteContactFrom.value.trim()) {
+        markRequiredField(DOM.quoteContactFrom, true);
+        console.error("From is required.");
+        return false;
+    } else {
+        markRequiredField(DOM.quoteContactFrom, false);
+    }
+    if (!DOM.quoteContactPerson || !DOM.quoteContactPerson.value.trim()) {
+        markRequiredField(DOM.quoteContactPerson, true);
+        console.error("Contact Person is required.");
+        return false;
+    } else {
+        markRequiredField(DOM.quoteContactPerson, false);
+    }
 
+    // يمكنك إضافة المزيد من التحقق للحقول الأخرى هنا (مثل quoteDate, projectCodeInput)
+
+    // --- جمع جميع البيانات من حقول الإدخال ---
+    // تأكد أن أسماء المفاتيح (keys) هنا تتطابق تمامًا مع خاصية "data" في تعريف أعمدة DataTables
     const newQuotationData = {
-        // Collect all header data here
         category: DOM.quoteCategory ? DOM.quoteCategory.value : '',
         quoteNo: DOM.quoteNo ? DOM.quoteNo.value : '',
+        rev: DOM.quoteRev ? DOM.quoteRev.value : '',
+        quoteDate: DOM.quoteDate ? DOM.quoteDate.value : '',
+        // `projectCode` يأتي من `quoteProjectCodeInput`
+        projectCode: DOM.quoteProjectCodeInput ? DOM.quoteProjectCodeInput.value : '',
+        legacyNo: DOM.quoteLegacyNo ? DOM.quoteLegacyNo.value : '',
+        legacyDate: DOM.quoteLegacyDate ? DOM.quoteLegacyDate.value : '',
         customer: DOM.quoteCustomer ? DOM.quoteCustomer.value : '',
-        project: DOM.quoteProject ? DOM.quoteProject.value : '',
-        // ... and so on
-        actions: null // For action buttons in the main table
+        // `projectName` يأتي من `quoteProject`
+        projectName: DOM.quoteProject ? DOM.quoteProject.value : '',
+        projectDetails: DOM.quoteProjectDetails ? DOM.quoteProjectDetails.value : '',
+        subject: DOM.quoteSubject ? DOM.quoteSubject.value : '',
+        from: DOM.quoteContactFrom ? DOM.quoteContactFrom.value : '',
+        inquiry: DOM.quoteInquiry ? DOM.quoteInquiry.value : '',
+        // `contact` يأتي من `quoteContactPerson`
+        contact: DOM.quoteContactPerson ? DOM.quoteContactPerson.value : '',
+        to: DOM.quoteContactTo ? DOM.quoteContactTo.value : '',
+        attnTo: DOM.quoteAttnTo ? DOM.quoteAttnTo.value : '',
+        attnPos: DOM.quoteAttnPos ? DOM.quoteAttnPos.value : '',
+        discount: DOM.quoteDiscount ? parseFloat(DOM.quoteDiscount.value) || 0 : 0,
+        vat: DOM.quoteVAT ? parseFloat(DOM.quoteVAT.value) || 0 : 0,
+        validity: DOM.quoteValidity ? parseInt(DOM.quoteValidity.value) || 0 : 0,
+        currency: DOM.quoteCurrency ? DOM.quoteCurrency.value : '',
+        paymentTerms: DOM.quotePaymentTermsInput ? DOM.quotePaymentTermsInput.value : '',
+        method: DOM.quoteMethod ? DOM.quoteMethod.value : '',
+        remarks: DOM.quoteRemarks ? DOM.quoteRemarks.value : '',
+        // `quoteFile` يأتي من `quoteQuoteFile`
+        quoteFile: DOM.quoteQuoteFile ? DOM.quoteQuoteFile.value : '',
+        fileStatus: DOM.quoteFileStatus ? DOM.quoteFileStatus.value : '',
+        declined: DOM.quoteDeclined ? DOM.quoteDeclined.checked : false, // للـ checkbox
+        declinedMessage: DOM.quoteDeclinedMessage ? DOM.quoteDeclinedMessage.value : '',
     };
+
+    console.log("البيانات التي تم جمعها من المودل:", newQuotationData);
 
     if (quotationDataTable) {
         quotationDataTable.row.add(newQuotationData).draw(false);
-        console.log("Quotation added to main table:", newQuotationData);
-        // Reset the form after successful addition if needed, or leave open for further edits
+        console.log("تم إضافة عرض السعر إلى الجدول الرئيسي بنجاح:", newQuotationData);
+        // يمكنك هنا استدعاء دالة لإعادة تعيين النموذج بعد الإضافة الناجحة
         // resetQuotationForm();
         return true;
     } else {
-        console.error("Main Quotation DataTable not initialized. Cannot add row.");
+        console.error("جدول عروض الأسعار الرئيسي (quotationDataTable) لم يتم تهيئته. لا يمكن إضافة الصف.");
         return false;
     }
 }
@@ -1732,11 +2346,54 @@ function addSelectedItemsToQuoteLines(withGroups = false) {
 // Document Ready and Initialization
 // =====================================================================
 $(document).ready(function() {
+  
+  // تهيئة مستمعات الأحداث لأزرار Header Tab
+    if (DOM.closeHeaderTabBtn) {
+        DOM.closeHeaderTabBtn.addEventListener('click', closeQuotationModal);
+        console.log("Event listener added to closeHeaderTabBtn"); // لأغراض التشخيص
+    } else {
+        console.warn("DOM.closeHeaderTabBtn not found!");
+    }
+
+    if (DOM.saveHeaderTabBtn) {
+        DOM.saveHeaderTabBtn.addEventListener('click', saveQuotationHeader);
+        console.log("Event listener added to saveHeaderTabBtn"); // لأغراض التشخيص
+    } else {
+        console.warn("DOM.saveHeaderTabBtn not found!");
+    }
+
+    if (DOM.saveAndCloseHeaderTabBtn) {
+        DOM.saveAndCloseHeaderTabBtn.addEventListener('click', saveAndCloseQuotationHeader);
+        console.log("Event listener added to saveAndCloseHeaderTabBtn"); // لأغراض التشخيص
+    } else {
+        console.warn("DOM.saveAndCloseHeaderTabBtn not found!");
+    }
+    
+  
+  
     initializeQuotationDataTable();
+
     initializeEmployeeDropdown();
     initializePaymentTermsDropdown();
+    initializeProjectCodeDropdown();
+    initializeCategoryDropdown();
     initializeDynamicDOMElements();
-    setupDynamicEventListeners();
+    initializeContactPersonDropdown();
+   
+  
+  
+   
+      
+    
+    // تعيين التاريخ الافتراضي
+    if (DOM.quoteDate && !DOM.quoteDate.value) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        DOM.quoteDate.value = `${yyyy}-${mm}-${dd}`;
+    }
+    
     // Price List DataTable will be initialized when its modal is opened
 
     // NEW: Add a global resize listener to adjust DataTables columns
