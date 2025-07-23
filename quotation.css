@@ -386,7 +386,7 @@ textarea {
 }
 
 .custom-dropdown-list {
-    display: none;
+    
     position: absolute;
     top: 100%;
     left: 0;
@@ -557,6 +557,14 @@ textarea {
     padding-bottom: 15px;
 }
 
+.table-container {
+    width: 90%; /* عرض الوعاء 90% من الشاشة */
+    max-width: 1400px; /* لكن لا يتجاوز 1400px */
+    margin: 20px auto; /* توسيط الوعاء في الصفحة */
+    /* يمكنك إضافة ارتفاع ثابت هنا إذا أردت التحكم في طول الجدول الكلي */
+    /* height: 600px; */
+    /* overflow: hidden; */ /* لإخفاء التمرير هنا إذا كنت تتحكم في ارتفاع الجدول بالكامل */
+}
 /* Base table styling applied to all tables with these classes */
 .quotation-table,
 .quotation-lines-table,
@@ -569,6 +577,7 @@ textarea {
 }
 
 /* NEW: Apply table-layout: fixed only to the tables that need it for column definitions */
+
 .quotation-lines-table,
 .price-list-table {
     table-layout: fixed;
@@ -1412,8 +1421,389 @@ body.dark-mode .quotation-lines-table .filter-row input.column-filter {
         max-height: 100px;
     }
 }
+/* في ملف CSS الخاص بك */
+
+.custom-dropdown-list {
+    /* ... existing styles ... */
+    display: none; /* Controlled by JS */
+    /* Add grid or flex for alignment if headers are used too */
+}
+
+/* For each item row */
+.custom-dropdown-item {
+    display: flex; /* Use flexbox for columns */
+    justify-content: space-between; /* Space out columns */
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee; /* Optional: for visual separation */
+}
+
+.custom-dropdown-item:hover {
+    background-color: #f0f0f0;
+}
 
 
 
+.dropdown-column-name {
+    flex: 1; /* Take remaining space */
+    text-align: right; /* Or left/center as preferred */
+    padding-left: 15px; /* إضافة مسافة على اليسار ليتناسب مع الفاصل */
+}
 
+/* Optional: Styles for header row if you decide to add them */
+.custom-dropdown-header-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+    background-color: #f8f8f8;
+}
+
+
+
+.custom-dropdown-header-row .dropdown-column-name-header {
+    padding-left: 15px;
+}
+/* --- نهاية التعديل الجديد --- */
+
+/* Style for the button next to the input field */
+#showProjectCodeListBtn {
+    /* أضف أنماط الزر هنا، مثل */
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: -1px; /* لجعل الزر ملتصقاً بحقل الإدخال */
+}
+
+#showProjectCodeListBtn:hover {
+    background-color: #0056b3;
+}
+
+/* لتنسيق الحقل نفسه، إذا كنت تستخدم نمطاً محدداً */
+#quoteProjectCodeInput {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1; /* إذا كان ضمن flex container */
+}
+
+/* لتنسيق الحقول المرتبطة مثل Project و Customer */
+#quoteProject,
+#quoteCustomer {
+    background-color: #f8f9fa; /* لون خلفية مختلف للإشارة إلى أنها تعبأ تلقائياً */
+    border: 1px solid #e9ecef;
+    color: #495057;
+    cursor: not-allowed; /* تغيير المؤشر للإشارة إلى أنها غير قابلة للتحرير المباشر */
+    opacity: 0.8; /* جعلها باهتة قليلاً */
+}
+
+.project-code-input-group {
+    position: relative; /* ضروري لتموضع القائمة المنسدلة */
+    display: flex; /* لترتيب الحقل والزر جنباً إلى جنب */
+    /* قد تحتاج إلى width هنا إذا لم يتم تحديده من قبل */
+}
+
+/* لتنسيق الزر الملاصق لحقل الإدخال داخل input-group */
+.project-code-input-group .form-control:focus {
+    z-index: 3; /* لجعل الحقل فوق الزر عند التركيز عليه */
+}
+
+.project-code-input-group .project-code-dropdown-toggle-btn {
+    /* بعض الأنماط الإضافية إذا لزم الأمر لـ input-group */
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px; /* لجعل الزر ملتصقاً بحقل الإدخال */
+    z-index: 2; /* لضمان ظهور الزر بشكل صحيح */
+}
+
+/* تأكد أن هذه الأنماط موجودة ومحدثة كما اتفقنا سابقاً */
+.custom-dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: none;
+    /* ... باقي أنماط القائمة المنسدلة (الخلفية، الحدود، الظل، إلخ) ... */
+}
+
+/* تنسيق المجموعة الحاوية لحقل الإدخال والزر */
+.project-code-input-group {
+    position: relative; /* ضروري لتموضع القائمة المنسدلة بشكل مطلق بداخلها */
+    display: flex; /* لترتيب حقل الإدخال والزر جنبًا إلى جنب */
+    width: 100%; /* اجعلها تأخذ عرض الوعاء الأب */
+    /* يمكنك تحديد عرض ثابت هنا إذا لم تكن تريدها أن تأخذ 100% */
+}
+
+/* تنسيق حقل الإدخال نفسه */
+#quoteProjectCodeInput {
+    padding: 8px 12px;
+    border: 1px solid #ced4da; /* لون حدود Bootstrap الافتراضي */
+    border-radius: 0.25rem; /* زوايا مدورة */
+    border-top-right-radius: 0; /* إزالة الزاوية اليمنى العلوية ليلتصق بالزر */
+    border-bottom-right-radius: 0; /* إزالة الزاوية اليمنى السفلية ليلتصق بالزر */
+    flex-grow: 1; /* اجعله يملأ المساحة المتاحة داخل الـ flex container */
+    background-color: #f8f9fa; /* لون خلفية مختلف للإشارة إلى أنه للقراءة فقط أو يتم تعبئته */
+    color: #495057;
+    cursor: default; /* مؤشر افتراضي لأنه للقراءة فقط */
+}
+
+/* عندما يكون حقل الإدخال في حالة تركيز (focus) */
+#quoteProjectCodeInput:focus {
+    outline: 0; /* إزالة التظليل الافتراضي للمتصفح */
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* ظل تركيز أزرق فاتح (مثل Bootstrap) */
+    border-color: #86b7fe; /* تغيير لون الحدود عند التركيز */
+    z-index: 3; /* لضمان ظهوره فوق الزر عند التركيز */
+}
+
+/* تنسيق زر السهم */
+#showProjectCodeListBtn {
+    background-color: #0d6efd; /* لون أزرق أساسي (مثل btn-primary في Bootstrap) */
+    color: white;
+    border: 1px solid #0d6efd;
+    padding: 8px 12px;
+    border-radius: 0.25rem;
+    border-top-left-radius: 0; /* إزالة الزاوية اليسرى العلوية ليلتصق بالحقل */
+    border-bottom-left-radius: 0; /* إزالة الزاوية اليسرى السفلية ليلتصق بالحقل */
+    cursor: pointer;
+    margin-left: -1px; /* لجعل الزر ملتصقًا تمامًا بحقل الإدخال */
+    z-index: 2; /* لضمان ظهور الزر بشكل صحيح بجانب الحقل */
+    display: flex; /* لمركزة الأيقونة داخل الزر */
+    align-items: center; /* لمركزة الأيقونة عموديًا */
+    justify-content: center; /* لمركزة الأيقونة أفقيًا */
+}
+
+#showProjectCodeListBtn:hover {
+    background-color: #0b5ed7; /* لون أزرق أغمق عند التمرير */
+    border-color: #0a58ca;
+}
+
+#showProjectCodeListBtn i {
+    font-size: 1.1em; /* حجم الأيقونة */
+}
+
+/* تنسيق حاوية القائمة المنسدلة نفسها */
+#projectCodeDropdown.custom-dropdown-list {
+    position: absolute; /* لوضعها أسفل حقل الإدخال */
+    top: 100%; /* ضعها أسفل العنصر الأب مباشرة */
+    left: 0;
+    width: 100%; /* اجعل عرضها بنفس عرض حقل الإدخال */
+    z-index: 1000; /* لضمان ظهورها فوق كل شيء آخر */
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-top: none; /* إزالة الحدود العلوية ليلتصق بحقل الإدخال */
+    border-radius: 0 0 0.25rem 0.25rem; /* زوايا مدورة سفلية فقط */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175); /* ظل خفيف */
+    max-height: 200px; /* تحديد أقصى ارتفاع */
+    overflow-y: auto; /* إضافة شريط تمرير إذا تجاوز المحتوى الارتفاع الأقصى */
+    display: none; /* مخفية افتراضيًا، يتم التحكم بها بواسطة JavaScript */
+}
+
+/* تنسيق صفوف عناصر القائمة المنسدلة */
+.custom-dropdown-item {
+    display: flex; /* لترتيب الأعمدة داخل الصف */
+    justify-content: space-between; /* لتوزيع الأعمدة */
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee; /* فاصل خفيف بين العناصر */
+    font-size: 0.9em; /* حجم خط أصغر قليلاً */
+    color: #343a40;
+}
+
+.custom-dropdown-item:last-child {
+    border-bottom: none; /* إزالة الفاصل من آخر عنصر */
+}
+
+.custom-dropdown-item:hover {
+    background-color: #e9ecef; /* لون خلفية عند التمرير */
+}
+
+/* تنسيق أعمدة بيانات المشروع داخل كل صف */
+.dropdown-column-code {
+    flex-basis: 20%; /* أساس 20% للكود */
+    min-width: 0; /* تجنب المشاكل مع النص الطويل */
+    white-space: nowrap; /* منع التفاف النص */
+    overflow: hidden; /* إخفاء النص الزائد */
+    text-overflow: ellipsis; /* إضافة نقاط (...) للنص المخفي */
+    font-weight: bold;
+}
+
+.dropdown-column-name {
+    flex-basis: 50%; /* أساس 50% لاسم المشروع */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 15px; /* مسافة على اليسار تفصل عن الكود */
+}
+
+.dropdown-column-customer {
+    flex-basis: 30%; /* أساس 30% للعميل */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right; /* محاذاة لليمين */
+    padding-left: 15px; /* مسافة على اليسار تفصل عن الاسم */
+    color: #6c757d; /* لون رمادي فاتح */
+}
+
+/* تنسيق رسالة "لا توجد مشاريع متاحة" */
+.custom-dropdown-item.no-results {
+    font-style: italic;
+    color: #6c757d;
+    text-align: center;
+    justify-content: center;
+}
+
+/* تنسيق الحقول المرتبطة التي تُملأ تلقائياً */
+#quoteProject,
+#quoteCustomer {
+    background-color: #e9ecef; /* لون خلفية مختلف */
+    border: 1px solid #ced4da;
+    color: #495057;
+    cursor: not-allowed; /* تغيير المؤشر للإشارة إلى أنها غير قابلة للتحرير المباشر */
+    opacity: 0.9; /* جعلها باهتة قليلاً */
+    padding: 8px 12px;
+    border-radius: 0.25rem;
+    pointer-events: none; /* منع أي تفاعل بالماوس */
+}
+
+/* إذا كنت تستخدم بنية form-group حول quoteCustomer و quoteProject */
+/* تأكد من أن الـ input فيها يأخذ 100% من عرض الـ form-group */
+.form-group input.form-control {
+    width: 100%;
+}
+
+/* تنسيق المجموعة الحاوية لحقل إدخال جهة الاتصال والزر */
+.contact-person-input-group {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+/* تنسيق حقل إدخال جهة الاتصال نفسه */
+#quoteContactPerson {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex-grow: 1;
+}
+
+#quoteContactPerson:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+    z-index: 3;
+}
+
+/* تنسيق زر السهم لجهة الاتصال */
+#showContactPersonListBtn {
+    background-color: #0d6efd; /* لون أزرق أساسي */
+    color: white;
+    border: 1px solid #0d6efd;
+    padding: 8px 12px;
+    border-radius: 0.25rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    cursor: pointer;
+    margin-left: -1px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#showContactPersonListBtn:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+#showContactPersonListBtn i {
+    font-size: 1.1em;
+}
+
+/* تنسيق حاوية القائمة المنسدلة لجهات الاتصال */
+#contactPersonDropdown.custom-dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-radius: 0 0 0.25rem 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    max-height: 250px;
+    overflow-y: auto;
+    display: none;
+}
+
+/* تنسيق صف الرأس لأعمدة جهات الاتصال */
+.custom-dropdown-header-row .dropdown-column-contact-name-header,
+.custom-dropdown-header-row .dropdown-column-contact-title-header,
+.custom-dropdown-header-row .dropdown-column-contact-email-header,
+.custom-dropdown-header-row .dropdown-column-contact-mobile-header,
+.custom-dropdown-header-row .dropdown-column-contact-location-header {
+    /* يمكنك تعديل التباعدات هنا للحفاظ على التناسق */
+    padding: 8px 5px; /* تباعد افتراضي لرؤوس الأعمدة */
+    font-weight: bold;
+}
+
+/* تنسيق أعمدة بيانات جهات الاتصال داخل كل صف */
+.dropdown-column-contact-name {
+    flex-basis: 20%; /* اسم جهة الاتصال */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+}
+
+.dropdown-column-contact-title {
+    flex-basis: 20%; /* الوظيفة */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+}
+
+.dropdown-column-contact-email {
+    flex-basis: 30%; /* البريد الإلكتروني */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+    color: #007bff;
+}
+
+.dropdown-column-contact-mobile {
+    flex-basis: 15%; /* الموبايل */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+    text-align: right;
+    color: #28a745;
+}
+
+.dropdown-column-contact-location {
+    flex-basis: 15%; /* الموقع */
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+    text-align: right; /* يمكن تعديل المحاذاة حسب الحاجة */
+}
 
