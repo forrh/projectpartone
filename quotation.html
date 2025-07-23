@@ -13,37 +13,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <!-- NEW: FixedColumns CSS for fixed headers -->
     <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
-    <header class="main-header">
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-        <button id="darkModeToggle" onclick="toggleDarkMode()">
-            <i class="fas fa-circle-half-stroke"></i>
-        </button>
-        <div>
-            <button onclick="setLanguage('en')">
-                <i class="fas fa-language"></i> English
-            </button>
-            <button onclick="setLanguage('ar')">
-                <i class="fas fa-globe"></i> العربية
-            </button>
-        </div>
-    </div>
-    <h1>
-        <i class="fas fa-microscope"></i>
-        <span data-key="LIMS Control Panel">LIMS Control Panel</span>
-    </h1>
-</header>
 
 </head>
 <body>
-       <nav class="main-menu">
-    <button onclick="window.location.href = 'index.html'"><i class="fas fa-layer-group"></i> <span data-key="General">General</span></button>
-    <button onclick="window.location.href = 'geotech.html'"><i class="fas fa-mountain"></i> <span data-key="Geotechnical">Geotechnical</span></button>
-    <button onclick="window.location.href = 'calibration.html'"><i class="fas fa-ruler"></i> <span data-key="Calibration">Calibration</span></button>
-    <button onclick="window.location.href = 'fleet.html'"><i class="fas fa-truck-fast"></i> <span data-key="Fleet">Fleet</span></button>
-    <button onclick="window.location.href = 'dashboards.html'"><i class="fas fa-chart-pie"></i> <span data-key="Dashboards">Dashboards</span></button>
-    <button onclick="window.location.href = 'security.html'"><i class="fas fa-user-shield"></i> <span data-key="Security">Security</span></button>
-    <button onclick="window.location.href = 'options.html'"><i class="fas fa-gear"></i> <span data-key="Options">Options</span></button>
-</nav>
     <section id="customers-section" class="section-content active">
         <div class="icon-toolbar">
             <div>
@@ -163,7 +135,14 @@
                             <legend>Quote Info</legend>
                             <div class="form-grid-2-col">
                                 <label for="quoteCategory">Category:<span class="required-star">*</span></label>
-                                <input type="text" id="quoteCategory" placeholder="" required autocomplete="off">
+<div class="input-with-button" style="position: relative;">
+    <input type="text" id="quoteCategory" placeholder="Select a category" required autocomplete="off" readonly>
+    <button type="button" id="showCategoryListBtn" class="dropdown-toggle-btn" title="Show Categories">
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div id="categoryDropdown" class="custom-dropdown-list">
+        </div>
+</div>
 
                                 <label for="quoteNo">Quote No.:</label>
                                 <input type="text" id="quoteNo" autocomplete="off">
@@ -174,8 +153,27 @@
                                 <label for="quoteDate">Quote Date:</label>
                                 <input type="date" id="quoteDate" autocomplete="off">
 
-                                <label for="quoteProjectCode">Project Code:<span class="required-star">*</span></label>
-                                <input type="text" id="quoteProjectCode" placeholder="" required autocomplete="off">
+
+   <label for="quoteProjectCodeInput">Project Code:<span class="required-star">*</span></label>
+<div class="input-group project-code-input-group">
+    <input 
+        type="text" 
+        id="quoteProjectCodeInput" 
+        class="form-control" 
+        placeholder="Search or select Project Code" 
+        autocomplete="off"
+        readonly >
+    
+    <button 
+        type="button" 
+        id="showProjectCodeListBtn" 
+        class="btn btn-outline-secondary project-code-dropdown-toggle-btn"
+        title="Show Project List" >
+        <i class="fas fa-caret-down"></i> </button>
+
+    <div id="projectCodeDropdown" class="custom-dropdown-list">
+        </div>
+</div>
 
 
                                 <label for="quoteLegacyNo">Legacy No:</label>
@@ -184,11 +182,15 @@
                                 <label for="quoteLegacyDate">Legacy Date:</label>
                                 <input type="date" id="quoteLegacyDate" autocomplete="off">
 
-                                <label for="quoteCustomer">Customer:<span class="required-star">*</span></label>
-                                <input type="text" id="quoteCustomer" required autocomplete="off">
+                              
+    <label for="quoteCustomer">Customer Name</label>
+    <input type="text" class="form-control" id="quoteCustomer" readonly>
 
-                                <label for="quoteProject">Project:<span class="required-star">*</span></label>
-                                <input type="text" id="quoteProject" required autocomplete="off">
+
+                              
+    <label for="quoteProject">Project Name</label>
+    <input type="text" class="form-control" id="quoteProject" readonly>
+
 
                                 <label for="quoteProjectDetails">Project Details:</label>
                                 <input type="text" id="quoteProjectDetails" autocomplete="off">
@@ -213,17 +215,40 @@
                                 <label for="quoteInquiry">Inquiry:</label>
                                 <input type="text" id="quoteInquiry" autocomplete="off">
 
-                                <label for="quoteContactPerson">Contact:<span class="required-star">*</span></label>
-                                <input type="text" id="quoteContactPerson" placeholder="" autocomplete="off">
+<label for="quoteContactPerson">Contact:<span class="required-star">*</span></label>
+<div class="input-group contact-person-input-group">
+    <input
+        type="text"
+        id="quoteContactPerson"
+        class="form-control"
+        placeholder="Search or select Contact"
+        autocomplete="off"
+    >
+    <button
+        type="button"
+        id="showContactPersonListBtn"
+        class="btn btn-outline-secondary contact-person-dropdown-toggle-btn"
+        title="Show Contacts List" >
+        <i class="fas fa-caret-down"></i>
+    </button>
+    <div id="contactPersonDropdown" class="custom-dropdown-list">
+        </div>
+</div>
 
-                                <label for="quoteContactTo">To:</label>
-                                <input type="text" id="quoteContactTo" autocomplete="off">
+<label for="quoteContactTo">To:</label>
+<textarea id="quoteContactTo" autocomplete="off" rows="3"></textarea> 
 
-                                <label for="quoteAttnTo">Attn. To:</label>
-                                <input type="text" id="quoteAttnTo" autocomplete="off">
-                                <label for="quoteAttnPos">Attn. Pos:</label>
-                                <input type="text" id="quoteAttnPos" autocomplete="off">
-                            </div>
+<label for="quoteAttnTo">Attn. To:</label>
+<input type="text" id="quoteAttnTo" autocomplete="off">
+
+<label for="quoteAttnPos">Attn. Pos:</label>
+<input type="text" id="quoteAttnPos" autocomplete="off">
+
+<label for="quoteContactEmail">Contact Email:</label>
+<input type="text" id="quoteContactEmail" autocomplete="off">
+
+<label for="quoteContactMobile">Contact Mobile:</label>
+<input type="text" id="quoteContactMobile" autocomplete="off">
                         </fieldset>
 
                         <fieldset class="form-section">
