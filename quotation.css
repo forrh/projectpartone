@@ -566,10 +566,11 @@ textarea {
     /* overflow: hidden; */ /* لإخفاء التمرير هنا إذا كنت تتحكم في ارتفاع الجدول بالكامل */
 }
 /* Base table styling applied to all tables with these classes */
+
 .quotation-table,
 .quotation-lines-table,
 .price-list-table { /* NEW: Include price-list-table */
-    width: 100% !important;
+    width: 100%;
     min-width: 100%;
     margin-bottom: 0;
     border-collapse: collapse;
@@ -577,7 +578,7 @@ textarea {
 }
 
 /* NEW: Apply table-layout: fixed only to the tables that need it for column definitions */
-
+.quotation-table,
 .quotation-lines-table,
 .price-list-table {
     table-layout: fixed;
@@ -1807,3 +1808,218 @@ body.dark-mode .quotation-lines-table .filter-row input.column-filter {
     text-align: right; /* يمكن تعديل المحاذاة حسب الحاجة */
 }
 
+/* Styling for selected rows in quotation lines table */
+.quotation-lines-table tbody tr.selected-row {
+    background-color: var(--selection-color, #e0f2f7) !important; /* لون أزرق فاتح جميل */
+    /* يمكنك استخدام لون أزرق أغمق قليلاً إذا أردت */
+    /* background-color: rgba(66, 135, 245, 0.2) !important; */
+    border-left: 3px solid var(--primary-color, #007bff); /* خط أزرق سميك على اليسار للتمييز */
+}
+
+/* في حال وجود Dark Mode، تأكد من وجود تعريف لهذا المتغير أو أعد تعريفه */
+body.dark-mode .quotation-lines-table tbody tr.selected-row {
+    background-color: var(--dark-selection-color, rgba(66, 135, 245, 0.2)) !important;
+    border-left-color: var(--primary-color, #007bff);
+}
+
+/* تأكد من تعريف هذه المتغيرات في ملف الأنماط الرئيسي، مثلاً: */
+:root {
+    --selection-color: #e0f2f7; /* لون التحديد الفاتح */
+    --dark-selection-color: rgba(66, 135, 245, 0.2); /* لون التحديد للوضع الداكن */
+    --primary-color: #007bff; /* لونك الأزرق الأساسي */
+}
+/* في ملف CSS الخاص بك */
+
+/* قم بتغيير هذا اللون ليناسب تصميمك */
+/* هذا سيجعل خلفية الصف رمادية داكنة قليلاً */
+#priceListTable tbody tr.selected-row-price-only {
+    background-color: #d8d8d8 !important; /* لون رمادي فاتح / داكن قليلاً ليظهر بوضوح */
+    /* يمكنك استخدام #c0c0c0 لرمادي أغمق قليلاً إذا أردت */
+}
+
+/* إذا كنت تستخدم سمة داكنة (Dark Mode) */
+body.dark-mode #priceListTable tbody tr.selected-row-price-only {
+    background-color: #4a4a4a !important; /* رمادي أغمق للوضع الليلي */
+    color: #ffffff; /* لجعل النص مرئياً بوضوح */
+}
+
+/* تأكد من أن هذه القاعدة تأتي بعد أي قواعد افتراضية لـ DataTables أو قواعد للصفوف الفردية/الزوجية. */
+/* قد تحتاج إلى ضبط الأسبقية إذا كانت لديك قواعد CSS أخرى تؤثر على لون خلفية الصفوف. *//* في ملف CSS الخاص بك (بعد الأنماط العامة للصفوف) */
+
+/* لون أزرق للصفوف المحددة بالـ Checkbox الرئيسي */
+/* يمكنك استخدام هذا كـ Variable في مكان ما: --main-selection-color: #e6f7ff; (أزرق فاتح جداً) */
+/* أو #ADD8E6 (LightBlue) أو #B0E0E6 (PowderBlue) */
+#priceListTable tbody tr.selected-row {
+    background-color: #ADD8E6 !important; /* لون أزرق فاتح */
+    /* قم بتجاوز أي ألوان صفوف بديلة أو Hover Colors */
+    /* يمكنك استخدام لون أزرق أغمق قليلاً مثل #9ACFEA إذا أردت تمييزاً أقوى */
+}
+
+/* إذا كنت تستخدم الوضع الليلي (Dark Mode) */
+body.dark-mode #priceListTable tbody tr.selected-row {
+    background-color: #214050 !important; /* لون أزرق داكن للوضع الليلي */
+    color: #ffffff !important; /* لضمان وضوح النص */
+}
+
+/* تأكد من أن هذه القاعدة تأتي بعد .selected-row-price-only إذا كانت هناك أسبقية */
+/* بشكل عام، الفئة الأكثر تحديدًا أو التي تأتي لاحقًا في CSS هي التي تفوز. */
+/* باستخدام !important يضمن تطبيق اللون. *//* في ملف CSS الخاص بك */
+
+/* القاعدة للون الأزرق (التحديد العام) */
+#priceListTable tbody tr.selected-row {
+    background-color: #E6F7FF !important; /* لون أزرق فاتح */
+    /* تأكد من أن هذه القاعدة موجودة */
+}
+
+/* القاعدة للون الرمادي (تحديد "Price Only") */
+/* يجب أن تأتي هذه القاعدة بعد القاعدة الزرقاء في ملف CSS الخاص بك */
+/* أو أن يكون المحدد لها أكثر تحديدًا (وهو ما تحقق بوجود class إضافي) */
+#priceListTable tbody tr.selected-row-price-only {
+    background-color: #d8d8d8 !important; /* لون رمادي فاتح / داكن قليلاً */
+    /* تأكد من أن هذه القاعدة موجودة */
+}
+
+/* قواعد الوضع الليلي إذا كنت تستخدمه */
+body.dark-mode #priceListTable tbody tr.selected-row {
+    background-color: #214050 !important; /* لون أزرق داكن للوضع الليلي */
+    color: #ffffff !important;
+}
+
+body.dark-mode #priceListTable tbody tr.selected-row-price-only {
+    background-color: #4a4a4a !important; /* رمادي أغمق لوضع الليل */
+    color: #ffffff !important;
+}
+/* حاوية التوست - لإبقائه في الزاوية */
+#custom-toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1080; /* تأكد أنه يظهر فوق معظم العناصر */
+    display: flex; /* لترتيب التوست إذا كان هناك أكثر من واحد */
+    flex-direction: column-reverse; /* لجعل الجديد يظهر في الأسفل */
+    gap: 10px; /* مسافة بين التوستات */
+}
+
+/* تنسيق التوست الفردي */
+#custom-toast {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    min-width: 280px;
+    max-width: 350px;
+    opacity: 0; /* مخفي مبدئيًا */
+    visibility: hidden; /* مخفي تمامًا */
+    transform: translateY(20px); /* يبدأ من الأسفل قليلاً */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0.3s ease-out; /* حركة ناعمة */
+}
+
+/* عند ظهور التوست */
+#custom-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* رأس التوست (العنوان وزر الإغلاق) */
+.custom-toast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.custom-toast-header button {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #666;
+    padding: 0 5px;
+}
+.custom-toast-header button:hover {
+    color: #333;
+}
+
+/* جسم التوست (نص الرسالة) */
+.custom-toast-body {
+    font-size: 0.95em;
+    color: #555;
+}
+
+/* تنسيقات حسب نوع الرسالة */
+#custom-toast.success {
+    border-left: 5px solid #28a745; /* أخضر */
+    background-color: #d4edda;
+}
+#custom-toast.success .custom-toast-header {
+    color: #155724;
+    border-bottom-color: #c3e6cb;
+}
+#custom-toast.success .custom-toast-body {
+    color: #155724;
+}
+
+#custom-toast.error {
+    border-left: 5px solid #dc3545; /* أحمر */
+    background-color: #f8d7da;
+}
+#custom-toast.error .custom-toast-header {
+    color: #721c24;
+    border-bottom-color: #f5c6cb;
+}
+#custom-toast.error .custom-toast-body {
+    color: #721c24;
+}
+
+#custom-toast.warning {
+    border-left: 5px solid #ffc107; /* أصفر */
+    background-color: #fff3cd;
+}
+#custom-toast.warning .custom-toast-header {
+    color: #856404;
+    border-bottom-color: #ffeeba;
+}
+#custom-toast.warning .custom-toast-body {
+    color: #856404;
+}
+
+#custom-toast.info {
+    border-left: 5px solid #007bff; /* أزرق */
+    background-color: #e0f0ff; /* Light blue */
+}
+#custom-toast.info .custom-toast-header {
+    color: #004085;
+    border-bottom-color: #b8daff;
+}
+#custom-toast.info .custom-toast-body {
+    color: #004085;
+}
+#quotationTable tbody tr.selected-row {
+    background-color: #f1f7fe; /* خلفية باللون الأزرق الفاتح */
+    border-left: 5px solid #007bff; /* خط أزرق على اليسار للتمييز */
+    /* أضف أنماطًا أخرى حسب الحاجة، مثل خط سميك أو ظل */
+} /* هذا الكود يجب أن يكون في ملف CSS أو في وسم <style> */
+
+/*
+   - #quotationTable: لتحديد أن هذا النمط ينطبق فقط على الجدول الخاص بك.
+   - tbody tr.selected-row: لتحديد أن النمط ينطبق على عناصر <tr>
+     التي داخل <tbody> ولها فئة 'selected-row'.
+   - !important: قد تحتاج إلى استخدامها لضمان أن هذا النمط
+     يتجاوز أي أنماط أخرى قد تفرضها DataTables أو مكتبات أخرى.
+*/
+#quotationTable tbody tr.selected-row {
+    background-color: #e6f7ff !important;
+}
+
+/*
+   - يمكنك أيضاً إضافة لون أغمق عند تمرير الماوس لتحسين تجربة المستخدم
+   - هذا يجعل الصف المحدد يظل بارزًا حتى عند تمرير الماوس فوقه.
+*/
+#quotationTable tbody tr.selected-row:hover {
+    background-color: #a4d2f0 !important;
+}
