@@ -1017,4 +1017,3 @@ function printTable(tableId, title = '') {
     printWindow.close();
     showAlert("تم إعداد الجدول للطباعة!", "success");
 }
-
