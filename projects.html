@@ -366,14 +366,14 @@
             let navbarLoaded = false;
 
            
-            $("#header-placeholder").load("/html/General/header.html", function() {
+            $("#header-placeholder").load("header.html", function() {
                 headerLoaded = true;
                 console.log("Header loaded.");
                 initializeAfterContentLoad();
             });
 
           
-            $("#navbar-placeholder").load("/html/General/navbar.html", function() {
+            $("#navbar-placeholder").load("navbar.html", function() {
                 navbarLoaded = true;
                 console.log("Navbar loaded.");
                 initializeAfterContentLoad();
@@ -384,7 +384,7 @@
                 if (headerLoaded && navbarLoaded) {
                     console.log("Header and Navbar loaded. Initializing page elements.");
 
-                    // ØªØ·Ø¨ÙŠÙ‚ ÙˆØ¶Ø¹ Dark Mode
+                  
                     if (localStorage.getItem('darkMode') === 'enabled') {
                         document.body.classList.add('dark-mode');
                     } else {
