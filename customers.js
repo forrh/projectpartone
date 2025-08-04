@@ -128,7 +128,7 @@ function initializeCustomersTable() {
         orderCellsTop: true,
         fixedHeader: true,
         scrollX: true, // تم تفعيل السكرول الأفقي
-        language: { url: "/js/en-GB.json" },
+        url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/en-GB.json",
         columns: [
             { // 0: Checkbox
                 "orderable": false,
