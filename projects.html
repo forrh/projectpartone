@@ -366,7 +366,9 @@
         
         // هذا السكريبت سيضمن تهيئة DataTables ووظائف الصفحة بعد تحميل كل المحتوى الديناميكي
         $(function(){
+           
             let headerLoaded = false;
+           
             let navbarLoaded = false;
 
             // تحميل header.html
@@ -382,7 +384,7 @@
                 console.log("Navbar loaded.");
                 initializeAfterContentLoad();
             });
-/**
+
             // هذه الدالة تُستدعى بعد تحميل الـ header والـ navbar
             function initializeAfterContentLoad() {
                 if (headerLoaded && navbarLoaded) {
@@ -493,6 +495,6 @@
             printTable('projectsTable', 'Projects');
         }
     </script>
-    **/
+   
 </body>
 </html>
