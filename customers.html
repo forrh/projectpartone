@@ -402,7 +402,8 @@
                         <div class="form-buttons modal-bottom-buttons">
                             <button type="button" class="btn-primary" onclick="closeCustomerModal()"><i class="fas fa-times"></i> Close</button>
                             <button type="button" class="btn-secondary" id="integrationBtn"><i class="fas fa-cogs"></i> Integration..</button>
-                            <button type="submit" class="btn-success"><i class="fas fa-save"></i> Save & Close</button>
+                            
+                             <button type="submit" class="btn-success"><i class="fas fa-save"></i> Save & Close</button>
                             <button type="button" class="btn-success" onclick="saveCustomer(event, false)"><i class="fas fa-save"></i> Save</button>
                         </div>
                     </form>
@@ -522,12 +523,7 @@
 
 
             const customerForm = document.getElementById('customerForm');
-                if (customerForm) {
-                    customerForm.addEventListener('submit', function(event) {
-                        event.preventDefault(); // هذا السطر يمنع إعادة تحميل الصفحة
-                        saveCustomerData();    // يستدعي دالة حفظ بيانات العميل
-                    });
-                }
+               
 
            
             // أزرار جدول العملاء
