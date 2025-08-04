@@ -360,46 +360,46 @@
     <script src="projects.js" type="text/javascript"></script>
 
     <script>
-      
+        // هذا السكريبت سيضمن تهيئة DataTables ووظائف الصفحة بعد تحميل كل المحتوى الديناميكي
         $(function(){
             let headerLoaded = false;
             let navbarLoaded = false;
 
-           
+            // تحميل header.html
             $("#header-placeholder").load("header.html", function() {
                 headerLoaded = true;
                 console.log("Header loaded.");
                 initializeAfterContentLoad();
             });
 
-           
+            // تحميل navbar.html
             $("#navbar-placeholder").load("navbar.html", function() {
                 navbarLoaded = true;
                 console.log("Navbar loaded.");
                 initializeAfterContentLoad();
             });
 
-          
+            // هذه الدالة تُستدعى بعد تحميل الـ header والـ navbar
             function initializeAfterContentLoad() {
                 if (headerLoaded && navbarLoaded) {
                     console.log("Header and Navbar loaded. Initializing page elements.");
 
-                  
+                    // تطبيق وضع Dark Mode
                     if (localStorage.getItem('darkMode') === 'enabled') {
                         document.body.classList.add('dark-mode');
                     } else {
                         document.body.classList.remove('dark-mode');
                     }
 
-                  
+                    // تطبيق اللغة المحفوظة
                     const savedLang = localStorage.getItem('language');
                     if (savedLang) {
                         setLanguage(savedLang);
                     } else {
-                        setLanguage('en'); 
+                        setLanguage('en'); // اللغة الافتراضية
                     }
 
-                   
+                    // تحديث حالة الأزرار بناءً على اللغة الحالية
                     const currentLang = localStorage.getItem('language') || 'en';
                     document.querySelectorAll('.main-header button').forEach(button => {
                         if (button.onclick && button.onclick.toString().includes(`setLanguage('${currentLang}')`)) {
@@ -409,7 +409,7 @@
                         }
                     });
 
-                   
+                    // تحديث حالة أزرار القائمة الجانبية
                     const currentPageFileName = window.location.pathname.split('/').pop();
                     document.querySelectorAll('.main-menu button').forEach(button => {
                         if (button.onclick) {
@@ -425,12 +425,12 @@
                         }
                     });
 
-                   
+                    // تحديث Placeholder/Title attributes
                     if (typeof updatePlaceholderAndTitleAttributes === 'function') {
                         updatePlaceholderAndTitleAttributes();
                     }
 
-                   
+                    // الأهم: تهيئة DataTables هنا بعد التأكد من تحميل كل شيء
                     if (typeof initializeProjectsTable === 'function') {
                         console.log("Calling initializeProjectsTable()");
                         initializeProjectsTable();
@@ -438,29 +438,31 @@
                         console.error("initializeProjectsTable function is not defined.");
                     }
 
-                   
+                    // NEW: تهيئة جدول جهات الاتصال داخل المودال
+                    // يجب استدعاء هذه الدالة فقط عند فتح تبويب جهات الاتصال في المودال
+                    // أو عند فتح المودال لأول مرة
                 }
             }
         });
 
-       
+        // ربط الأحداث بالأزرار والنماذج باستخدام DOMContentLoaded لضمان وجود العناصر
         document.addEventListener('DOMContentLoaded', () => {
 
 
             const projectForm = document.getElementById('projectForm');
                 if (projectForm) {
                     projectForm.addEventListener('submit', function(event) {
-                        event.preventDefault(); 
-                        saveProjectData(event, true); 
+                        event.preventDefault(); // هذا السطر يمنع إعادة تحميل الصفحة
+                        saveProjectData(event, true);    // يستدعي دالة حفظ بيانات المشروع
                     });
                 }
 
 
-           
+            // أزرار جدول المشاريع
             document.getElementById('exportProjectsExcelBtn')?.addEventListener('click', exportProjectsTableToExcel);
             document.getElementById('printProjectsTableBtn')?.addEventListener('click', printProjectsTable);
 
-           
+            // أزرار جدول جهات الاتصال داخل المودال
             document.getElementById('exportContactsModalExcelBtn')?.addEventListener('click', () => exportTableToExcel('contactsTable', 'Project_Contacts'));
             document.getElementById('printContactsModalTableBtn')?.addEventListener('click', () => printTable('contactsTable', 'Project_Contacts'));
 
@@ -472,13 +474,13 @@
             });
 
             document.getElementById('project-btn')?.addEventListener('click', () => switchTab('project'));
-            document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact')); 
+            document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact')); // لا يزال الاسم 'contact' مناسباً
 
             document.getElementById('selectAllProjects')?.addEventListener('change', (event) => toggleSelectAll(event.target));
         });
 
 
-      
+        // هذه الدوال تحتاج إلى تعريفها في ملف projects.js أو في هذا السكريبت إذا لم تكن موجودة
         function exportProjectsTableToExcel() {
             exportTableToExcel('projectsTable', 'Projects_Data');
         }
