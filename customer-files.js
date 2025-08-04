@@ -404,12 +404,12 @@ function toggleSelectAllFiles(checkState) {
 
 $(document).ready(function () {
     // تحميل الهيدر والناف بار
-    $("#header-placeholder").load("/html/General/header.html", function() {
+    $("#header-placeholder").load("header.html", function() {
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
         }
     });
-    $("#navbar-placeholder").load("/html/General/navbar.html");
+    $("#navbar-placeholder").load("navbar.html");
 
     // جلب ID العميل واسمه فور تحميل الصفحة من localStorage وبدء عرض الملفات
     getCustomerInfoFromLocalStorage();
@@ -563,12 +563,12 @@ function handleDroppedFiles(files) {
 
 $(document).ready(function () {
     // تحميل الهيدر والناف بار
-    $("#header-placeholder").load("/html/General/header.html", function() {
+    $("#header-placeholder").load("header.html", function() {
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
         }
     });
-    $("#navbar-placeholder").load("/html/General/navbar.html");
+    $("#navbar-placeholder").load("navbar.html");
 
     // جلب ID العميل واسمه فور تحميل الصفحة من localStorage وبدء عرض الملفات
     getCustomerInfoFromLocalStorage(); //
