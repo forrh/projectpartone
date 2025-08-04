@@ -548,7 +548,7 @@ function goToCustomerFiles() {
         localStorage.setItem('selectedCustomerName', customerName);
 
         // الآن قم بإعادة التوجيه إلى صفحة customer-files.html بدون معاملات في الـ URL
-        window.location.href = '/html/Transactions/Customers/customer-files.html';
+        window.location.href = 'customer-files.html';
     } else {
         showAlert("خطأ", "لم يتم العثور على بيانات العميل المحددة للتحويل.");
         console.error("Missing customer ID or name from selected checkbox in goToCustomerFiles().");
@@ -1017,3 +1017,4 @@ function printTable(tableId, title = '') {
     printWindow.close();
     showAlert("تم إعداد الجدول للطباعة!", "success");
 }
+
