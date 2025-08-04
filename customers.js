@@ -50,7 +50,7 @@ function initializeContactsTable() {
             searching: true,
             paging: true,
             info: true,
-            language: { url: "/js/en-GB.json" },
+            language: {url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/en-GB.json" },
             columns: [
                 { // 0: Checkbox
                     "orderable": false,
