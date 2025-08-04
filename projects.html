@@ -359,7 +359,7 @@
     <script src="projects.js" type="text/javascript"></script>
 
     <script>
-        
+     /**   
         // هذا السكريبت سيضمن تهيئة DataTables ووظائف الصفحة بعد تحميل كل المحتوى الديناميكي
         $(function(){
            
@@ -490,6 +490,41 @@
         function printProjectsTable() {
             printTable('projectsTable', 'Projects');
         }
+        **/
+        // ربط الأحداث بالأزرار والنماذج
+    document.addEventListener('DOMContentLoaded', () => {
+        // تهيئة DataTables بمجرد أن يكون DOM جاهزًا
+        if (typeof initializeCustomersTable === 'function') {
+            console.log("DOM content loaded. Initializing customers table.");
+            initializeCustomersTable();
+        } else {
+            console.error("initializeCustomersTable function is not defined. Please check customers.js file.");
+        }
+        
+        // ... (بقية الكود الخاص بك الذي يربط الأزرار بالأحداث) ...
+        const customerForm = document.getElementById('customerForm');
+        document.getElementById('exportCustomersExcelBtn')?.addEventListener('click', exportCustomersTableToExcel);
+        document.getElementById('printCustomersTableBtn')?.addEventListener('click', printCustomersTable);
+        document.getElementById('exportContactsModalExcelBtn')?.addEventListener('click', () => exportTableToExcel('contactsTable', 'Customer_Contacts'));
+        document.getElementById('printContactsModalTableBtn')?.addEventListener('click', () => printTable('contactsTable', 'Customer_Contacts'));
+        document.getElementById('customerModal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('customerModal')) {
+                closeCustomerModal();
+            }
+        });
+        document.getElementById('customer-btn')?.addEventListener('click', () => switchTab('customer'));
+        document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact'));
+        document.getElementById('selectAllCustomers')?.addEventListener('change', (event) => toggleSelectAll(event.target));
+    });
+
+    // الدوال المساعدة (يمكنك نقلها إلى customers.js لتنظيم أفضل)
+    function exportCustomersTableToExcel() {
+        exportTableToExcel('customersTable', 'Customers_Data');
+    }
+
+    function printCustomersTable() {
+        printTable('customersTable', 'Customers');
+    }
     </script>
    
 </body>
