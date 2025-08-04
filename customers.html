@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIMS - Customer Files</title>
+    <title data-key="Customers">Customers Management</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
     <link rel="stylesheet" href="/css/General/main.css" />
     <link rel="stylesheet" href="/css/General/darkmode.css" />
-    <link rel="stylesheet" href="/css/Transactions/Customers/customer-files.css" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/css/Transactions/Customers/customers.css" />
 </head>
 <body>
     <div id="header-placeholder"></div>
@@ -19,88 +21,542 @@
         <div id="navbar-placeholder"></div>
 
         <main class="main-content">
-            <section id="customer-files-section" class="section-content active">
-                <h2>
-                    <i class="fas fa-folder"></i>
-                    <span data-key="Customer Files">Customer Files</span>
-                    <span id="customer-name-display" class="customer-name-display"></span>
-                </h2>
-
+            <section id="customers-section" class="section-content active">
                 <div class="icon-toolbar">
                     <div>
-                        <button title="Upload File" onclick="openUploadModal()" class="btn-icon" >
-                            <i class="fas fa-upload"></i>
-                            </button>
-                        <button title="Delete Selected" onclick="deleteSelectedFiles()" class="btn-icon">
-                            <i class="fas fa-trash"></i>
-                            </button>
-                        <button title="Download Selected as Zip" onclick="downloadSelectedFilesAsZip()" class="btn-icon">
-                            <i class="fas fa-file-archive"></i> 
-                            </button>
-                        <button title="Download Selected" onclick="downloadSelectedFiles()" class="btn-icon">
-                            <i class="fas fa-download"></i>
-                            </button>
+                        <button title="Add" onclick="openCustomerModal()" class="btn-icon"><i class="fas fa-file"></i></button>
+                        <button title="Edit" onclick="handleEditCustomer()" class="btn-icon"><i class="fas fa-pen"></i></button>
+                        <button title="Delete" onclick="deleteSelectedCustomers()" class="btn-icon"><i class="fas fa-trash"></i></button>
                     </div>
                     <div class="icon-separator"></div>
                     <div>
-                        <button title="Select All" onclick="toggleSelectAllFiles(true)" class="btn-icon">
-                            <i class="fas fa-check-double"></i>
-                            </button>
-                        <button title="Deselect All" onclick="toggleSelectAllFiles(false)" class="btn-icon">
-                            <i class="fas fa-times-circle"></i>
-                            </button>
-                    </div>
-                    <div class="search-export-group">
-                        <input type="text" id="fileSearchInput" placeholder="Search files..." data-key="Search files...">
+                        <button title="File Manager" onclick="goToCustomerFiles()" class="btn-icon"><i class="fas fa-folder-open"></i> </button>
+                        <button title="Export to Excel" id="exportCustomersExcelBtn" class="btn-icon"><i class="fa-solid fa-table"></i></button>
+                        <button title="Print" id="printCustomersTableBtn" onclick="printCustomersTable()" class="btn-icon"><i class="fas fa-print"></i></button>
                     </div>
                 </div>
-                
-                <div id="dropZone" class="drop-zone">
-                    <p><i class="fas fa-cloud-upload-alt"></i> Drag and drop files here to upload</p>
+
+                <div class="table-responsive-container">
+                    <table id="customersTable" class="table table-bordered table-striped display responsive nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAllCustomers"></th>
+                                <th>Customer ID<br><input type="text" placeholder="Search..." class="column-filter"></th> 
+                                <th>Customer Name<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Arabic Name<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Customer Type<br>
+                                    <select class="column-filter" id="customerTypeFilterHeader">
+                                        <option value="">All</option>
+                                        <option value="Consultant">Consultant</option>
+                                        <option value="Supplier">Supplier</option>
+                                        <option value="Private">Private</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Other">Other</option>
+                                        <option value="Governmental">Governmental</option>
+                                    </select>
+                                </th>
+                                <th>Potential<br>
+                                    <select class="column-filter">
+                                        <option value="">All</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </th>
+                                <th>Date Registered<br>
+                                    <input type="date" class="column-filter date-range-filter" placeholder="From" data-column="5" data-filter-type="date-from">
+                                    <input type="date" class="column-filter date-range-filter" placeholder="To" data-column="5" data-filter-type="date-to">
+                                </th>
+                                <th>Phone<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>City<br>
+                                    <select class="column-filter" id="customerCityFilterHeader">
+                                        <option value="">All</option>
+                                        <option value="Ehsa">Ehsa</option>
+                                        <option value="Jeddah">Jeddah</option>
+                                        <option value="Riyadh">Riyadh</option>                                       
+                                        </select>
+                                </th>
+                                <th>Country<br>
+                                    <select class="column-filter" id="customerCountryFilterHeader">
+                                        <option value="">All</option>
+                                        <option value="Saudi Arabia">Saudi Arabia</option>
+                                        </select>
+                                </th>
+                                <th>Payment Terms<br>
+                                    <select class="column-filter" id="paymentTermsFilterHeader">
+                                        <option value="">All</option>
+                                        <option value="IM - Immediate">IM - Immediate</option>
+                                        <option value="PIA - Payment in advance">PIA - Payment in advance</option>
+                                        <option value="C.O.D - Cash on delivery">C.O.D - Cash on delivery</option>
+                                        <option value="E.O.M - End of month">E.O.M - End of month</option>
+
+                                    </select>
+                                </th>
+                                <th>Discount<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>VAT Profile<br>
+                                    <select class="column-filter" id="vatProfileFilterHeader">
+                                        <option value="">All</option>
+                                        <option value="Standard VAT" selected>Standard VAT</option>
+                                        <option value="Exempt Supply">Exempt Supply</option>
+                                        <option value="Zero-Rated Supply">Zero-Rated Supply</option>
+                                        <option value="Non-VAT Registered">Non-VAT Registered</option>
+                                        <option value="Flat Rate Scheme">Flat Rate Scheme</option>
+                                        <option value="Reverse Charge">Reverse Charge</option>
+                                        <option value="Mixed Supply">Mixed Supply</option>
+                                    </select>
+                                </th>
+                                <th>Cash<br>
+                                    <select class="column-filter">
+                                        <option value="">All</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </th>
+                                <th>TRN/TIN #<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                <th>Registration #<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        </tbody>
+                </table>
                 </div>
-
-
-                <div id="fileIconsContainer" class="file-icons-grid">
-                    <p class="no-files-message" data-key="Loading files...">Loading files...</p>
-                </div>
-
             </section>
+
+            <div id="customerModal" class="modal">
+                <div class="modal-content new-customer-modal-design">
+                    <span class="close-btn" onclick="closeCustomerModal()"><i class="fas fa-times"></i></span>
+                    <h2 class="modal-title">Add new customer</h2>
+
+                    <div class="tab-buttons">
+                        <button id="customer-btn" onclick="switchTab('customer')" class="active"><i class="fas fa-user"></i> Customer</button>
+                        <button id="contact-btn" onclick="switchTab('contact')"><i class="fas fa-address-book"></i> Contacts</button>
+                    </div>
+
+                    <form id="customerForm" onsubmit="saveCustomer(event)">
+                        <div id="customerTab" class="form-tab-content active">
+                            <fieldset class="form-section-fieldset">
+                                <legend>Customer Information</legend>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerId">Customer ID:</label>
+                                        <input type="text" id="customerId" readonly value="AAMC 5">
+                                    </div>
+                                    <div class="form-group-checkbox">
+                                        <input type="checkbox" id="potentialCustomer">
+                                        <label for="potentialCustomer">Potential</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="legacyAccNo">Legacy Acc. No.:</label>
+                                        <input type="text" id="legacyAccNo">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerName">Customer Name:</label>
+                                        <input type="text" id="customerName" name="customerName" value="samer demo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerArabicName">Arabic Name:</label>
+                                        <input type="text" id="customerArabicName">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerLegalName">Legal Name:</label>
+                                        <input type="text" id="customerLegalName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerType">Customer Type:</label>
+                                        <select id="customerType" name="customerType" required>
+                                            <option value="" selected disabled>Select Type</option> <option value="Contractor">Contractor</option>
+                                            <option value="Consultant">Consultant</option>
+                                            <option value="Supplier">Supplier</option>
+                                            <option value="Private">Private</option>
+                                            <option value="Owner">Owner</option>
+                                            <option value="Other">Other</option>
+                                            <option value="Governmental">Governmental</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="registrationDate">Date Registered:</label>
+                                        <input type="date" id="registrationDate" value="2024-07-22">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerPhone">Phone:</label>
+                                        <input type="tel" id="customerPhone" placeholder="e.g., +9665XXXXXXXX">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="form-section-fieldset">
+                                <legend>Customer Location</legend>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerCountry">Country:</label>
+                                        <select id="customerCountry" class="form-control">
+                                            <option value=""selected disabled>Select Country</option> 
+                                            <option value="Saudi Arabia">Saudi Arabia</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerArabicLocation">Arabic Location:</label>
+                                        <input type="text" id="customerArabicLocation">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerDistrict">District:</label>
+                                        <input type="text" id="customerDistrict">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerCity">City:</label>
+                                        <select id="customerCity" name="customerCity" required>
+                                            <option value=""selected disabled>Select City</option>
+                                            <option value="Ehsa">Ehsa</option>
+                                            <option value="Riyadh">Riyadh</option>
+                                            <option value="Jeddah">Jeddah</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerStreet">Street:</label>
+                                        <input type="text" id="customerStreet">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerPostCode">Post Code:</label>
+                                        <input type="text" id="customerPostCode">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerAddressBlock">Address Block:</label>
+                                        <input type="text" id="customerAddressBlock">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerPoBox">PO Box:</label>
+                                        <input type="text" id="customerPoBox">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customerBuildingNo">Building No:</label>
+                                        <input type="text" id="customerBuildingNo">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="form-section-fieldset">
+                                <legend>Terms & Other Controls</legend>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="paymentTerms">Payment Terms:</label>
+                                        <select id="paymentTerms" name="paymentTerms">
+                                            <option value=""selected disabled>Select Payment Terms</option>
+                                            <option value="IM - Immediate">IM - Immediate</option>
+                                            <option value="PIA - Payment in advance">PIA - Payment in advance</option>
+                                            <option value="C.O.D - Cash on delivery">C.O.D - Cash on delivery</option>
+                                            <option value="E.O.M - End of month">E.O.M - End of month</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="discount">Discount:</label>
+                                        <input type="number" id="discount" value="0">
+                                    </div>
+                                    <div class="form-group-checkbox">
+                                        <input type="checkbox" id="isCash">
+                                        <label for="isCash">Cash</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="creditLimit">Credit Limit:</label>
+                                        <input type="text" id="creditLimit" value="999999999">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="vatProfile">VAT Profile:</label>
+                                        <select id="vatProfile" name="vatProfile" required>
+                                            <option value="" disabled>Select VAT Profile</option>
+                                            <option value="Standard VAT" selected>Standard VAT</option>
+                                            <option value="Exempt Supply">Exempt Supply</option>
+                                            <option value="Zero-Rated Supply">Zero-Rated Supply</option>
+                                            <option value="Non-VAT Registered">Non-VAT Registered</option>
+                                            <option value="Flat Rate Scheme">Flat Rate Scheme</option>
+                                            <option value="Reverse Charge">Reverse Charge</option>
+                                            <option value="Mixed Supply">Mixed Supply</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="trnTin">TRN/TIN #:</label>
+                                        <input type="text" id="trnTin">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="registrationNo">Registration #:</label>
+                                        <input type="text" id="registrationNo">
+                                    </div>
+                                </div>
+
+                                <div class="form-row-checkboxes">
+                                    <div class="form-group-checkbox">
+                                        <input type="checkbox" id="restrictDeliveries">
+                                        <label for="restrictDeliveries">Restrict Deliveries</label>
+                                    </div>
+                                    <div class="form-group-checkbox">
+                                        <input type="checkbox" id="restrictOrders">
+                                        <label for="restrictOrders">Restrict Orders</label>
+                                    </div>
+                                    <div class="form-group-checkbox">
+                                        <input type="checkbox" id="restrictQuotations">
+                                        <label for="restrictQuotations">Restrict Quotations</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div id="contactTab" class="form-tab-content" style="display: none;">
+                            <fieldset class="form-section-fieldset">
+                                <legend>Contact List</legend>
+                                <div class="contact-toolbar" style="border-bottom: none; padding-bottom: 5px;">
+                                    <button type="button" class="btn-secondary" onclick="populateContactFormForEdit()"><i class="fas fa-pen"></i> Edit Selected</button>
+                                    <button type="button" class="btn-danger" onclick="deleteSelectedContacts()"><i class="fas fa-trash"></i> Delete Selected</button>
+                                    <button type="button" class="btn-icon" id="exportContactsModalExcelBtn" title="Export to Excel"><i class="fa-solid fa-table"></i></button>
+                                    <button type="button" class="btn-icon" id="printContactsModalTableBtn" title="Print"><i class="fas fa-print"></i></button>
+                                </div>
+                                <div class="table-responsive-container">
+                                    <table id="contactsTable" class="contacts-table display responsive nowrap" data-ignore-lang>
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="selectAllContacts" onclick="toggleAllContacts(this)"></th>
+                                                <th class="d-none">Contact ID</th> 
+                                                <th>Name<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                                <th>Email<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                                <th>Phone<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                                <th>Mobile<br><input type="text" placeholder="Search..." class="column-filter"></th> 
+                                                <th>Position<br><input type="text" placeholder="Search..." class="column-filter"></th>
+                                                <th>Is Primary<br>
+                                                    <select class="column-filter">
+                                                        <option value="">All</option>
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No">No</option>
+                                                    </select>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="form-section-fieldset">
+                                <legend>Add/Edit Contact Person</legend>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="contactName">Contact Name:</label>
+                                        <input type="text" id="contactName" placeholder="Enter contact name">
+                                        <input type="hidden" id="editingContactId">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contactEmail">Contact Email:</label>
+                                        <input type="email" id="contactEmail" placeholder="e.g., contact@example.com">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="contactPhone">Contact Phone:</label>
+                                        <input type="tel" id="contactPhone" placeholder="e.g., +9665XXXXXXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contactMobile">Contact Mobile:</label>
+                                        <input type="tel" id="contactMobile" placeholder="e.g., +9665XXXXXXXX">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="contactPosition">Position:</label>
+                                        <input type="text" id="contactPosition" placeholder="e.g., Sales Manager">
+                                    </div>
+                                    <div class="form-group-checkbox">
+                                        <input type="checkbox" id="isPrimaryContact">
+                                        <label for="isPrimaryContact">Primary Contact</label>
+                                    </div>
+                                </div>
+                                <div class="contact-toolbar" style="justify-content: flex-start; border-bottom: none; padding-bottom: 0;">
+                                    <button type="button" class="btn-primary" onclick="addContactToTable()"><i class="fas fa-save"></i> Save Contact</button>
+                                    <button type="button" class="btn-secondary" onclick="clearContactForm()"><i class="fas fa-eraser"></i> Clear Form</button>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div class="form-buttons modal-bottom-buttons">
+                            <button type="button" class="btn-primary" onclick="closeCustomerModal()"><i class="fas fa-times"></i> Close</button>
+                            <button type="button" class="btn-secondary" id="integrationBtn"><i class="fas fa-cogs"></i> Integration..</button>
+                            <button type="submit" class="btn-success"><i class="fas fa-save"></i> Save & Close</button>
+                            <button type="button" class="btn-success" onclick="saveCustomer(event, false)"><i class="fas fa-save"></i> Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="modal-container"></div>
+            <div id="dynamicContent"></div>
+            <div id="customDialogModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeCustomDialog()">&times;</span>
+                    <h3 id="customDialogTitle"></h3>
+                    <p id="customDialogMessage"></p>
+                    <div class="form-buttons" id="customDialogButtons">
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
-    <div id="uploadFileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeUploadModal()">&times;</span>
-            <h3><span data-key="Upload File for">Upload File for</span> <span id="uploadModalCustomerName"></span></h3>
-            <form id="fileUploadForm" onsubmit="uploadFile(event)">
-                <div class="form-group">
-                    <label for="fileInput"><span data-key="Select File">Select File:</span></label>
-                    <input type="file" id="fileInput" name="fileInput" required>
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="form-button" data-key="Upload">Upload</button>
-                    <button type="button" class="form-button cancel" onclick="closeUploadModal()" data-key="Cancel">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal-container"></div>
-    <div id="dynamicContent"></div>
-    <div id="customDialogModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeCustomDialog()">&times;</span>
-            <h3 id="customDialogTitle"></h3>
-            <p id="customDialogMessage"></p>
-            <div class="form-buttons" id="customDialogButtons"></div>
-        </div>
-    </div>
-
     <script src="/js/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/General/main.js"></script>
-    <script src="/js/Transactions/Customers/customer-files.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script src="/js/General/main.js" type="text/javascript"></script>
+    <script src="/js/Transactions/Customers/customers.js" type="text/javascript"></script>
+
+    <script>
+       
+        $(function(){
+            let headerLoaded = false;
+            let navbarLoaded = false;
+
+           
+            $("#header-placeholder").load("/html/General/header.html", function() {
+                headerLoaded = true;
+                console.log("Header loaded.");
+                initializeAfterContentLoad();
+            });
+
+           
+            $("#navbar-placeholder").load("/html/General/navbar.html", function() {
+                navbarLoaded = true;
+                console.log("Navbar loaded.");
+                initializeAfterContentLoad();
+            });
+
+           
+            function initializeAfterContentLoad() {
+                if (headerLoaded && navbarLoaded) {
+                    console.log("Header and Navbar loaded. Initializing page elements.");
+
+                  
+                    if (localStorage.getItem('darkMode') === 'enabled') {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+
+                  
+                    const savedLang = localStorage.getItem('language');
+                    if (savedLang) {
+                        setLanguage(savedLang);
+                    } else {
+                        setLanguage('en'); 
+                    }
+
+                   
+                    const currentLang = localStorage.getItem('language') || 'en';
+                    document.querySelectorAll('.main-header button').forEach(button => {
+                        if (button.onclick && button.onclick.toString().includes(`setLanguage('${currentLang}')`)) {
+                            button.classList.add('active');
+                        } else {
+                            button.classList.remove('active');
+                        }
+                    });
+
+                   
+                    const currentPageFileName = window.location.pathname.split('/').pop();
+                    document.querySelectorAll('.main-menu button').forEach(button => {
+                        if (button.onclick) {
+                            const targetPageMatch = button.onclick.toString().match(/window\.location\.href = '(.+?)'/);
+                            if (targetPageMatch) {
+                                const targetFileName = targetPageMatch[1].split('/').pop();
+                                if (currentPageFileName === targetFileName) {
+                                    button.classList.add('active');
+                                } else {
+                                    button.classList.remove('active');
+                                }
+                            }
+                        }
+                    });
+
+                  
+                    if (typeof updatePlaceholderAndTitleAttributes === 'function') {
+                        updatePlaceholderAndTitleAttributes();
+                    }
+
+                   
+                    if (typeof initializeCustomersTable === 'function') {
+                        console.log("Calling initializeCustomersTable()");
+                        initializeCustomersTable();
+                    } else {
+                        console.error("initializeCustomersTable function is not defined.");
+                    }
+
+                   
+                }
+            }
+        });
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+
+
+            const customerForm = document.getElementById('customerForm');
+                if (customerForm) {
+                    customerForm.addEventListener('submit', function(event) {
+                        event.preventDefault(); 
+                        saveCustomerData();   
+                    });
+                }
+
+           
+         
+            document.getElementById('exportCustomersExcelBtn')?.addEventListener('click', exportCustomersTableToExcel);
+            document.getElementById('printCustomersTableBtn')?.addEventListener('click', printCustomersTable);
+
+         
+            document.getElementById('exportContactsModalExcelBtn')?.addEventListener('click', () => exportTableToExcel('contactsTable', 'Customer_Contacts'));
+            document.getElementById('printContactsModalTableBtn')?.addEventListener('click', () => printTable('contactsTable', 'Customer_Contacts'));
+
+
+            document.getElementById('customerModal')?.addEventListener('click', (e) => {
+                if (e.target === document.getElementById('customerModal')) {
+                    closeCustomerModal();
+                }
+            });
+
+            document.getElementById('customer-btn')?.addEventListener('click', () => switchTab('customer'));
+            document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact')); 
+
+            document.getElementById('selectAllCustomers')?.addEventListener('change', (event) => toggleSelectAll(event.target));
+        });
+
+       
+        function exportCustomersTableToExcel() {
+            exportTableToExcel('customersTable', 'Customers_Data');
+        }
+
+        function printCustomersTable() {
+            printTable('customersTable', 'Customers');
+        }
+    </script>
+</body>
 </html>
