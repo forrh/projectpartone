@@ -505,7 +505,7 @@ function goToProjectFiles() {
         localStorage.setItem('selectedProjectId', projectId);
         localStorage.setItem('selectedProjectName', projectName);
 
-        window.location.href = '/html/Transactions/Projects/project-files.html';
+        window.location.href = 'project-files.html';
     } else {
         showAlert("خطأ", "لم يتم العثور على بيانات المشروع المحددة للتحويل.");
         console.error("Missing project ID or name from selected checkbox in goToProjectFiles().");
