@@ -432,46 +432,46 @@
     <script src="customers.js" type="text/javascript"></script>
 
     <script>
-        // Ù‡Ø°Ø§ Ø§Ù„Ø³ÙƒØ±ÙŠØ¨Øª Ø³ÙŠØ¶Ù…Ù† ØªÙ‡ÙŠØ¦Ø© DataTables ÙˆÙˆØ¸Ø§Ø¦Ù Ø§Ù„ØµÙØ­Ø© Ø¨Ø¹Ø¯ ØªØ­Ù…ÙŠÙ„ ÙƒÙ„ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø¯ÙŠÙ†Ø§Ù…ÙŠÙƒÙŠ
+      
         $(function(){
             let headerLoaded = false;
             let navbarLoaded = false;
 
-            // ØªØ­Ù…ÙŠÙ„ header.html
-            $("#header-placeholder").load("/html/General/header.html", function() {
+            
+            $("#header-placeholder").load("header.html", function() {
                 headerLoaded = true;
                 console.log("Header loaded.");
                 initializeAfterContentLoad();
             });
 
-            // ØªØ­Ù…ÙŠÙ„ navbar.html
-            $("#navbar-placeholder").load("/html/General/navbar.html", function() {
+           
+            $("#navbar-placeholder").load("navbar.html", function() {
                 navbarLoaded = true;
                 console.log("Navbar loaded.");
                 initializeAfterContentLoad();
             });
 
-            // Ù‡Ø°Ù‡ Ø§Ù„Ø¯Ø§Ù„Ø© ØªÙØ³ØªØ¯Ø¹Ù‰ Ø¨Ø¹Ø¯ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù€ header ÙˆØ§Ù„Ù€ navbar
+            
             function initializeAfterContentLoad() {
                 if (headerLoaded && navbarLoaded) {
                     console.log("Header and Navbar loaded. Initializing page elements.");
 
-                    // ØªØ·Ø¨ÙŠÙ‚ ÙˆØ¶Ø¹ Dark Mode
+                   
                     if (localStorage.getItem('darkMode') === 'enabled') {
                         document.body.classList.add('dark-mode');
                     } else {
                         document.body.classList.remove('dark-mode');
                     }
 
-                    // ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ù„ØºØ© Ø§Ù„Ù…Ø­ÙÙˆØ¸Ø©
+                    
                     const savedLang = localStorage.getItem('language');
                     if (savedLang) {
                         setLanguage(savedLang);
                     } else {
-                        setLanguage('en'); // Ø§Ù„Ù„ØºØ© Ø§Ù„Ø§ÙØªØ±Ø§Ø¶ÙŠØ©
+                        setLanguage('en'); 
                     }
 
-                    // ØªØ­Ø¯ÙŠØ« Ø­Ø§Ù„Ø© Ø§Ù„Ø£Ø²Ø±Ø§Ø± Ø¨Ù†Ø§Ø¡Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ù„ØºØ© Ø§Ù„Ø­Ø§Ù„ÙŠØ©
+                  
                     const currentLang = localStorage.getItem('language') || 'en';
                     document.querySelectorAll('.main-header button').forEach(button => {
                         if (button.onclick && button.onclick.toString().includes(`setLanguage('${currentLang}')`)) {
@@ -481,7 +481,7 @@
                         }
                     });
 
-                    // ØªØ­Ø¯ÙŠØ« Ø­Ø§Ù„Ø© Ø£Ø²Ø±Ø§Ø± Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø¬Ø§Ù†Ø¨ÙŠØ©
+                 
                     const currentPageFileName = window.location.pathname.split('/').pop();
                     document.querySelectorAll('.main-menu button').forEach(button => {
                         if (button.onclick) {
@@ -497,12 +497,12 @@
                         }
                     });
 
-                    // ØªØ­Ø¯ÙŠØ« Placeholder/Title attributes
+               
                     if (typeof updatePlaceholderAndTitleAttributes === 'function') {
                         updatePlaceholderAndTitleAttributes();
                     }
 
-                    // Ø§Ù„Ø£Ù‡Ù…: ØªÙ‡ÙŠØ¦Ø© DataTables Ù‡Ù†Ø§ Ø¨Ø¹Ø¯ Ø§Ù„ØªØ£ÙƒØ¯ Ù…Ù† ØªØ­Ù…ÙŠÙ„ ÙƒÙ„ Ø´ÙŠØ¡
+                   
                     if (typeof initializeCustomersTable === 'function') {
                         console.log("Calling initializeCustomersTable()");
                         initializeCustomersTable();
@@ -510,31 +510,29 @@
                         console.error("initializeCustomersTable function is not defined.");
                     }
 
-                    // NEW: ØªÙ‡ÙŠØ¦Ø© Ø¬Ø¯ÙˆÙ„ Ø¬Ù‡Ø§Øª Ø§Ù„Ø§ØªØµØ§Ù„ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…ÙˆØ¯Ø§Ù„
-                    // ÙŠØ¬Ø¨ Ø§Ø³ØªØ¯Ø¹Ø§Ø¡ Ù‡Ø°Ù‡ Ø§Ù„Ø¯Ø§Ù„Ø© ÙÙ‚Ø· Ø¹Ù†Ø¯ ÙØªØ­ ØªØ¨ÙˆÙŠØ¨ Ø¬Ù‡Ø§Øª Ø§Ù„Ø§ØªØµØ§Ù„ ÙÙŠ Ø§Ù„Ù…ÙˆØ¯Ø§Ù„
-                    // Ø£Ùˆ Ø¹Ù†Ø¯ ÙØªØ­ Ø§Ù„Ù…ÙˆØ¯Ø§Ù„ Ù„Ø£ÙˆÙ„ Ù…Ø±Ø©
+                
                 }
             }
         });
 
-        // Ø±Ø¨Ø· Ø§Ù„Ø£Ø­Ø¯Ø§Ø« Ø¨Ø§Ù„Ø£Ø²Ø±Ø§Ø± ÙˆØ§Ù„Ù†Ù…Ø§Ø°Ø¬ Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… DOMContentLoaded Ù„Ø¶Ù…Ø§Ù† ÙˆØ¬ÙˆØ¯ Ø§Ù„Ø¹Ù†Ø§ØµØ±
+       
         document.addEventListener('DOMContentLoaded', () => {
 
 
             const customerForm = document.getElementById('customerForm');
                 if (customerForm) {
                     customerForm.addEventListener('submit', function(event) {
-                        event.preventDefault(); // Ù‡Ø°Ø§ Ø§Ù„Ø³Ø·Ø± ÙŠÙ…Ù†Ø¹ Ø¥Ø¹Ø§Ø¯Ø© ØªØ­Ù…ÙŠÙ„ Ø§Ù„ØµÙØ­Ø©
-                        saveCustomerData();    // ÙŠØ³ØªØ¯Ø¹ÙŠ Ø¯Ø§Ù„Ø© Ø­ÙØ¸ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¹Ù…ÙŠÙ„
+                        event.preventDefault(); 
+                        saveCustomerData();    
                     });
                 }
 
            
-            // Ø£Ø²Ø±Ø§Ø± Ø¬Ø¯ÙˆÙ„ Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡
+          
             document.getElementById('exportCustomersExcelBtn')?.addEventListener('click', exportCustomersTableToExcel);
             document.getElementById('printCustomersTableBtn')?.addEventListener('click', printCustomersTable);
 
-            // Ø£Ø²Ø±Ø§Ø± Ø¬Ø¯ÙˆÙ„ Ø¬Ù‡Ø§Øª Ø§Ù„Ø§ØªØµØ§Ù„ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…ÙˆØ¯Ø§Ù„
+           
             document.getElementById('exportContactsModalExcelBtn')?.addEventListener('click', () => exportTableToExcel('contactsTable', 'Customer_Contacts'));
             document.getElementById('printContactsModalTableBtn')?.addEventListener('click', () => printTable('contactsTable', 'Customer_Contacts'));
 
@@ -546,12 +544,12 @@
             });
 
             document.getElementById('customer-btn')?.addEventListener('click', () => switchTab('customer'));
-            document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact')); // Ù„Ø§ ÙŠØ²Ø§Ù„ Ø§Ù„Ø§Ø³Ù… 'contact' Ù…Ù†Ø§Ø³Ø¨Ø§Ù‹
+            document.getElementById('contact-btn')?.addEventListener('click', () => switchTab('contact')); 
 
             document.getElementById('selectAllCustomers')?.addEventListener('change', (event) => toggleSelectAll(event.target));
         });
 
-        // Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙˆØ§Ù„ ØªØ­ØªØ§Ø¬ Ø¥Ù„Ù‰ ØªØ¹Ø±ÙŠÙÙ‡Ø§ ÙÙŠ Ù…Ù„Ù customers.js Ø£Ùˆ ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø³ÙƒØ±ÙŠØ¨Øª Ø¥Ø°Ø§ Ù„Ù… ØªÙƒÙ† Ù…ÙˆØ¬ÙˆØ¯Ø©
+       
         function exportCustomersTableToExcel() {
             exportTableToExcel('customersTable', 'Customers_Data');
         }
