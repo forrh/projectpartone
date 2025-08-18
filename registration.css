@@ -234,15 +234,15 @@
 }
 
 /*
-   ================================================
-   تعديل رئيسي للتحكم في مقاسات الأيقونات ومحاذاتها
-   ================================================
+     ================================================
+     تعديل رئيسي للتحكم في مقاسات الأيقونات ومحاذاتها
+     ================================================
 */
 .icon-box {
     color: #fff !important;
     border: none;
     border-radius: 8px;
-    width: 30px  !important;
+    width: 30px !important;
     height: 30px !important;
     display: flex;
     justify-content: center;
@@ -252,14 +252,15 @@
     transition: background-color 0.2s ease, transform 0.2s ease;
     padding: 0;
 }
+
 /*
-   دمج الأيقونات في فئة واحدة لضمان التناسق
+     دمج الأيقونات في فئة واحدة لضمان التناسق
 */
 .icon-btn,
 .project-code-icons .icon-btn-check,
 .project-code-icons .icon-btn-confirmation,
 .icon-btn-add,
-.input-with-icon i.fa-calendar-alt,
+.input-with-icon .icon-btn.fa-calendar-alt,
 .input-with-icon.pouring-ticket-icons .icon-btn-check,
 .input-with-icon.pouring-ticket-icons .icon-btn-arrow {
     @extend .icon-box;
@@ -287,18 +288,14 @@
     right: 5px;
     transform: translateY(-50%);
     display: flex;
-    color: #000 !important; /* إضافة !important لإجبار اللون الأبيض */
-   
-   
+    color: #000 !important;
     gap: 5px;
 }
 /*
-   ================================================
-   تنسيقات الأيقونات الفردية التي تعتمد على الفئة الجديدة
-   ================================================
+     ================================================
+     تنسيقات الأيقونات الفردية التي تعتمد على الفئة الجديدة
+     ================================================
 */
-
-
 
 /* Adjust padding for input fields with multiple icons */
 .input-with-icon .form-control {
@@ -528,23 +525,20 @@
 }
 
 /*
-  ================================================
-  التعديل المطلوب: إضافة مربع أزرق وسهم أبيض للقوائم المنسدلة
-  ================================================
+ ================================================
+ التعديل المطلوب: إضافة مربع أزرق وسهم أبيض للقوائم المنسدلة
+ ================================================
 */
 .input-with-icon .fa-caret-down {
     position: absolute;
-    right: 5px;
+    right: 0px;
     top: 50%;
     transform: translateY(-50%);
-    /*
-      الخصائص الجديدة هنا
-    */
-    background-color: #007bff; /* خلفية مربعة زرقاء */
-    color: #fff; /* لون السهم الأبيض */
-    width: 24px; /* عرض المربع */
-    height: 24px; /* ارتفاع المربع */
-    border-radius: 4px; /* حواف دائرية بسيطة للمربع */
+    background-color: #007bff;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -554,7 +548,7 @@
 }
 
 .input-with-icon .fa-caret-down:hover {
-    background-color: #0056b3; /* لون أغمق عند التمرير */
+    background-color: #0056b3;
 }
 
 /* Custom Dropdowns */
@@ -562,19 +556,16 @@
     position: relative;
 }
 
-/* قم بتعديل هذا الجزء لـ "Lab" */
 .custom-dropdown-lab {
     position: absolute;
     top: 100%;
     left: 0;
-    /* صغر عرض القائمة */
     width: 300px;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    /* صغر الارتفاع الأقصى للقائمة */
     max-height: 150px;
     overflow-y: auto;
     display: none;
@@ -614,6 +605,210 @@
     cursor: pointer;
 }
 
+/* تنسيق القائمة المنسدلة لـ Payment Terms */
+.custom-dropdown-payment-terms {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #d4d4d4;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 4px;
+    margin-top: 2px;
+}
+.custom-dropdown-payment-terms .dropdown-options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.custom-dropdown-payment-terms .dropdown-options-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: #333;
+}
+.custom-dropdown-payment-terms .dropdown-options-list li:hover {
+    background-color: #f5f5f5;
+}
+
+/* تنسيق القائمة المنسدلة لـ Nominal Size */
+.custom-dropdown-nominal-size {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #d4d4d4;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 4px;
+    margin-top: 2px;
+}
+.custom-dropdown-nominal-size .dropdown-options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.custom-dropdown-nominal-size .dropdown-options-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: #333;
+}
+.custom-dropdown-nominal-size .dropdown-options-list li:hover {
+    background-color: #f5f5f5;
+}
+
 .custom-dropdown-order-no .dropdown-options-list li:hover {
     background-color: #f0f0f0;
+}
+
+/* Add/Delete icons */
+.add-row-icon, .delete-row-icon {
+    cursor: pointer;
+    font-size: 14px;
+    color: #007bff;
+}
+.delete-row-icon {
+    color: #dc3545;
+}
+
+/* Input field styling */
+.form-control {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 5px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+.form-control[disabled] {
+    background-color: #f8f8f8;
+    cursor: not-allowed;
+}
+
+/* Number input with controls */
+.number-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+}
+.number-input-wrapper input {
+    flex-grow: 1;
+    border: none;
+    background-color: transparent;
+    padding: 3px 5px;
+    font-size: 12px;
+}
+.number-controls {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-left: 1px solid #ccc;
+}
+.number-controls button {
+    background-color: #f0f0f0;
+    border: none;
+    width: 15px;
+    height: 100%;
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+    padding: 0;
+}
+
+/* New CSS for Test Method and Test Location dropdowns */
+.dropdown-container {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.dropdown-container .dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.dropdown-container .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Specific styling for table input fields */
+.test-data-table td .form-control {
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 5px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.test-data-table td .input-with-icon .form-control {
+    padding-right: 30px; /* Space for the dropdown icon */
+}
+
+/* Styling for Nominal Size and report number fields */
+#nominal-size {
+    max-width: 150px;
+}
+
+.report-no-input, .rev-input {
+    width: 80px;
+}
+
+/* Enable date picker icon */
+.input-with-icon .form-control[type="datetime-local"]:enabled + .icon-btn.fa-calendar-alt {
+    color: #007bff;
+    cursor: pointer;
+}
+
+/* Disable date picker icon */
+.input-with-icon .form-control[type="datetime-local"]:disabled + .icon-btn.fa-calendar-alt {
+    color: #ccc;
+}
+
+/*
+     ================================================
+     إصلاحات إضافية
+     ================================================
+*/
+
+/* تنسيق حقول Nominal Size و Sequential */
+.nominal-size-input {
+    width: 120px;
+}
+
+.sequential-input {
+    width: 80px;
+}
+
+/* منع تكرار أيقونة التقويم */
+.input-with-icon .form-control::-webkit-calendar-picker-indicator {
+    display: none;
+}
+/* Ensure proper padding for single-icon inputs */
+.input-with-icon .form-control:not(.has-multiple-icons) {
+    padding-right: 30px;
+}
+
+.input-with-icon .fa-calendar-alt {
+    display: block;
 }
