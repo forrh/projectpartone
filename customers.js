@@ -172,8 +172,7 @@ function initializeCustomersTable() {
                     return data; // سيعرض "Yes" أو "No" كما هو مخزن
                 }
             },
-            // يمكنك إضافة المزيد من columnDefs هنا إذا احتجت لإخفاء أعمدة معينة
-            // أو تغيير طريقة عرضها.
+          
         ],
         "initComplete": function () {
             // إضافة معالج حدث لأزرار التعديل
@@ -355,7 +354,7 @@ function openCustomerModal(customerIdToEdit = null) {
     }
 
     if (customerIdToEdit) {
-        // وضع التعديل: قم بتحميل بيانات العميل الموجود
+        // تحميل بيانات العميل الموجود
         window.currentCustomerId = customerIdToEdit; // استخدام window.currentCustomerId كمتغير عام
 
         // Store the actual DataTables row object for direct access later
@@ -568,7 +567,7 @@ function deleteSelectedCustomers() {
         return;
     }
 
-    // استخدام showConfirm بدلاً من confirm الافتراضية
+   
     showConfirm(
         `هل أنت متأكد أنك تريد حذف ${selectedCheckboxes.length} عميل(عملاء) محدد(ين)؟ لا يمكن التراجع عن هذا الإجراء.`,
         // دالة الـ callback للتأكيد (عند النقر على Yes)
@@ -735,7 +734,7 @@ function deleteSelectedContacts() {
         () => {
             contactsDataTable.rows('.selected').remove().draw();
             showAlert("تم حذف جهات الاتصال بنجاح.", "success");
-        }, // تم تصحيح القوس هنا
+        }, 
         "تأكيد الحذف",
         "نعم، احذف!",
         "إلغاء"
