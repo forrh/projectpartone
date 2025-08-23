@@ -55,18 +55,18 @@ function getCustomerInfoFromLocalStorage() {
         if (uploadModalCustomerNameElem) {
             uploadModalCustomerNameElem.textContent = currentCustomerName;
         }
-        // تحميل وعرض الملفات فور جلب معلومات العميل
+        
         loadAndRenderCustomerFiles();
     } else {
-        // showAlert("خطأ", "لم يتم تحديد عميل. الرجاء العودة إلى صفحة العملاء وتحديد عميل.");
-        showAlert("لم يتم تحديد عميل. الرجاء العودة إلى صفحة العملاء وتحديد عميل.", "error"); // التعديل
+   
+        showAlert("لم يتم تحديد عميل. الرجاء العودة إلى صفحة العملاء وتحديد عميل.", "error"); 
         console.warn("No customer ID or name found in localStorage. Please select a customer.");
     }
 }
 
 /**
- * جلب الملفات المخزنة محليًا لعميل معين.
- * (في تطبيق حقيقي، ستكون هذه مكالمة API للخادم)
+ * جلب الملفات المخزنة محليًا لعميل معين
+ * (في تطبيق حقيقي هاذي مكالمة API للخادم)
  * @returns {Array} قائمة بالملفات.
  */
 function getCustomerFiles(customerId) {
@@ -75,8 +75,8 @@ function getCustomerFiles(customerId) {
 }
 
 /**
- * حفظ الملفات المخزنة محليًا لعميل معين.
- * (في تطبيق حقيقي، ستكون هذه مكالمة API للخادم)
+ * حفظ الملفات المخزنة محليًا لعميل معين
+ * (في تطبيق حقيقي هاذي مكالمة API للخادم)
  * @param {string} customerId - معرف العميل.
  * @param {Array} files - قائمة الملفات للعميل.
  */
@@ -141,7 +141,7 @@ function closeUploadModal() {
 
 /**
  * دالة لرفع ملف جديد.
- * (هذا مثال بسيط لا يقوم برفع ملفات فعلية، بل يحاكي العملية ويضيف البيانات إلى localStorage)
+ * (يضيف البيانات إلى localStorage)
  * @param {Event} event - حدث الإرسال.
  */
 function uploadFile(event) {
@@ -150,14 +150,14 @@ function uploadFile(event) {
     const file = fileInput.files[0];
 
     if (!file) {
-        // showAlert("خطأ", "الرجاء تحديد ملف للرفع.");
-        showAlert("الرجاء تحديد ملف للرفع.", "error"); // التعديل
+      
+        showAlert("الرجاء تحديد ملف للرفع.", "error"); 
         return;
     }
 
     if (!currentCustomerId) {
-        // showAlert("خطأ", "لا يوجد عميل محدد لرفع الملفات له. الرجاء العودة لصفحة العملاء وتحديد عميل.");
-        showAlert("لا يوجد عميل محدد لرفع الملفات له. الرجاء العودة لصفحة العملاء وتحديد عميل.", "error"); // التعديل
+       
+        showAlert("لا يوجد عميل محدد لرفع الملفات له. الرجاء العودة لصفحة العملاء وتحديد عميل.", "error"); 
         return;
     }
 
@@ -182,14 +182,13 @@ function uploadFile(event) {
     // عرض الملف الجديد كأيقونة
     renderFileIcon(newFile);
 
-    // showAlert("نجاح", `تم رفع ملف "${fileName}" بنجاح.`);
-    showAlert(`تم رفع ملف "${fileName}" بنجاح.`, "success"); // التعديل
+  
+    showAlert(`تم رفع ملف "${fileName}" بنجاح.`, "success"); 
     closeUploadModal();
 }
 
 /**
  * دالة جديدة لعرض ملف كأيقونة في الشبكة.
- * تم تعديلها لعرض الأيقونة والاسم فقط بشكل افتراضي، وتفاصيل أخرى عند التمرير.
  * @param {Object} file - كائن الملف.
  */
 function renderFileIcon(file) {
@@ -263,14 +262,13 @@ function viewFile(fileId) {
     let files = getCustomerFiles(currentCustomerId);
     const fileToView = files.find(f => f.id === fileId);
     if (fileToView) {
-        // showAlert("عرض", `جارٍ عرض ملف: ${fileToView.name}`);
-        showAlert(`جارٍ عرض ملف: ${fileToView.name}`, "info", "عرض"); // التعديل
-        // هنا يمكنك فتح الملف في علامة تبويب جديدة أو في عارض داخل مودال
-        // window.open(fileToView.path, '_blank');
+    
+        showAlert(`جارٍ عرض ملف: ${fileToView.name}`, "info", "عرض"); 
+       
         console.log(`Viewing file: ${fileToView.name} from ${fileToView.path}`);
     } else {
-        // showAlert("خطأ", "لم يتم العثور على الملف للعرض.");
-        showAlert("لم يتم العثور على الملف للعرض.", "error"); // التعديل
+       
+        showAlert("لم يتم العثور على الملف للعرض.", "error"); 
     }
 }
 
@@ -289,14 +287,13 @@ function downloadSelectedFiles() {
     let downloadInitiatedCount = 0;
     selectedCheckboxes.forEach(checkbox => {
         const fileId = checkbox.value;
-        // استدعاء دالة downloadFile لكل ملف محدد
-        // هذا سيؤدي إلى بدء محاكاة تنزيل منفصلة لكل ملف
+    
         downloadFile(fileId);
         downloadInitiatedCount++;
     });
 
     if (downloadInitiatedCount > 0) {
-        // يمكنك إظهار تنبيه عام يفيد ببدء عملية التنزيل
+       
         showAlert(`تم بدء تنزيل ${downloadInitiatedCount} ملف(ملفات) محدد(ة).`, "info", "بدء التنزيل");
     } else {
         showAlert("لم يتم العثور على أي ملفات محددة لبدء التنزيل.", "error");
@@ -309,8 +306,8 @@ function downloadSelectedFiles() {
  * @param {string} fileId - معرف الملف المراد حذفه.
  */
 function deleteFile(fileId) {
-    // showConfirm("تأكيد الحذف", "هل أنت متأكد أنك تريد حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.", () => { // السطر الأصلي
-    showConfirm("هل أنت متأكد أنك تريد حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.", () => { // التعديل
+ 
+    showConfirm("هل أنت متأكد أنك تريد حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.", () => {
             let files = getCustomerFiles(currentCustomerId);
             const initialLength = files.length;
             files = files.filter(f => f.id !== fileId);
@@ -345,13 +342,13 @@ function deleteSelectedFiles() {
     const selectedCheckboxes = document.querySelectorAll("#fileIconsContainer .selectFile:checked");
 
     if (selectedCheckboxes.length === 0) {
-        // showAlert("لا يوجد تحديد", "الرجاء اختيار ملف واحد على الأقل للحذف.");
-        showAlert("الرجاء اختيار ملف واحد على الأقل للحذف.", "warning", "لا يوجد تحديد"); // التعديل
+      
+        showAlert("الرجاء اختيار ملف واحد على الأقل للحذف.", "warning", "لا يوجد تحديد"); 
         return;
     }
 
-    // showConfirm("تأكيد الحذف", `هل أنت متأكد أنك تريد حذف ${selectedCheckboxes.length} ملف(ملفات) محدد(ة)؟ لا يمكن التراجع عن هذا الإجراء.`, // السطر الأصلي
-    showConfirm(`هل أنت متأكد أنك تريد حذف ${selectedCheckboxes.length} ملف(ملفات) محدد(ة)؟ لا يمكن التراجع عن هذا الإجراء.`, // التعديل
+  
+    showConfirm(`هل أنت متأكد أنك تريد حذف ${selectedCheckboxes.length} ملف(ملفات) محدد(ة)؟ لا يمكن التراجع عن هذا الإجراء.`, 
         () => {
             let filesToDeleteIds = Array.from(selectedCheckboxes).map(box => box.value);
             let files = getCustomerFiles(currentCustomerId);
@@ -370,17 +367,13 @@ function deleteSelectedFiles() {
             });
 
             if (deletedCount > 0) {
-                // showAlert("تم الحذف بنجاح", `${deletedCount} ملف(ملفات) تم حذفها بنجاح.`);
-                showAlert(`${deletedCount} ملف(ملفات) تم حذفها بنجاح.`, "success", "تم الحذف بنجاح"); // التعديل
+            
+                showAlert(`${deletedCount} ملف(ملفات) تم حذفها بنجاح.`, "success", "تم الحذف بنجاح"); 
             } else {
-                // showAlert("خطأ", "لم يتم العثور على أي ملفات محددة للحذف.");
-                showAlert("لم يتم العثور على أي ملفات محددة للحذف.", "error"); // التعديل
+             
+                showAlert("لم يتم العثور على أي ملفات محددة للحذف.", "error"); 
             }
-            // بما أن زر تحديد الكل ليس مربع اختيار، لا يوجد حاجة لتغيير حالته هنا.
-            // if (selectAllBtn) {
-            //     selectAllBtn.checked = false;
-            // }
-
+          
             // إذا لم تعد هناك ملفات، أظهر رسالة "لا توجد ملفات"
             const fileIconsContainer = document.getElementById('fileIconsContainer');
             if (fileIconsContainer && fileIconsContainer.children.length === 0) {
@@ -414,14 +407,6 @@ $(document).ready(function () {
     // جلب ID العميل واسمه فور تحميل الصفحة من localStorage وبدء عرض الملفات
     getCustomerInfoFromLocalStorage();
 
-    // إزالة ربط زر "Select All" في رأس الأيقونات مع وظيفته (لأن #selectAllFiles أصبح زر)
-    // const selectAllFilesBtn = document.getElementById('selectAllFiles');
-    // if (selectAllFilesBtn) {
-    //     selectAllFilesBtn.addEventListener('change', function() {
-    //         toggleSelectAllFiles(this);
-    //     });
-    // }
-    // ملاحظة: تم تعديل استدعاء toggleSelectAllFiles مباشرة في HTML لأزرار "Select All" و "Deselect All".
 
     // منطق البحث لفلترة بطاقات الملفات (يحتاج إلى تنفيذ مخصص)
     document.getElementById('fileSearchInput').addEventListener('keyup', function() {
@@ -445,14 +430,14 @@ function downloadSelectedFilesAsZip() {
     const selectedCheckboxes = document.querySelectorAll("#fileIconsContainer .selectFile:checked");
 
     if (selectedCheckboxes.length === 0) {
-        // showAlert("لا يوجد تحديد", "الرجاء تحديد ملف واحد على الأقل لتنزيله كمجلد مضغوط.");
-        showAlert("الرجاء تحديد ملف واحد على الأقل لتنزيله كمجلد مضغوط.", "warning", "لا يوجد تحديد"); // التعديل
+       
+        showAlert("الرجاء تحديد ملف واحد على الأقل لتنزيله كمجلد مضغوط.", "warning", "لا يوجد تحديد"); 
         return;
     }
 
     if (!currentCustomerName) {
-        // showAlert("خطأ", "لا يوجد اسم عميل لتسمية المجلد المضغوط به.");
-        showAlert("لا يوجد اسم عميل لتسمية المجلد المضغوط به.", "error"); // التعديل
+      
+        showAlert("لا يوجد اسم عميل لتسمية المجلد المضغوط به.", "error"); 
         return;
     }
 
@@ -477,25 +462,25 @@ function downloadSelectedFilesAsZip() {
     });
 
     if (filesToProcess === 0) {
-        // showAlert("خطأ", "لم يتم العثور على أي ملفات صالحة لتضمينها في المجلد المضغوط.");
-        showAlert("لم يتم العثور على أي ملفات صالحة لتضمينها في المجلد المضغوط.", "error"); // التعديل
+     
+        showAlert("لم يتم العثور على أي ملفات صالحة لتضمينها في المجلد المضغوط.", "error"); 
         return;
     }
 
-    // showAlert("جارٍ التحضير", `جارٍ تحضير ${filesToProcess} ملف(ملفات) في مجلد مضغوط. قد يستغرق هذا بعض الوقت...`);
-    showAlert(`جارٍ تحضير ${filesToProcess} ملف(ملفات) في مجلد مضغوط. قد يستغرق هذا بعض الوقت...`, "info", "جارٍ التحضير"); // التعديل
+  
+    showAlert(`جارٍ تحضير ${filesToProcess} ملف(ملفات) في مجلد مضغوط. قد يستغرق هذا بعض الوقت...`, "info", "جارٍ التحضير"); 
 
     // Generate the zip file
     zip.generateAsync({ type: "blob" })
         .then(function(content) {
             // Use FileSaver.js to save the blob as a file
             saveAs(content, `${currentCustomerName}_Files.zip`);
-            // showAlert("نجاح", `تم إنشاء وتنزيل مجلد مضغوط باسم "${currentCustomerName}_Files.zip" بنجاح.`);
-            showAlert(`تم إنشاء وتنزيل مجلد مضغوط باسم "${currentCustomerName}_Files.zip" بنجاح.`, "success", "نجاح"); // التعديل
+           
+            showAlert(`تم إنشاء وتنزيل مجلد مضغوط باسم "${currentCustomerName}_Files.zip" بنجاح.`, "success", "نجاح"); 
         })
         .catch(error => {
-            // showAlert("خطأ", "فشل في إنشاء المجلد المضغوط: " + error.message);
-            showAlert("فشل في إنشاء المجلد المضغوط: " + error.message, "error"); // التعديل
+           
+            showAlert("فشل في إنشاء المجلد المضغوط: " + error.message, "error"); 
             console.error("Error generating zip file:", error);
         });
 }
@@ -511,8 +496,8 @@ function downloadSelectedFilesAsZip() {
  */
 function handleDroppedFiles(files) {
     if (!currentCustomerId) {
-        // showAlert("خطأ", "لا يوجد عميل محدد لرفع الملفات له. الرجاء العودة لصفحة العملاء وتحديد عميل.");
-        showAlert("لا يوجد عميل محدد لرفع الملفات له. الرجاء العودة لصفحة العملاء وتحديد عميل.", "error"); // التعديل
+      
+        showAlert("لا يوجد عميل محدد لرفع الملفات له. الرجاء العودة لصفحة العملاء وتحديد عميل.", "error"); 
         return;
     }
 
@@ -520,8 +505,8 @@ function handleDroppedFiles(files) {
     const totalFiles = files.length;
 
     if (totalFiles === 0) {
-        // showAlert("تنبيه", "لم يتم إسقاط أي ملفات صالحة.");
-        showAlert("لم يتم إسقاط أي ملفات صالحة.", "warning", "تنبيه"); // التعديل
+      
+        showAlert("لم يتم إسقاط أي ملفات صالحة.", "warning", "تنبيه"); 
         return;
     }
 
@@ -550,11 +535,11 @@ function handleDroppedFiles(files) {
     });
 
     if (uploadedCount > 0) {
-        // showAlert("نجاح", `تم رفع ${uploadedCount} ملف(ملفات) بنجاح.`); //
-        showAlert(`تم رفع ${uploadedCount} ملف(ملفات) بنجاح.`, "success", "نجاح"); // التعديل
+       
+        showAlert(`تم رفع ${uploadedCount} ملف(ملفات) بنجاح.`, "success", "نجاح"); 
     } else {
-        // showAlert("خطأ", "فشل رفع الملفات."); //
-        showAlert("فشل رفع الملفات.", "error"); // التعديل
+       
+        showAlert("فشل رفع الملفات.", "error"); 
     }
 }
 
