@@ -3,98 +3,1378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIMS - Dashboards</title>
+    <title>NG Testing</title>
+    <!-- CSS libraries and local stylesheets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="main.css" />
-    <link rel="stylesheet" href="darkmode.css" />
     <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="darkmode.css" />
     <link rel="stylesheet" href="testing.css" />
+    <link rel="stylesheet" href="ngtesting.css" />
+    
+   
+     <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    
+</head>
+<body >
 
+    <!-- NG Testing Tab Header - Initially hidden -->
+    <div id="ngtesting-tab-header" class="tab-header" style="display: none;">
+        <span id="ngtesting-tab" class="tab active-tab">
+            <i class="fas fa-clipboard-list" style="color: #007bff;"></i>
+            NG Testing
+            <span class="close-tab-btn" onclick="closeNgtestingTab()">&times;</span>
+        </span>
+    </div>
 
-    <section id="testing" class="section-content active">
-        <h2>
-            <i class="fas fa-vials"></i>
-            <span data-key="Testing">Testing</span>
-        </h2>
-        <div class="general-grid">
-            <div class="general-card" onclick="window.location.href = 'orders.html'">
-                <i class="fas fa-file-invoice"></i>
-                <span data-key="Orders">Orders</span>
+    <!-- NG Testing Category Modal - Initially hidden -->
+    <div id="ngtesting-category-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3>NG Testing: Enter Category</h3>
+                <span class="close-btn" onclick="closeModal('ngtesting-category-modal')">&times;</span>
             </div>
-            <div class="general-card" onclick="window.location.href = 'registration.html'">
-                <i class="fas fa-truck-monster"></i>
-                <span data-key="Concrete Crushing Orders">Concrete Crushing Orders/Registration</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'concrete_crushing_testing.html'">
-                <i class="fas fa-clipboard-list"></i>
-                <span data-key="Concrete Crushing Testing">Concrete Crushing Testing/Reporting</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'insitu_sand_cone.html'">
-                <i class="fas fa-hammer"></i>
-                <span data-key="Insitu Sand Cone Method">Insitu Sand Cone Method</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'insitu_soil_density.html'">
-                <i class="fas fa-vial-circle-check"></i>
-                <span data-key="Insitu Soil Density Gauge Method">Insitu Soil Density Gauge Method</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'schedule_insitu_nuclear.html'">
-                <i class="fas fa-radiation-alt"></i>
-                <span data-key="Schedule Insitu Nuclear">Schedule Insitu Nuclear Density Gauge Method</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'insitu_nuclear_density.html'">
-                <i class="fas fa-dna"></i>
-                <span data-key="Insitu Nuclear Density">Insitu Nuclear Density Gauge Method</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'pouring_concrete.html'">
-                <i class="fas fa-truck-ramp-box"></i>
-                <span data-key="Pouring Concrete">Pouring of Freshly Concrete Mixes</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'daily_testing_program.html'">
-                <i class="fas fa-calendar-alt"></i>
-                <span data-key="Daily Testing Program">Daily Testing Program</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'testing_activities.html'">
-                <i class="fas fa-list-check"></i>
-                <span data-key="Testing Activities">Testing Activities</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'report_generator.html'">
-                <i class="fas fa-chart-bar"></i>
-                <span data-key="Report Generator">Report Generator</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'activity_schedule.html'">
-                <i class="fas fa-tasks"></i>
-                <span data-key="Activity Schedule">Activity Schedule</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'disposal_program.html'">
-                <i class="fas fa-box-open"></i>
-                <span data-key="Disposal Program">Disposal Program</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'disposal_samples.html'">
-                <i class="fas fa-trash-can"></i>
-                <span data-key="Disposal Samples">Disposal Samples</span>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="category-select">Category:</label>
+                    <select id="category-select" class="form-control" onchange="checkCategorySelection(this.value)">
+                        <option value="">Select a category</option>
+                        <option value="NG Testing">NG Testing</option>
+                        <option value="other">Other Testing OT</option>
+                    </select>
+                </div>
             </div>
         </div>
+    </div>
 
-        <h2 style="margin-top: 30px;">
-            <i class="fas fa-swatchbook"></i>
-            <span data-key="Samples & Templates">Samples & Templates</span>
-        </h2>
-        <div class="general-grid">
-            <div class="general-card" onclick="window.location.href = 'sample_preferences.html'">
-                <i class="fas fa-swatchbook"></i>
-                <span data-key="Sample Preferences">Sample Preferences</span>
-            </div>
-            <div class="general-card" onclick="window.location.href = 'material_sources.html'">
-                <i class="fas fa-sitemap"></i>
-                <span data-key="Material Sources">Material Sources</span>
+    <!-- Main Content Container for the NG Testing Form -->
+    <div id="ngtesting-content" class="ngtesting-form-container form-disabled" style="display: none;">
+        <!-- Tabbed navigation for different test types -->
+     <div class="sub-tabs">
+    <span class="sub-tab active-sub-tab" onclick="showSubTab('field-density')">Field Density Test</span>
+    <span class="sub-tab" onclick="showSubTab('ngtest-content')">Test Section NG</span>
+    <span class="sub-tab" onclick="showSubTab('other-tests')">Other Services</span>
+</div>
+      
+        <!-- Field Density Test Form -->
+        <div id="field-density" class="sub-tab-content active-sub-tab-content">
+            <form id="field-density-form">
+                <!-- Section: Order Information -->
+                <div class="form-section-title">Order Information</div>
+                <div class="form-grid-4-cols">
+                    <div class="form-group-with-icons">
+                        <label for="order-no">Order No.:</label>
+                        <input type="text" id="order-no" class="form-control" placeholder="[EditValue is null]" disabled>
+                    </div>
+                    <div class="form-group-with-icons">
+                        <label for="sample-no">Sample No.:</label>
+                        <input type="text" id="sample-no" class="form-control" placeholder="[EditValue is null]" disabled>
+                    </div>
+                    <div class="form-group-with-icons">
+                        <label for="project-code">Project Code</label>
+                        <div class="input-with-icon custom-autocomplete-container">
+                            <input type="text" id="project-code" class="form-control" placeholder="Select Project Code" disabled>
+                            <div class="project-code-icons">
+                                <i class="fas fa-search icon-btn" onclick="openProjectCodeDropdown()" title="Search Project Code"></i>
+                                <i class="fas fa-check icon-btn-check" onclick="confirmProjectCode()" title="Confirm Project Code"></i>
+                                <i class="fas fa-clipboard-check icon-btn-confirmation" onclick="openConfirmationSelectionModal()" title="Select from Confirmation"></i>
+                            </div>
+                            <!-- Dropdown for Project Code selection -->
+                            <div class="custom-dropdown-project-code" id="project-code-dropdown" style="display: none;">
+                                <div class="dropdown-header">
+                                    <div class="header-column" style="width: 25%;">Project Code</div>
+                                    <div class="header-column" style="width: 25%;">Project No.</div>
+                                    <div class="header-column" style="width: 25%;">Project Name</div>
+                                    <div class="header-column" style="width: 25%;">Customer Name</div>
+                                </div>
+                                <ul class="dropdown-options-list" id="project-code-options">
+                                    <li onclick="selectProjectCode('AAM-KH-001', 'KH-001', 'مشروع خالد', 'خالد')">
+                                        <div class="option-column" style="width: 25%;">AAM-KH-001</div>
+                                        <div class="option-column" style="width: 25%;">KH-001</div>
+                                        <div class="option-column" style="width: 25%;">مشروع خالد</div>
+                                        <div class="option-column" style="width: 25%;">خالد</div>
+                                    </li>
+                                    <li onclick="selectProjectCode('AAM-MH-002', 'MH-002', 'مشروع محمد', 'محمد')">
+                                        <div class="option-column" style="width: 25%;">AAM-MH-002</div>
+                                        <div class="option-column" style="width: 25%;">MH-002</div>
+                                        <div class="option-column" style="width: 25%;">مشروع محمد</div>
+                                        <div class="option-column" style="width: 25%;">محمد</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-with-icons">
+                        <label for="lab">Lab:</label>
+                        <div class="input-with-icon custom-autocomplete-container">
+                            <input type="text" id="lab" class="form-control" placeholder="[EditValue is null]" disabled>
+                            <i class="fas fa-caret-down icon-btn" onclick="openLabDropdown()"></i>
+                            <!-- Dropdown for Lab selection -->
+                            <div class="custom-dropdown-lab" id="lab-dropdown" style="display: none;">
+                                <div class="dropdown-header">
+                                    <div class="header-column" style="width: 25%;">Location Name</div>
+                                    <div class="header-column" style="width: 25%;">Department</div>
+                                </div>
+                                <ul class="dropdown-options-list" id="lab-options">
+                                    <li onclick="selectLab('Default Location', 'Materials Testing')">
+                                        <div class="option-column" style="width: 25%;">Default Location</div>
+                                        <div class="option-column" style="width: 25%;">Materials Testing</div>
+                                    </li>
+                                    <li onclick="selectLab('Concrete Section', 'Materials Testing')">
+                                        <div class="option-column" style="width: 25%;">Concrete Section</div>
+                                        <div class="option-column" style="width: 25%;">Materials Testing</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="form-grid-4-cols">
+                    <div class="form-group-with-icons">
+                        <label for="order-date">Order Date.:</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="order-date" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group-with-icons span-2-cols">
+                        <label for="project">Project:</label>
+                        <input type="text" id="project" class="form-control" disabled>
+                    </div>
+                    <div class="form-group-with-icons">
+                        <label for="machine-project">Machine Project:</label>
+                        <input type="text" id="machine-project" class="form-control" placeholder="[EditValue is null]" disabled>
+                    </div>
+                </div>
+
+                <div class="form-grid-4-cols">
+                    <div class="form-group-with-icons">
+                        <label for="project-no">Project No.:</label>
+                        <input type="text" id="project-no" class="form-control" disabled>
+                    </div>
+                    <div class="form-group-with-icons">
+                        <label for="customer">Customer:</label>
+                        <input type="text" id="customer" class="form-control" disabled>
+                    </div>
+                    <div class="form-group-with-icons">
+                        <label for="s-contractor">Subcontractor:</label>
+                        <input type="text" id="s-contractor" class="form-control" placeholder="[EditValue is null]" disabled>
+                    </div>
+                   <div class="form-group-with-icons">
+  <div class="form-group-with-icons">
+        <label for="discount">Discount:</label>
+        <div class="number-input-wrapper">
+            <input type="number" id="discount" class="form-control" value="0" disabled step="1">
+            <div class="number-controls">
+                <button type="button" class="btn-increment">+</button>
+                <button type="button" class="btn-decrement">-</button>
             </div>
         </div>
-    </section>
+    </div>
+ </div>
+  </div>
+               <div class="form-grid-4-cols">
+    <div class="form-group-with-icons">
+        <label for="payment-terms">Payment Terms:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="payment-terms" class="form-control" placeholder="Select Payment Terms" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'payment-terms-dropdown')"></i>
+            <div class="unified-dropdown" id="payment-terms-dropdown">
+                <div class="dropdown-header">Payment Terms</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="CASH">CASH</li>
+                    <li class="dropdown-item" data-value="ADVANCE">ADVANCE</li>
+                    <li class="dropdown-item" data-value="30 DAYS">30 DAYS</li>
+                    <li class="dropdown-item" data-value="10 DAYS">10 DAYS</li>
+                    <li class="dropdown-item" data-value="7 DAYS">7 DAYS</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <div class="form-group-with-icons">
+        <label for="sample-type">Sample Type:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="sample-type" class="form-control" placeholder="Select Sample Type" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openSampleTypeDropdown()"></i>
+            <!-- Dropdown for Sample Type selection -->
+            <div class="custom-dropdown-sample-type" id="sample-type-dropdown" style="display: none;">
+              <div class="dropdown-header">Sample Type</div>
+                <ul class="dropdown-options-list">
+                    <!-- Arabic: هذا هو الخيار الموجود في الصورة -->
+                    <li onclick="selectSampleType('FIELD DENSITY USING NUCLEAR METHOD')">FIELD DENSITY USING NUCLEAR METHOD</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+                    
+                    <div class="form-group-with-icons">
+                        <label for="confirmation">Confirmation:</label>
+                     
+                            <input type="text" id="confirmation" class="form-control" placeholder="choose Confirmation" disabled>
+                           
+                            
+                    </div>
+                    <div class="form-group-with-icons">
+    <label for="test">Test:</label>
+    <div class="input-with-icon">
+        <input type="text" id="test" class="form-control" placeholder="[EditValue is null]" disabled>
+        <span class="icon-btn" onclick="openTestDropdown()">
+            <i class="fas fa-caret-down"></i>
+        </span>
+    </div>
+</div>
+                    <div class="form-group-with-icons">
+                        <label for="cycle-used">Cycle Used:</label>
+                        <input type="text" id="cycle-used" class="form-control" placeholder="[EditValue is null]" disabled>
+                    </div>
+                </div>
+
+<div class="form-section-title">Sample Information</div>
+<div class="form-grid-4-cols">
+    <div class="form-group-with-icons">
+        <label for="sample-source">Sample Source:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="sample-source" class="form-control" placeholder="Select Sample Source" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'sample-source-dropdown')"></i>
+            <div id="sample-source-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Sample Source</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="Site">Site</li>
+                    <li class="dropdown-item" data-value="Quarry">Quarry</li>
+                    <li class="dropdown-item" data-value="Stockpile">Stockpile</li>
+                    <li class="dropdown-item" data-value="Lab">Lab</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="sample-description">Sample Description:</label>
+        <input type="text" id="sample-description" class="form-control">
+    </div>
+    <div class="form-group checkbox-inline-group">
+        <div class="checkbox-wrapper">
+            <label for="send-sample">Send Sample</label>
+            <input type="checkbox" id="send-sample">
+        </div>
+    </div>
+    <div class="form-group checkbox-inline-group">
+    <div class="checkbox-wrapper">
+        <label for="speedy">Speedy</label>
+        <input type="checkbox" id="speedy">
+    </div>
+</div>
+<style> .checkbox-inline-group .checkbox-wrapper {
+    display: flex; /* يجعل العناصر داخل الحاوية في سطر واحد */
+    align-items: center; /* يضمن محاذاة العناصر عمودياً في المنتصف */
+    gap: 5px; /* يضيف مسافة بين العنوان والتشيك بوكس */
+}</style>
+
+    <div class="form-group">
+        <label for="location-structure">Location/Structure:</label>
+        <input type="text" id="location-structure" class="form-control">
+    </div>
+    <div class="form-group-with-icons">
+        <label for="mat-type">Mat. Type:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="mat-type" class="form-control" placeholder="Select Material Type" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'mat-type-dropdown')"></i>
+            <div id="mat-type-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Material Type</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="Back Filling">Back Filling</li>
+                    <li class="dropdown-item" data-value="Subgrade">Subgrade</li>
+                    <li class="dropdown-item" data-value="Sub-base">Sub-base</li>
+                    <li class="dropdown-item" data-value="Base Course">Base Course</li>
+                    <li class="dropdown-item" data-value="Asphalt">Asphalt</li>
+                    <li class="dropdown-item" data-value="Concrete">Concrete</li>
+                    <li class="dropdown-item" data-value="Soil">Soil</li>
+                    <li class="dropdown-item" data-value="Aggregate">Aggregate</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+   <div class="form-group">
+    <label for="rw-field">
+        <strong style="color: red;">RW/WIR:</strong>
+    </label>
+    <input type="text" id="rw-field" class="form-control">
+</div>
+    <div class="form-group">
+    <label for="total-specimens">Total Specimens:</label>
+    <div class="number-input-wrapper">
+        <input type="number" id="total-specimens" class="form-control" value="0" >
+        <div class="number-controls">
+            <button type="button" class="btn-increment">+</button>
+            <button type="button" class="btn-decrement">-</button>
+        </div>
+    </div>
+</div>
+
+    <div class="form-group-with-icons">
+        <label for="sampling-method">Sampling Method:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="sampling-method" class="form-control" placeholder="Select Sampling Method" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'sampling-method-dropdown')"></i>
+            <div id="sampling-method-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Sampling Method</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="AASHTO T 2">AASHTO T 2</li>
+                    <li class="dropdown-item" data-value="ASTM D 75">ASTM D 75</li>
+                    <li class="dropdown-item" data-value="Grab Sample">Grab Sample</li>
+                    <li class="dropdown-item" data-value="Random Sampling">Random Sampling</li>
+                    <li class="dropdown-item" data-value="N.P.">N.P.</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="level">Level:</label>
+        <input type="text" id="level" class="form-control">
+    </div>
+    <div class="form-group-with-icons">
+        <label for="weather">Weather:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="weather" class="form-control" placeholder="Select Weather" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'weather-dropdown')"></i>
+            <div id="weather-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Weather</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="Sunny">Sunny</li>
+                    <li class="dropdown-item" data-value="Cloudy">Cloudy</li>
+                    <li class="dropdown-item" data-value="Rainy">Rainy</li>
+                    <li class="dropdown-item" data-value="Windy">Windy</li>
+                    <li class="dropdown-item" data-value="Snowy">Snowy</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group-with-icons">
+        <label for="located-by">Localized By:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="located-by" class="form-control" placeholder="Select Located By" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'located-by-dropdown')"></i>
+            <div id="located-by-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Localized By</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="CONSULTANTS REP.">CONSULTANTS REP.</li>
+                    <li class="dropdown-item" data-value="Contractor">Contractor</li>
+                    <li class="dropdown-item" data-value="Owner">Owner</li>
+                    <li class="dropdown-item" data-value="Site Staff">Site Staff</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group-with-icons">
+        <label for="sampled-by">Sampled By:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="sampled-by" class="form-control" placeholder="Select Sampled By" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'sampled-by-dropdown')"></i>
+            <div id="sampled-by-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Sampled By</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="Lab Technician">Lab Technician</li>
+                    <li class="dropdown-item" data-value="Site Engineer">Site Engineer</li>
+                    <li class="dropdown-item" data-value="Consultant">Consultant</li>
+                    <li class="dropdown-item" data-value="Contractor">Contractor</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group-with-icons">
+        <label for="equipment">Equipment:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="equipment" class="form-control" placeholder="Select Equipment" disabled>
+            <i class="fas fa-caret-down icon-btn" onclick="openDropdown(event, 'equipment-dropdown')"></i>
+            <div id="equipment-dropdown" class="unified-dropdown">
+                <div class="dropdown-header">Equipment</div>
+                <ul class="dropdown-options-list">
+                    <li class="dropdown-item" data-value="Core Drill">Core Drill</li>
+                    <li class="dropdown-item" data-value="Shelby Tube">Shelby Tube</li>
+                    <li class="dropdown-item" data-value="Split Spoon Sampler">Split Spoon Sampler</li>
+                    <li class="dropdown-item" data-value="Hand Auger">Hand Auger</li>
+                    <li class="dropdown-item" data-value="Excavator">Excavator</li>
+                    <li class="dropdown-item" data-value="Other">Other</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="remarks">Remarks:</label>
+        <input type="text" id="remarks" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="internal-remarks">Internal Remarks:</label>
+        <input type="text" id="internal-remarks" class="form-control">
+    </div>
+
+    <div class="form-group checkbox-inline-group">
+        <div class="checkbox-wrapper">
+            <label for="hide-header-footer">Hide Header/Footer</label>
+            <input type="checkbox" id="hide-header-footer">
+        </div>
+    </div>
+    <div class="form-group checkbox-inline-group">
+        <div class="checkbox-wrapper">
+            <label for="hide-signatory-manual">Hide Signatory/Manual</label>
+            <input type="checkbox" id="hide-signatory-manual">
+        </div>
+    </div>
+</div>
+ 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Hide all dropdowns on page load
+    closeAllDropdowns();
+
+    // Function to handle opening a specific dropdown
+    window.openDropdown = function(event, dropdownId) {
+        event.stopPropagation();
+        const dropdown = document.getElementById(dropdownId);
+        // Toggle the display of the clicked dropdown
+        if (dropdown) {
+            // Check if the dropdown is currently visible
+            const isVisible = dropdown.style.display === 'block';
+            
+            // Close all dropdowns first
+            closeAllDropdowns();
+
+            // If it was not visible, open it now
+            if (!isVisible) {
+                dropdown.style.display = 'block';
+            }
+        }
+    };
+
+    // Function to close all dropdown menus
+    function closeAllDropdowns() {
+        // Corrected: Target the new class 'unified-dropdown'
+        document.querySelectorAll('.unified-dropdown').forEach(dropdown => {
+            dropdown.style.display = 'none';
+        });
+    }
+
+    // Event listener to handle item selection from any dropdown
+    // Corrected: Target the new class 'unified-dropdown'
+    document.querySelectorAll('.unified-dropdown .dropdown-item').forEach(item => {
+        item.addEventListener('click', function(event) {
+            const value = this.getAttribute('data-value');
+            // 'closest' finds the nearest parent with the specified class.
+            const dropdown = this.closest('.unified-dropdown');
+            const inputId = dropdown.id.replace('-dropdown', '');
+            const input = document.getElementById(inputId);
+
+            if (input) {
+                input.value = value;
+            }
+            closeAllDropdowns();
+        });
+    });
+
+    // Event listener to close dropdowns when clicking outside the container
+    document.addEventListener('click', function(event) {
+        const dropdownContainers = document.querySelectorAll('.custom-autocomplete-container');
+        dropdownContainers.forEach(container => {
+            if (!container.contains(event.target)) {
+                // Corrected: Target the new class 'unified-dropdown'
+                const dropdown = container.querySelector('.unified-dropdown');
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
+    });
+});
+</script>
+
+
+<!-- three and four section-->
+         <div class="two-column-layout">
+
+    <div class="column">
+        <div class="form-section-title">Test/Report Information</div>
+        <div class="form-grid-4-cols">
+            <div class="form-group-with-icons">
+                <label for="report-no">Report No.:</label>
+                <input type="text" id="report-no" class="form-control" disabled>
+            </div>
+            <div class="form-group-with-icons">
+                <label for="rev">Rev.:</label>
+                <input type="text" id="rev" class="form-control" disabled>
+            </div>
+            <div class="form-group-with-icons">
+                <label for="date-reported">Date Reported:</label>
+                <input type="date" id="date-reported" class="form-control">
+            </div>
+            <div class="form-group-with-icons">
+                <label for="test-method">Test Method:</label>
+                <input type="text" id="test-method" class="form-control" disabled>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="quantity">Quantity:</label>
+                <div class="number-input-wrapper">
+                    <input type="number" id="quantity" class="form-control" value="0" disabled step="1">
+                    <div class="number-controls">
+                        <button type="button" class="btn-increment">+</button>
+                        <button type="button" class="btn-decrement">-</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="price">Price:</label>
+                <div class="number-input-wrapper">
+                    <input type="number" id="price" class="form-control" value="0" disabled step="1">
+                    <div class="number-controls">
+                        <button type="button" class="btn-increment">+</button>
+                        <button type="button" class="btn-decrement">-</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-with-icons">
+                <label for="date-tested">Date Tested:</label>
+                <input type="date" id="date-tested" class="form-control">
+            </div>
+            <div class="form-group-with-icons">
+                <label for="test-location">Test Location:</label>
+                <input type="text" id="test-location" class="form-control" disabled>
+            </div>
+            <div class="form-group-with-icons">
+                <label for="tested-by">Tested By:</label>
+                <input type="text" id="tested-by" class="form-control" placeholder="[EditValue is null]" disabled>
+            </div>
+ <div class="form-group-with-icons">
+    <label for="date-received">Received:</label>
+    <input type="date" id="date-received" class="form-control">
+</div>
+            <div class="form-group-with-icons">
+                <label for="req-doc-rd">Req. DOC.RD (%):</label>
+                <input type="text" id="req-doc-rd" class="form-control" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="form-section-title">Moisture Density Relationship (Proctor)</div>
+        <div class="form-grid-3-cols">
+            <div class="form-group-with-icons">
+                <label for="proctor-ref">Proctor Ref.:</label>
+                <input type="text" id="proctor-ref" class="form-control" placeholder="[EditValue is null]" disabled>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="mod-g-cm3">MOD (g/cm³):</label>
+                <div class="number-input-wrapper">
+                    <input type="number" id="mod-g-cm3" class="form-control" value="0.000" disabled step="0.001">
+                    <div class="number-controls">
+                        <button type="button" class="btn-increment">+</button>
+                        <button type="button" class="btn-decrement">-</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="min-density-g-cm3">Min. Density (g/cm³):</label>
+                <div class="number-input-wrapper">
+                    <input type="number" id="min-density-g-cm3" class="form-control" value="0.000" disabled step="0.001">
+                    <div class="number-controls">
+                        <button type="button" class="btn-increment">+</button>
+                        <button type="button" class="btn-decrement">-</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="omc">OMC (%):</label>
+                <div class="number-input-wrapper">
+                    <input type="number" id="omc" class="form-control" value="0.00" disabled step="0.01">
+                    <div class="number-controls">
+                        <button type="button" class="btn-increment">+</button>
+                        <button type="button" class="btn-decrement">-</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="max-density-g-cm3">Max. Density (g/cm³):</label>
+                <div class="number-input-wrapper">
+                    <input type="number" id="max-density-g-cm3" class="form-control" value="0.000" disabled step="0.001">
+                    <div class="number-controls">
+                        <button type="button" class="btn-increment">+</button>
+                        <button type="button" class="btn-decrement">-</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group-with-icons">
+                <label for="mc-d-method">M.C.D. Method:</label>
+                <input type="text" id="mc-d-method" class="form-control" disabled>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-section-title">Initial Data</div>
+<div class="form-grid-3-cols">
+    
+    <div class="form-group-with-icons">
+        <label for="bulk-density">Bulk Density of Sand (g/cm³):</label>
+        <div class="number-input-wrapper">
+            <input type="number" id="bulk-density" class="form-control" value="0.000" disabled step="0.001">
+            <div class="number-controls">
+                <button type="button" class="btn-increment">+</button>
+                <button type="button" class="btn-decrement">-</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group-with-icons">
+        <label for="mean-weight">Mean Weight of Sand in Cone (g):</label>
+        <div class="number-input-wrapper">
+            <input type="number" id="mean-weight" class="form-control" value="0" disabled step="1">
+            <div class="number-controls">
+                <button type="button" class="btn-increment">+</button>
+                <button type="button" class="btn-decrement">-</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group-with-icons">
+        <label for="weight-before">Weight of Sand Before Pouring (g):</label>
+        <div class="number-input-wrapper">
+            <input type="number" id="weight-before" class="form-control" value="0" disabled step="1">
+            <div class="number-controls">
+                <button type="button" class="btn-increment">+</button>
+                <button type="button" class="btn-decrement">-</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style> .two-column-layout {
+    display: flex; /* يجعل الأقسام الفرعية في صف واحد */
+    gap: 20px; /* مسافة بين القسمين، يمكنك تعديلها حسب الحاجة */
+    width: 100%; /* يضمن أن الحاوية تشغل العرض الكامل */
+}
+
+.column {
+    flex: 1; /* يضمن أن كل عمود سيأخذ مساحة متساوية من المساحة المتاحة */
+}
+
+/* لتحسين التنسيق عند الشاشات الأصغر */
+@media (max-width: 768px) {
+    .two-column-layout {
+        flex-direction: column; /* يجعل الأقسام تظهر تحت بعضها البعض على الشاشات الصغيرة */
+    }
+}</style>
+       
+        <!-- Confirmation Selection Modal -->
+        <div id="confirmation-selection-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content large-modal">
+                <div class="modal-header">
+                    <h3>Select from Confirmation</h3>
+                    <span class="close-btn" onclick="closeModal('confirmation-selection-modal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-controls">
+                        <input type="text" id="confirmation-search-input" class="form-control" placeholder="Search by C. Description or C. S/T ID...">
+                        <button class="btn btn-primary" onclick="applySelectedConfirmation()">Select</button>
+                        <button class="btn btn-secondary" onclick="closeModal('confirmation-selection-modal')">Cancel</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="confirmation-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;"></th> 
+                                    <th style="width: 15%;">C. Description</th>
+                                    <th style="width: 5%;">Accounted</th>
+                                    <th style="width: 10%;">Conf. Date</th>
+                                    <th style="width: 10%;">C. S/T ID</th>
+                                    <th style="width: 10%;">Alt. Test ID</th>
+                                    <th style="width: 15%;">Service/Field Description</th>
+                                    <th style="width: 5%;">Passed QTY</th>
+                                    <th style="width: 5%;">Rem. QTY</th>
+                                    <th style="width: 10%;">C. Price</th>
+                                    <th style="width: 5%;">Schedule #</th>
+                                    <th style="width: 5%;">Expected</th>
+                                </tr>
+                            </thead>
+                            <tbody id="confirmation-table-body">
+                                <tr onclick="selectRow(this)">
+                                    <td><input type="checkbox" class="confirmation-checkbox"></td>
+                                    <td>Item 1 from Quote</td>
+                                    <td>Yes</td>
+                                    <td>2025-08-11</td>
+                                    <td>CS-001</td>
+                                    <td>ALT-001</td>
+                                    <td>Field Test 1</td>
+                                    <td>10</td>
+                                    <td>5</td>
+                                    <td>150.00</td>
+                                    <td>SCH-01</td>
+                                    <td>15</td>
+                                </tr>
+                                <tr onclick="selectRow(this)">
+                                    <td><input type="checkbox" class="confirmation-checkbox"></td>
+                                    <td>Item 2 from Quote</td>
+                                    <td>No</td>
+                                    <td>2025-08-12</td>
+                                    <td>CS-002</td>
+                                    <td>ALT-002</td>
+                                    <td>Field Test 2</td>
+                                    <td>8</td>
+                                    <td>2</td>
+                                    <td>200.50</td>
+                                    <td>SCH-02</td>
+                                    <td>10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </br>
+      <!-- Footer Bar is now part of the Field Density content -->
+            <div class="form-footer-buttons" id="form-footer-buttons">
+                <div class="order-no-footer">
+                    <label for="order-number-footer">Order #:</label>
+                    <div class="input-with-icon custom-autocomplete-container">
+                        <input type="text" id="order-number-footer" class="form-control footer-order-no-input" placeholder="[EditValue is null]">
+                        <i class="fas fa-caret-down icon-btn" onclick="toggleOrderNoDropdown()"></i>
+                        <div id="order-no-dropdown" class="custom-dropdown-order-no" style="display: none;">
+                            <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00001')">AAM-CO-25-00001</div>
+                            <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00002')">AAM-CO-25-00002</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" id="create-report-btn" disabled>
+                    <i class="fas fa-file-alt"></i> Create Report
+                </button>
+                <button class="btn btn-secondary" id="open-report-btn" disabled>
+                    <i class="fas fa-folder-open"></i> Open Report
+                </button>
+                <button class="btn btn-secondary" id="open-pdf-btn" disabled>
+                    <i class="fas fa-file-pdf"></i> Open PDF File
+                </button>
+                <button class="btn btn-secondary" id="actions-btn" disabled>
+                    <i class="fas fa-cogs"></i> Actions
+                </button>
+                <button class="btn btn-secondary" id="preview-btn" disabled>
+                    <i class="fas fa-print"></i> Preview...
+                </button>
+                <button class="btn btn-danger" id="close-btn" onclick="closeNgtestingTab()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button class="btn btn-primary" id="new-btn" onclick="enableForm()">
+                    <i class="fas fa-plus"></i> New
+                </button>
+                <button class="btn btn-success" id="save-close-btn" disabled>
+                    <i class="fas fa-save"></i> Save & Close
+                </button>
+                <button class="btn btn-success" id="save-btn" disabled>
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+        
+   <!-- Load Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    /* General styles for the container */
+    .form-container {
+        max-width: 95%;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Styles for the table container */
+    .excel-table-container {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        border-radius: 1rem;
+        background-color: #f9fafb;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+         /* إضافة ارتفاع ثابت مع التمرير العمودي */
+        height: 197vh; /* مثال: 60% من ارتفاع الشاشة */
+        overflow-y: auto; /* إضافة شريط تمرير عمودي عند الحاجة */
+    }
+    
+
+    /* Styles for the fixed labels column */
+    .labels-column-container {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        border-right: 2px solid #e5e7eb;
+    }
+
+    /* Styles for the individual labels */
+    .labels-column-item {
+        width: 250px;
+        padding: 0.75rem 1rem;
+        min-height: 1.5cm;
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .labels-column-item:first-child {
+        border-top-left-radius: 1rem;
+    }
+    .labels-column-item:last-child {
+        border-bottom-left-radius: 1rem;
+        border-bottom: none;
+    }
+
+    /* Styles for data columns */
+    .data-column-container {
+        display: flex;
+        flex-direction: column;
+        border-left: 2px solid #e5e7eb;
+    }
+
+    /* Styles for input fields */
+    .test-input-wrapper {
+        width: 100px;
+        padding: 0.5rem;
+        min-height: 1.5cm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .test-input {
+        width: 80px;
+        height: 1cm;
+        min-width: 80px;
+        min-height: 1cm;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        flex-shrink: 0;
+        background-color: #fff;
+        transition: all 0.3s ease;
+    }
+    .test-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+    /* Styles for the highlighted rows/inputs (Updated colors with opacity) */
+    .highlighted-row {
+        background-color: rgba(253, 224, 71, 0.4);
+    }
+    .highlighted-input {
+        background-color: rgba(250, 204, 21, 0.6);
+        border-color: #d97706;
+    }
+    .highlighted-input:focus {
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.5);
+    }
+
+    /* Styles for the custom dropdown menu - Emulating the provided image */
+    .custom-dropdown {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        font-family: inherit;
+    }
+    .custom-dropdown-button {
+        width: 100%;
+        padding: 0.3rem 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.2rem;
+        cursor: pointer;
+        background-color: #f9fafb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #4a5568;
+        transition: all 0.2s ease-in-out;
+    }
+    .custom-dropdown-button:hover {
+        background-color: #f3f4f6;
+        border-color: #b3b9c4;
+    }
+    .custom-dropdown-button:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+    }
+    .custom-dropdown-button .selected-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .custom-dropdown-button i {
+        font-size: 11px;
+        color: #94a3b8;
+        transition: transform 0.3s ease;
+    }
+    .custom-dropdown.active .custom-dropdown-button {
+        border-color: #9ca3af;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .custom-dropdown.active .custom-dropdown-button i {
+        transform: rotate(180deg);
+    }
+    .custom-dropdown-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width:  width: 150%;
+        background-color: #fff;
+        border: 1px solid #9ca3af;
+        border-top: none;
+        border-radius: 0 0 0.2rem 0.2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 112px;
+        overflow-y: auto;
+    }
+    .custom-dropdown-item {
+        padding: 0.4rem 0.6rem;
+        cursor: pointer;
+        font-size: 13px;
+        color: #374151;
+        white-space: nowrap;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+    .custom-dropdown-item.is-selected {
+        background-color: #e3f2fd;
+        color: #1a73e8;
+        font-weight: 500;
+    }
+    .custom-dropdown-item:hover {
+        background-color: #e2e8f0;
+    }
+    .custom-dropdown.active .custom-dropdown-list {
+        display: block;
+    }
+    /* Custom Scrollbar Styling for Webkit Browsers */
+    .custom-dropdown-list::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-dropdown-list::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+    .custom-dropdown-list::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+        border: 1px solid #f1f5f9;
+    }
+    .custom-dropdown-list::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+
+    /* Styles for the modal message box */
+    .message-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2rem;
+        background-color: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 100;
+        border: 2px solid #3b82f6;
+        display: none;
+        transition: all 0.3s ease;
+    }
+
+    /* Styles for buttons */
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+    .btn-gray {
+        background-color: #e5e7eb;
+        color: #4b5563;
+    }
+    .btn-gray:hover {
+        background-color: #d1d5db;
+    }
+    .btn-blue {
+        background-color: #3b82f6;
+        color: #ffffff;
+    }
+    .btn-blue:hover {
+        background-color: #2563eb;
+    }
+    /* Smaller icon button size */
+    .btn-icon {
+        background-color: #e5e7eb;
+        color: #4b5563;
+        font-size: 0.8rem;
+        width: 25px;
+        height: 25px;
+        padding: 0;
+        border-radius: 50%;
+    }
+    .btn-icon:hover {
+        background-color: #d1d5db;
+    }
+    .btn-icon-green {
+        background-color: #22c55e;
+        color: white;
+    }
+    .btn-icon-green:hover {
+        background-color: #16a34a;
+    }
+    .btn-icon-red {
+        background-color: #ef4444;
+        color: white;
+    }
+    .btn-icon-red:hover {
+        background-color: #dc2626;
+    }
+    /* New margin top for buttons */
+    .mt-3cm {
+        margin-top: 3cm;
+    }
+    /* Adds a small space between button groups */
+    .ml-small-gap {
+        margin-left: 0.5rem;
+    }
+    /* Makes the layout responsive for smaller screens */
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 1.5rem;
+        }
+        .labels-column-item {
+            width: 150px;
+            min-height: 1.25cm;
+        }
+        .test-input {
+            width: 60px;
+            min-width: 60px;
+        }
+    }
+</style>
+<div id="ngtest-content" class="sub-tab-content">
+    <form class="form-container mx-auto">
+    <h1 class="text-3xl font-extrabold text-gray-800 text-center">NG TESTING</h1>
+
+    <div class="excel-table-container">
+        <div id="labels-column" class="labels-column-container"></div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-between items-center flex-wrap gap-4 pt-4 border-t border-gray-200 mt-3cm">
+        <div class="flex flex-wrap gap-2 items-center ml-small-gap">
+            <button type="button" class="btn btn-icon btn-minus btn-icon-red" onclick="removeColumn()">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-icon btn-plus btn-icon-green" onclick="addColumn()">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440 Plus', 'Acquiring data...')">
+                <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440 Plus
+            </button>
+            <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440', 'Acquiring data...')">
+                <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440
+            </button>
+            <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440 Instrotek', 'Acquiring data...')">
+                <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440 Instrotek
+            </button>
+            <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Humboldt', 'Acquiring data...')">
+                <i class="fas fa-link mr-2"></i> Acquire from Humboldt
+            </button>
+            <button type="button" class="btn btn-gray" onclick="showMessage('Show Map', 'Displaying map...')">
+                <i class="fas fa-map-marked-alt mr-2"></i> Show Map
+            </button>
+            <button type="button" class="btn btn-icon btn-gray" onclick="resetTable()">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+    </div>
+    
+</form>
+ <!-- Footer Bar is now part of the Field Density content -->
+            <div class="form-footer-buttons" id="form-footer-buttons">
+                <div class="order-no-footer">
+                    <label for="order-number-footer">Order #:</label>
+                    <div class="input-with-icon custom-autocomplete-container">
+                        <input type="text" id="order-number-footer" class="form-control footer-order-no-input" placeholder="[EditValue is null]">
+                        <i class="fas fa-caret-down icon-btn" onclick="toggleOrderNoDropdown()"></i>
+                        <div id="order-no-dropdown" class="custom-dropdown-order-no" style="display: none;">
+                            <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00001')">AAM-CO-25-00001</div>
+                            <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00002')">AAM-CO-25-00002</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" id="create-report-btn" disabled>
+                    <i class="fas fa-file-alt"></i> Create Report
+                </button>
+                <button class="btn btn-secondary" id="open-report-btn" disabled>
+                    <i class="fas fa-folder-open"></i> Open Report
+                </button>
+                <button class="btn btn-secondary" id="open-pdf-btn" disabled>
+                    <i class="fas fa-file-pdf"></i> Open PDF File
+                </button>
+                <button class="btn btn-secondary" id="actions-btn" disabled>
+                    <i class="fas fa-cogs"></i> Actions
+                </button>
+                <button class="btn btn-secondary" id="preview-btn" disabled>
+                    <i class="fas fa-print"></i> Preview...
+                </button>
+                <button class="btn btn-danger" id="close-btn" onclick="closeNgtestingTab()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button class="btn btn-primary" id="new-btn" onclick="enableForm()">
+                    <i class="fas fa-plus"></i> New
+                </button>
+                <button class="btn btn-success" id="save-close-btn" disabled>
+                    <i class="fas fa-save"></i> Save & Close
+                </button>
+                <button class="btn btn-success" id="save-btn" disabled>
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+<div id="message-box" class="message-box">
+    <h3 id="message-title" class="text-lg font-bold mb-2"></h3>
+    <p id="message-body" class="text-gray-600"></p>
+    <button onclick="hideMessage()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">إغلاق</button>
+</div>
+
+<script>
+    const tableContainer = document.querySelector('.excel-table-container');
+    const labelsColumn = document.getElementById('labels-column');
+    let columnCount = 0;
+
+    const rows = [
+        { id: 'test_number', label: 'Test #', type: 'text', disabled: true },
+        { id: 'reference', label: 'Reference', type: 'text' },
+        { id: 'location', label: 'Location', type: 'text' },
+        { id: 'soil_type', label: 'Soil Type/Desc.', type: 'dropdown', options: ['Sub Grade', 'Select Fill', 'Existing Material', 'Embankment', 'Sand', 'Other', 'Base Course', 'Subbase', 'Fill', 'Topsoil', 'Unsuitable Material', 'Gravel', 'Clay', 'Silt', 'Asphalt Concrete', 'Concrete', 'Aggregate', 'Rock', 'Bentonite'] },
+        { id: 'lat', label: 'Lat.', type: 'number' },
+        { id: 'long', label: 'Long.', type: 'number' },
+        { id: 'optimum_moisture', label: 'Optimum Moisture (%)', type: 'number', highlighted: true },
+        { id: 'wet_density', label: 'Wet Density (g/cm³)', type: 'number' },
+        { id: 'layer', label: 'Layer', type: 'text' },
+        { id: 'test_depth', label: 'Test Depth (mm)', type: 'number' },
+        { id: 'moisture_content', label: 'Moisture Content (%)', type: 'number' },
+        { id: 'dry_density', label: 'Dry Density (g/cm³)', type: 'number', disabled: true }, // التعديل هنا
+        { id: 'min_lab_density', label: 'Min. Lab Density (g/cm³)', type: 'number' },
+        { id: 'max_lab_density', label: 'Max. Lab Density (g/cm³)', type: 'number' },
+        { id: 'relative_density', label: 'Relative Density (%)', type: 'number', highlighted: true },
+        { id: 'relative_compaction', label: 'Rel. Deg. of Compaction (%)', type: 'number', highlighted: true },
+        { id: 'pass_fail', label: 'Pass/Fail', type: 'dropdown', options: ['Pass', 'Fail'] },
+        { id: 'test_retest', label: 'Test/Retest', type: 'dropdown', options: ['Test', 'Retest'] }
+    ];
+
+    const showMessage = (title, message) => {
+        const messageBox = document.getElementById('message-box');
+        document.getElementById('message-title').textContent = title;
+        document.getElementById('message-body').textContent = message;
+        messageBox.style.display = 'block';
+    };
+
+    window.hideMessage = () => {
+        const messageBox = document.getElementById('message-box');
+        messageBox.style.display = 'none';
+    };
+
+    const createLabelsColumn = () => {
+        labelsColumn.innerHTML = '';
+        rows.forEach(row => {
+            const labelDiv = document.createElement('div');
+            labelDiv.className = `labels-column-item ${row.highlighted ? 'highlighted-row' : ''}`;
+            labelDiv.textContent = row.label;
+            labelsColumn.appendChild(labelDiv);
+        });
+    };
+    
+    // Function to calculate Dry Density
+    const calculateDryDensity = (column) => {
+        const wetDensityInput = document.getElementById(`wet_density-${column}`);
+        const moistureContentInput = document.getElementById(`moisture_content-${column}`);
+        const dryDensityInput = document.getElementById(`dry_density-${column}`);
+        
+        const wetDensity = parseFloat(wetDensityInput.value);
+        const moistureContent = parseFloat(moistureContentInput.value);
+
+        if (!isNaN(wetDensity) && !isNaN(moistureContent) && moistureContent >= 0) {
+            const dryDensity = wetDensity / (1 + (moistureContent / 100));
+            dryDensityInput.value = dryDensity.toFixed(3);
+        } else {
+            dryDensityInput.value = '';
+        }
+    };
+
+    window.addColumn = () => {
+        columnCount++;
+        const newColumnContainer = document.createElement('div');
+        newColumnContainer.className = 'data-column-container';
+
+        rows.forEach(row => {
+            const cellDiv = document.createElement('div');
+            cellDiv.className = `test-input-wrapper ${row.highlighted ? 'highlighted-row' : ''}`;
+            
+            if (row.type === 'dropdown') {
+                const dropdownContainer = document.createElement('div');
+                dropdownContainer.className = 'custom-dropdown';
+
+                const dropdownButton = document.createElement('div');
+                dropdownButton.className = 'custom-dropdown-button';
+                dropdownButton.setAttribute('tabindex', '0');
+
+                const selectedText = document.createElement('span');
+                selectedText.className = 'selected-text';
+                
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-chevron-down';
+
+                dropdownButton.appendChild(selectedText);
+                dropdownButton.appendChild(icon);
+
+                const dropdownList = document.createElement('div');
+                dropdownList.className = 'custom-dropdown-list';
+                
+                row.options.forEach(optionText => {
+                    const optionItem = document.createElement('div');
+                    optionItem.className = 'custom-dropdown-item';
+                    optionItem.textContent = optionText;
+                    dropdownList.appendChild(optionItem);
+                });
+
+                dropdownContainer.appendChild(dropdownButton);
+                dropdownContainer.appendChild(dropdownList);
+                cellDiv.appendChild(dropdownContainer);
+                
+                dropdownButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdownContainer.classList.toggle('active');
+                });
+                
+                dropdownList.querySelectorAll('.custom-dropdown-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdownList.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('is-selected'));
+                        e.target.classList.add('is-selected');
+
+                        const selectedValue = e.target.textContent;
+                        selectedText.textContent = selectedValue;
+                        dropdownContainer.classList.remove('active');
+                    });
+                });
+
+                window.addEventListener('click', (e) => {
+                    if (!dropdownContainer.contains(e.target)) {
+                        dropdownContainer.classList.remove('active');
+                    }
+                });
+            } else {
+                let inputElement = document.createElement('input');
+                inputElement.type = row.type;
+                inputElement.className = `test-input text-sm px-2 ${row.highlighted ? 'highlighted-input' : ''}`;
+                inputElement.id = `${row.id}-${columnCount}`; // Set a unique ID
+                if (row.id === 'test_number') {
+                    inputElement.value = columnCount;
+                } else if (row.id === 'optimum_moisture') {
+                    inputElement.value = '5.90';
+                }
+                if (row.disabled) {
+                    inputElement.disabled = true;
+                }
+
+                // Add event listener for calculation
+                if (row.id === 'moisture_content' || row.id === 'wet_density') {
+                    inputElement.addEventListener('input', () => calculateDryDensity(columnCount));
+                }
+
+                cellDiv.appendChild(inputElement);
+            }
+            newColumnContainer.appendChild(cellDiv);
+        });
+
+        tableContainer.appendChild(newColumnContainer);
+        tableContainer.scrollLeft = tableContainer.scrollWidth;
+    };
+
+    window.removeColumn = () => {
+        const columns = document.querySelectorAll('.data-column-container');
+        if (columns.length > 0) {
+            const lastColumn = columns[columns.length - 1];
+            lastColumn.remove();
+            columnCount--;
+        } else {
+            showMessage('Error', 'Cannot remove any more columns.');
+        }
+    };
+
+    window.resetTable = () => {
+        const columns = document.querySelectorAll('.data-column-container');
+        columns.forEach(column => {
+            column.remove();
+        });
+        columnCount = 0;
+        showMessage('تم تحديث الجدول', 'تم مسح جميع البيانات بنجاح.');
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        createLabelsColumn();
+    });
+    
+</script>
+
+
+<div id="other-tests" class="sub-tab-content" style="display: none;">  </div>
+       
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="ngtesting.js"></script>
+   
     <script src="main.js"></script>
-     <script src="registration.js"></script>
+  
 </body>
 </html>
