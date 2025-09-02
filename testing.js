@@ -18,7 +18,7 @@ function checkCategorySelection(category) {
         // إظهار النافذة الرئيسية للتسجيل
         document.getElementById('registration-form-modal').style.display = 'flex';
     } else {
-        // ... منطق الفئات الأخرى ...
+      
     }
 }
 
