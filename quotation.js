@@ -1431,12 +1431,11 @@ function initializeQuotationDataTable() {
                 "width": "20px",
                 "className": "dt-body-center",
                 "render": function(data, type, row) {
-                    // 🔑 يتم إنشاء التشيك بوكس الفرعي (Slave Checkbox)
-                    // ويستخدم row.quoteNo كمعرف فريد للسهولة
+                  
                     return `<input type="checkbox" class="slaveCheckbox" data-id="${row.quoteNo}">`;
                 }
                 },
-                // ... (بقية تعريفات الأعمدة تبقى كما هي) ...
+               
                 { "data": "isNew", "orderable": true, "searchable": false, "width": "10px", "defaultContent": "", "render": function(data, type, row) { return row.isNew ? '<i class="fas fa-circle" style="color: grey;" title="جديد / قيد الإنشاء"></i>' : ''; } },
                 { "data": "isSent", "orderable": true, "searchable": false, "width": "10px", "defaultContent": "", "render": function(data, type, row) { return row.isSent ? '<i class="fas fa-list-alt" style="color: blue;" title="مكتمل / مرسل"></i>' : ''; } },
                 { "data": "isActive", "orderable": true, "searchable": false, "width": "10px", "defaultContent": "", "render": function(data, type, row) { return row.isActive ? '<i class="fas fa-play-circle" style="color: green;" title="فعال / قيد التقدم"></i>' : ''; } },
@@ -1497,9 +1496,7 @@ function initializeQuotationDataTable() {
 
 
 
-            // 🔑 1. ربط حدث الماستر تشيك بوكس (Master Checkbox)
-
-            // هذا الحدث يُفعل عند النقر على التشيك بوكس في الترويسة
+          
 
             $('#quote-masterCheckbox').off('change').on('change', function() {
 
@@ -1507,8 +1504,7 @@ function initializeQuotationDataTable() {
 
 
 
-                // 💡 Key: api.rows().nodes() -> يصل إلى كل الصفوف (TRs) في كل الصفحات
-
+              
                 $(api.rows().nodes()).find('.slaveCheckbox')
 
                     .prop('checked', isChecked) // تحديد/إلغاء تحديد كل الفرعيات
@@ -1525,9 +1521,7 @@ function initializeQuotationDataTable() {
 
 
 
-            // 🔑 2. ربط حدث التشيك بوكس الفرعي (Slave Checkbox)
-
-            // هذا الحدث يُفعل عند النقر على التشيك بوكس في أي صف
+           
 
             $('#quotationTable tbody').off('change', '.slaveCheckbox').on('change', '.slaveCheckbox', function() {
 
@@ -1537,7 +1531,7 @@ function initializeQuotationDataTable() {
 
 
 
-                // 💡 Key: تظليل الصف المباشر والتفاعل
+           
 
                 trElement.toggleClass('selected-row', isChecked);
 
@@ -1602,7 +1596,7 @@ function initializeQuotationDataTable() {
  * يستخدم الصفوف المرئية حالياً (الصفحة الحالية) للتحقق من الحالة.
  */
 function updateMasterCheckboxState(api) {
-    // 💡 نستخدم { page: 'current', search: 'applied' } للصفوف التي يراها المستخدم
+   
     const visibleRows = api.rows({ page: 'current', search: 'applied' });
     const totalVisibleRows = visibleRows.nodes().length;
     const checkedVisibleRows = visibleRows.nodes().find('.slaveCheckbox:checked').length;
@@ -1615,7 +1609,7 @@ function updateMasterCheckboxState(api) {
     } else if (checkedVisibleRows === totalVisibleRows) {
         masterCheckbox.prop('checked', true).prop('indeterminate', false);
     } else {
-        // 🔑 حالة التحديد الجزئي
+       
         masterCheckbox.prop('checked', false).prop('indeterminate', true);
     }
 }
@@ -1978,10 +1972,10 @@ async function getSingleSelectedQuotationData() {
          return null;
     }
 
-    // 2. 🌟 جلب بيانات البنود (Lines) باستخدام المعرّف (تنتظر دالة fetchQuotationLinesById)
+  
     const quotationLines = await fetchQuotationLinesById(quoteId);
 
-    // 3. 🌟 إنشاء الكائن المترابط (Header + Lines)
+   
     return {
         // نستخدم rowData كبيانات للـ Header
         header: rowData,
@@ -1990,13 +1984,13 @@ async function getSingleSelectedQuotationData() {
     };
 }
 /**
- * [يجب عليك إنشاء هذه الدالة]
+
  * تجلب بيانات البنود (Lines) من الخادم أو مصدر بيانات محلي باستخدام ID عرض السعر.
  * @param {string} quoteId - معرّف عرض السعر.
  * @returns {Promise<Array>} مصفوفة ببنود عرض السعر.
  */
 async function fetchQuotationLinesById(quoteId) {
-    // مثال: هنا يجب أن تضع كود استدعاء API أو جلب بيانات البنود
+   
     
     // لغرض التجربة، نُعيد بيانات وهمية
     if (quoteId === '123') {
@@ -2181,7 +2175,7 @@ function editQuotationModal() {
         return;
     }
 
-    // 2. 🔑 تحديد الصفوف المختارة بناءً على حالة مربع الاختيار الفرعي (slaveCheckbox)
+    // 2.  تحديد الصفوف المختارة بناءً على حالة مربع الاختيار الفرعي (slaveCheckbox)
     const selectedRows = quotationDataTable.rows(function(idx, data, node) {
         // $(node) هو كائن jQuery لصف الـ <tr> الحالي
         // نبحث داخل هذا الصف عن التشيك بوكس المحدد
@@ -2210,7 +2204,7 @@ function editQuotationModal() {
     $('#modalTitle').text(`تعديل عرض السعر #${quotation.quoteNo || 'N/A'}`);
 
     // تعيين المعرّف الفريد للتعديل (الأهم)
-    // 📌 يجب التأكد من وجود <input type="hidden" id="originalQuoteId" /> في HTML
+  
     $('#originalQuoteId').val(quotation.quoteNo || quotation.id); 
 
     // 6. تعبئة جميع حقول الـ Header
@@ -2265,7 +2259,7 @@ if (DOM.saveAndCloseHeaderTabBtn) {
  * الدالة الخاصة بزر "Create PDF" (openQuotationPDF).
  * **الوظيفة:** جلب بيانات الصف المحدد بالكامل (الرأس والبنود) وتعبئتها في نافذة المعاينة.
  */
-async function openQuotationPDF() { // 🌟 يجب أن تصبح async
+async function openQuotationPDF() { //  يجب أن تصبح async
     
     // 1. استدعاء الدالة بشكل await
     const quotationData = await getSingleSelectedQuotationData(); 
@@ -2277,7 +2271,7 @@ async function openQuotationPDF() { // 🌟 يجب أن تصبح async
     
     // 2. التأكد من أن الهيكلية صحيحة (هذا التحقق مهم لـ formatQuotation)
     if (!quotationData.header || !quotationData.lines) {
-        showCustomAlert("❌ فشل في تحميل البيانات المترابطة (الرأس/البنود).", true);
+        showCustomAlert(" فشل في تحميل البيانات المترابطة (الرأس/البنود).", true);
         return;
     }
 
@@ -2295,20 +2289,20 @@ async function openQuotationPDF() { // 🌟 يجب أن تصبح async
         modalContainer.style.display = 'flex';
     }
     
-    showCustomAlert(`✅ تم فتح التقرير رقم: ${quotationData.header.proposal_number || 'غير محدد'} في وضع المعاينة.`, false);
+    showCustomAlert(` تم فتح التقرير رقم: ${quotationData.header.proposal_number || 'غير محدد'} في وضع المعاينة.`, false);
 }
 /**
  * تتولى هذه الدالة جمع البيانات المعدلة من النموذج وتحديث صف DataTables
  * ثم إغلاق المودال.
  */
 function saveEditedQuotation() {
-    // 1. 🛑 التحقق من وجود مرجع للصف الذي يتم تعديله
+    // 1.  التحقق من وجود مرجع للصف الذي يتم تعديله
     if (!window.currentEditingQuotationRow) {
         showCustomAlert("خطأ: لم يتم تحديد الصف المراد تعديله.", true);
         return;
     }
 
-    // 2. 🎣 تجميع البيانات الجديدة من الحقول
+    // 2.  تجميع البيانات الجديدة من الحقول
     const updatedData = {
         // نستخدم البيانات القديمة أولاً لضمان عدم فقدان أي حقول غير معروضة في الـ Header
         // نفترض أن الصفوف في DataTables هي كائن JS عادي
@@ -2343,20 +2337,20 @@ function saveEditedQuotation() {
         remarks: $('#quoteRemarks').val() || ''
     };
     
-    // 3. 🌐 إرسال البيانات إلى الخادم (هذه خطوة حاسمة في بيئة العمل الحقيقية)
+    // 3. إرسال البيانات إلى الخادم (هذه خطوة حاسمة في بيئة العمل الحقيقية)
     // *** ملاحظة: يجب عليك هنا إضافة كود AJAX لإرسال updatedData إلى سيرفرك لحفظ التعديلات ***
     // نفترض أن عملية الحفظ على السيرفر نجحت، ونكمل التحديث المحلي للجدول:
 
-    // 4. ✅ تحديث الصف في جدول DataTables
+    // 4.  تحديث الصف في جدول DataTables
     window.currentEditingQuotationRow.data(updatedData).draw();
 
-    // 5. 🚪 إغلاق النافذة المنبثقة
+    // 5.  إغلاق النافذة المنبثقة
     $('#quotationModal').css('display', 'none');
     
-    // 6. 🔔 عرض رسالة نجاح
+    // 6.  عرض رسالة نجاح
     showCustomAlert("تم حفظ وتحديث تعديلات عرض السعر بنجاح.", false);
 
-    // 7. 🗑️ مسح مرجع الصف بعد الانتهاء
+    // 7.  مسح مرجع الصف بعد الانتهاء
     window.currentEditingQuotationRow = null; 
 }
 // --- 4. Revise Function (Increment Revision Number) ---
@@ -2388,7 +2382,7 @@ function reviseQuotation() {
     quotationDataTable.cell(row.nodes().toArray()[0], REV_COLUMN_INDEX_IN_DATA).data(newRevValue).draw(false);
     
     // 2. Show success message
-    showCustomAlert(`✅ جاري إنشاء مراجعة جديدة: تم تحديث الاقتباس رقم ${quoteId} إلى مراجعة ${newRevValue}.`, false);
+    showCustomAlert(` جاري إنشاء مراجعة جديدة: تم تحديث الاقتباس رقم ${quoteId} إلى مراجعة ${newRevValue}.`, false);
 }
 
 /**
@@ -2402,17 +2396,17 @@ function openQuotationPDF() {
     
     // التحقق من وجود بيانات الصف المحدد
     if (!quotationData) {
-        showCustomAlert("⚠️ الرجاء اختيار صف عرض سعر من الجدول أولاً.", true);
+        showCustomAlert(" الرجاء اختيار صف عرض سعر من الجدول أولاً.", true);
         return;
     }
     
     // التحقق من وجود بيانات الرأس (Header) على الأقل
     if (!quotationData.header) {
-        showCustomAlert("❌ فشل في تحميل بيانات رأس عرض السعر المختار.", true);
+        showCustomAlert(" فشل في تحميل بيانات رأس عرض السعر المختار.", true);
         return;
     }
 
-    // 2. 🌟 خطوة التعديل: إنشاء كائن جديد يحتوي على الرأس فقط
+    // 2.  خطوة التعديل: إنشاء كائن جديد يحتوي على الرأس فقط
     // نضمن أن تكون مصفوفة البنود فارغة لتجاهلها عند التنسيق
     const headerOnlyData = {
         header: quotationData.header,
@@ -2439,14 +2433,10 @@ function openQuotationPDF() {
         modalContainer.style.display = 'flex';
     }
     
-    showCustomAlert(`✅ تم فتح بيانات الرأس للتقرير رقم: ${headerOnlyData.header.proposal_number || 'غير محدد'} في وضع المعاينة.`, false);
+    showCustomAlert(`تم فتح بيانات الرأس للتقرير رقم: ${headerOnlyData.header.proposal_number || 'غير محدد'} في وضع المعاينة.`, false);
 }
 
-// ⚠️ ملاحظة: تم حذف دالة previewQuotation() بالكامل من الكود.
-// الدوال المساعدة الأخرى (getSingleSelectedQuotationId، updateToolbarState، إلخ) لم تتغير، 
-// حيث أنها تقوم إما بالتحقق من الأخطاء (alert) أو إدارة واجهة المستخدم (UI) فقط.
-// Function to initialize the quotation lines DataTable
-// دالة تهيئة جدول سطور عروض الأسعار
+
 function initializeQuotationLinesDataTable() {
     // تحقق مما إذا كان العنصر موجودًا ولم يتم تهيئته كـ DataTable بعد
     if (DOM.quotationLinesTable && !$.fn.DataTable.isDataTable(DOM.quotationLinesTable)) {
@@ -2719,7 +2709,7 @@ function editQuotationModal() {
         return;
     }
 
-    // --- 🔑 منطق البحث الجديد: العثور على الصف الذي يحتوي على التشيك بوكس المحدد 🔑 ---
+ 
     
     // 1. البحث عن مربع الاختيار الفرعي المحدد
     const checkedCheckbox = $('#quotationTable tbody .slaveCheckbox:checked');
@@ -2742,7 +2732,7 @@ function editQuotationModal() {
         $('#quotationForm')[0].reset(); 
         $('#modalTitle').text(`تعديل عرض السعر #${quotation.quoteNo || 'N/A'}`);
 
-        // 📌 تعيين المعرّف الفريد (تأكد أنك أضفت حقل <input type="hidden" id="originalQuoteId" />)
+       
         $('#originalQuoteId').val(quotation.quoteNo || quotation.id); 
 
         // 5. تعبئة جميع حقول الـ Header
@@ -3284,12 +3274,10 @@ function initializePriceListDataTable() {
                     const isChecked = this.checked;
 
                     rowNode.toggleClass('selected-row', isChecked);
-                    // إذا تم تحديد الصف يدوياً، أزل فئة .selected-row-price-only
-                    // لكي لا يتضارب مع التحديد اليدوي (يمكنك تعديل هذا السلوك إذا أردت)
+                   
                     if (isChecked) {
                         rowNode.removeClass('selected-row-price-only');
-                        // وقم بإلغاء تحديد Price Only checkbox إذا كان الصف قد تم تحديده يدوياً وليس بناءً على Price Only
-                        // إذا كنت تريد أن يكون التحديد اليدوي منفصلاً تماماً عن Price Only
+                       
                         // const priceOnlyCheckbox = rowNode.find('.price-only-checkbox')[0];
                         // if (priceOnlyCheckbox && rowData.priceOnly) { // فقط إذا كان محدداً مسبقاً بـ Price Only
                         //     priceOnlyCheckbox.checked = false;
@@ -3403,10 +3391,7 @@ function togglePriceListResetButton() {
     }
 }
 
-/**
- * Toggles the selection of all checkboxes in the Price List table based on 'priceOnly' property.
- * It also applies a visual highlight (grey) to these rows, overriding any blue selection.
- */
+
 /**
  * Toggles the selection of all checkboxes in the Price List table based on 'priceOnly' property.
  * It also applies a visual highlight (grey) to these rows, overriding any blue selection.
@@ -3447,18 +3432,16 @@ function toggleSelectPriceListOnly() {
         // **** هنا هو الجزء الحاسم لضمان اختفاء الأزرق وظهور الرمادي ****
         if (newState) {
             // إذا كنا نقوم بتحديد "Price Only" (newState = true)
-            $(item.rowNode).removeClass('selected-row');      // أولاً: أزل فئة اللون الأزرق تمامًا
-            $(item.rowNode).addClass('selected-row-price-only'); // ثم: طبق فئة اللون الرمادي
+            $(item.rowNode).removeClass('selected-row');     
+            $(item.rowNode).addClass('selected-row-price-only'); 
         } else {
             // إذا كنا نقوم بإلغاء تحديد "Price Only" (newState = false)
-            $(item.rowNode).removeClass('selected-row-price-only'); // أزل فئة اللون الرمادي
-            // لا نُعيد الفئة الزرقاء هنا، لأنها تحديد عام ويتم التحكم بها بواسطة الـ checkbox الرئيسي
-            // أو الـ drawCallback عند إعادة رسم الجدول.
+            $(item.rowNode).removeClass('selected-row-price-only'); 
+           
         }
     });
 
-    // هذا السطر يضمن أن الـ checkbox الرئيسي (الخاص بتحديد الكل) لا يتأثر.
-    // DOM.selectAllPriceListItemsCheckbox.checked = false; // لا تفعل هذا! (يبقى معلقاً أو محذوفاً)
+   
 
     console.log(`Rows with Price Only toggled to: ${newState}`);
 }
