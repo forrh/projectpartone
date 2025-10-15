@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,20 +19,22 @@
 
 </head>
 <body>
- <section id="quotation-section" class="section-content active">
+<section id="quotation-section" class="section-content active">
     <div class="icon-toolbar">
         <div>
             <button title="Add" onclick="openQuotationModal()" class="btn-icon">
                 <i class="fas fa-file"></i>
             </button>
-            <button title="Edit" onclick="editQuotationModal(getSingleSelectedQuotationId())" class="btn-icon">
+            
+            <button title="Edit" id="quote-editBtn" onclick="editQuotationModal()" class="btn-icon" >
                 <i class="fas fa-pen"></i>
             </button>
-            <button title="Delete" onclick="deleteSelectedQuotation()" class="btn-icon">
+            
+            <button title="Delete" id="quote-deleteBtn" onclick="deleteSelectedQuotation()" class="btn-icon" >
                 <i class="fas fa-trash"></i>
             </button>
 
-            <button title="Revise" onclick="reviseQuotation(getSingleSelectedQuotationId())" class="btn-icon">
+            <button title="Revise" id="quote-reviseBtn" onclick="reviseQuotation()" class="btn-icon" >
                 <i class="fas fa-pen-to-square"></i>
             </button>
         </div>
@@ -39,16 +42,19 @@
         <div class="icon-separator"></div>
 
         <div>
-            <button title="Save" onclick="saveQuotationChanges()" class="btn-icon">
+            <button title="Save" id="quote-saveBtn" onclick="saveQuotationChanges()" class="btn-icon" >
                 <i class="fas fa-save"></i>
             </button>
-            <button title="Submit for Approval" onclick="submitForApproval(getSingleSelectedQuotationId())" class="btn-icon">
+            
+            <button title="Submit for Approval" id="quote-submitBtn" onclick="submitForApproval()" class="btn-icon" >
                 <i class="fas fa-upload"></i>
             </button>
-            <button title="Confirm" onclick="confirmQuotation(getSingleSelectedQuotationId())" class="btn-icon">
+            
+            <button title="Confirm" id="quote-confirmBtn" onclick="confirmQuotation()" class="btn-icon" >
                 <i class="fas fa-check-circle"></i>
             </button>
-           <button title="Send to Customer" onclick="sendQuotationToCustomer(getSingleSelectedQuotationId())" class="btn-icon">
+            
+            <button title="Send to Customer" id="quote-sendBtn" onclick="sendQuotationToCustomer()" class="btn-icon" >
                 <i class="fas fa-share-from-square"></i>
             </button>
         </div>
@@ -56,26 +62,27 @@
         <div class="icon-separator"></div>
 
         <div>
-            <button title="Search" onclick="searchQuotation()" class="btn-icon">
+            <button title="Search" onclick="searchQuotation()" class="btn-icon"> 
                 <i class="fas fa-search"></i>
             </button>
-            <button title="Open PDF" onclick="openQuotationPDF(getSingleSelectedQuotationId())" class="btn-icon">
+            
+            <button title="Create PDF" id="quote-openPdfBtn" onclick="openQuotationPDF()" class="btn-icon" >
                 <i class="fas fa-file-pdf"></i>
             </button>
-           
- <button title="Preview" onclick="previewQuotation()" class="btn-icon">
-    <i class="fas fa-file-invoice"></i>
-</button>
-    
-        <button title="Export to Excel" onclick="exportSelectedToExcel()" class="btn-icon">
+            
+            <button title="Preview" onclick="previewQuotation()" class="btn-icon">
+                <i class="fas fa-file-invoice"></i>
+            </button>
+            
+            <button title="Export to Excel" id="quote-exportBtn" onclick="exportSelectedToExcel()" class="btn-icon" >
                 <i class="fas fa-file-excel"></i>
             </button>
-            <button title="Print" onclick="printSelectedRows()" class="btn-icon">
+            
+            <button title="Print" id="quote-printBtn" onclick="printSelectedRows()" class="btn-icon" >
                 <i class="fas fa-print"></i>
             </button>
         </div>
     </div>
-    
 </section>
 
 
@@ -1582,7 +1589,7 @@ body.dark-mode {
             <table id="quotationTable" class="quotation-table" data-ignore-lang>
                 <thead>
                     <tr>
-                       <th><input type="checkbox" onclick="toggleSelectAllQuotationsMin(this)" id="selectQuotationsMin" /></th>
+                       <th><input type="checkbox" id="quote-masterCheckbox" title="Select All/Deselect All"></th>
                             
                             <th><i class="fas fa-circle" style="color: grey;" title="جديد / قيد الإنشاء"></i></th>
             <th><i class="fas fa-list-alt" style="color: blue;" title="مكتمل / مرسل"></i></th>
@@ -1671,6 +1678,7 @@ body.dark-mode {
 
     <div id="quotationModal" class="modal" style="display: none;">
         <div class="modal-content large-modal quotation-modal-grid">
+          <form id="quotationForm"> 
             <span class="close" onclick="closeQuotationModal()">&times;</span>
 
             <ul class="tab-list">
@@ -1688,6 +1696,7 @@ body.dark-mode {
                     <div class="left-form-section">
                         <fieldset class="form-section">
                             <legend>Quote Info</legend>
+                             <input type="hidden" id="originalQuoteId" />
                             <div class="form-grid-2-col">
                                 <label for="quoteCategory">Category:<span class="required-star">*</span></label>
 <div class="input-with-button" style="position: relative;">
@@ -1961,9 +1970,43 @@ body.dark-mode {
                 <div class="footer-spacer"></div> <!-- Spacer to push save buttons to right -->
                     <button type="button" id="saveHeaderTabBtn" class="btn btn-primary">Save Header</button>
                     <button type="button" id="saveAndCloseHeaderTabBtn" class="btn btn-success">Save Header & Close</button>
-            </div>
-                    </div>
+                    
+           
+           <button type="button" id="saveEditedQuotationBtn" class="btn btn-success" onclick="saveEditedQuotation()">Save Edits</button>
+           
+                 
+                   </div>
+                   
+                   </form>
+   </div>
+   
+   <style>
+   
+   
 
+     /* 1. الحاوية الرئيسية (Modal Content) و الـ FORM */
+.modal-content.quotation-modal-grid,
+#quotationForm {
+    display: flex !important;
+    flex-direction: column !important;
+    max-height: 95vh !important;
+    height: 100% !important; /* مهم للفورم لملء محتواه */
+}
+
+/* 2. الـ Scroll الرأسي على الجسم (Body) */
+.modal-body-content {
+    flex-grow: 1 !important; 
+    overflow-y: auto !important; /* تفعيل السكرول الرأسي */
+    /* ... باقي الخصائص ... */
+}
+
+/* 3. الـ Scroll الأفقي على التبويب النشط */
+#headerTab.tab-content.active {
+    flex-wrap: nowrap !important; /* منع الالتفاف */
+    overflow-x: auto !important; /* تفعيل السكرول الأفقي */
+    /* ... باقي الخصائص ... */
+}
+   </style>
                     <!-- Financials and Quote Status sections for the Header tab -->
                     <div class="right-sidebar-section">
                         <fieldset class="form-section">
@@ -1996,10 +2039,12 @@ body.dark-mode {
                                 <input type="text" id="quoteLastConfirmed" autocomplete="off">
                             </div>
                         </fieldset>
+                      
                     </div>
                     
                 </div>
-
+               
+ 
                 <!-- START: Updated Quote Lines Tab Content -->
                 <div id="linesTab" class="tab-content lines-tab-layout">
                     <div class="lines-main-content">
@@ -2021,7 +2066,7 @@ body.dark-mode {
                             <table id="quotationLinesTable" class="quotation-lines-table" data-ignore-lang>
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" class="select-all-lines" onclick="toggleSelectAllQuoteLines(this)" /></th>
+                                        <th><input type="checkbox" id= "checkbox" class="select-all-lines" onclick="toggleSelectAllQuoteLines(this)" /></th>
                                         <th>Service/Test Id</th>
                                         <th>Line Description</th>
                                         <th>Accounted</th>
