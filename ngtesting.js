@@ -1,3 +1,6 @@
+
+
+// يجب أن يكون هذا السطر في أعلى ملف JavaScript
 // Function to open the first modal (ngtesting category) automatically on page load
 function openNgtestingCategoryModal() {
     document.getElementById('ngtesting-category-modal').style.display = 'flex';
@@ -498,6 +501,8 @@ function selectSampleType(value) {
 
  // ** كل الكود الخاص بمستمعات الأحداث مدمج هنا **
         document.addEventListener('DOMContentLoaded', () => {
+   
+ 
             const searchInput = document.getElementById('order-search-input');
             const mainInput = document.getElementById('order-number-footer');
             const dropdown = document.getElementById('order-no-dropdown');
@@ -571,6 +576,8 @@ function selectSampleType(value) {
     // Initial form state and modal functions
     resetAndDisableForm();
     openNgtestingCategoryModal();
+    
+ 
 
 });
 
@@ -584,6 +591,23 @@ window.openItemsModal = function(icon) {
     console.log('Opening Items modal...');
 };
 
+  window.addEventListener('click', (e) => {
+            const actionDropdown = document.getElementById('actionDropdown');
+            const actionBtn = document.getElementById('actions-btn');
+            if (actionDropdown && actionBtn && !actionBtn.contains(e.target) && !actionDropdown.contains(e.target)) {
+                actionDropdown.classList.add('hidden');
+            }
+        });
+
+        // إغلاق قائمة رقم الأمر عند الضغط خارجها
+        window.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('order-no-dropdown');
+            const iconBtn = document.querySelector('.icon-btn');
+            if (dropdown && iconBtn && !dropdown.contains(e.target) && !iconBtn.contains(e.target) && dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            }
+        });
+      
 // Function to toggle the "Actions" dropdown menu
 function toggleActionDropdown(event) {
     if (event) {
@@ -684,34 +708,7 @@ function minimizeModal() {
     const modal = document.getElementById('report-modal');
     modal.classList.remove('maximized');
 }
-// sj.txt - الدالة المُعدَّلة للتنقل بين التبويبات الرئيسية (.sub-tab)
-function showSubTab(contentId) {
-    // 1. إخفاء جميع محتويات التبويبات الرئيسية
-    // يجب أن تحدد جميع المحتويات التي يمكن التبديل بينها (مثل 'field-density', 'ngtest-content', 'other-tests-content')
-    // سنفترض أن جميع المحتويات الرئيسية تأخذ كلاس 'main-sub-content' لضمان الدقة
-    document.querySelectorAll('.sub-tab-content').forEach(content => {
-        content.style.display = 'none';
-    });
 
-    // 2. إظهار محتوى التبويب المطلوب
-    const targetContent = document.getElementById(contentId);
-    if (targetContent) {
-        targetContent.style.display = 'block'; // أو 'flex'
-    }
-
-    // 3. تحديث حالة أزرار التبويبات الرئيسية (.sub-tab)
-    document.querySelectorAll('.sub-tabs .sub-tab').forEach(button => {
-        button.classList.remove('active-sub-tab');
-        // هنا يمكنك إضافة منطق لتغيير اللون إذا لزم الأمر، لكن active-sub-tab هو المتحكم الأساسي بالشكل
-    });
-
-    // العثور على زر التبويب المقابل وتفعيله (بالاعتماد على دالة onclick)
-    // نستخدم `[onclick*="'${contentId}'"]` للبحث عن التبويب الذي يستدعي showSubTab مع هذا المعرّف
-    const targetButton = document.querySelector(`.sub-tabs .sub-tab[onclick*="'${contentId}'"]`);
-    if (targetButton) {
-        targetButton.classList.add('active-sub-tab');
-    }
-}
 // Function to show the modal when the "Save" button is clicked
 function saveFieldDensityData() {
     // 1. أظهر المودال
@@ -720,51 +717,7 @@ function saveFieldDensityData() {
         modal.style.display = 'flex'; // أو 'block' حسب تصميم المودال
     }
 
-    // هنا يمكنك إضافة منطق حفظ بيانات الـ Field Density الفعلي
-    // ...
-}
-
-// A. الدالة التي تعالج اختيار المستخدم
-function handleNgTest(shouldShowNg) {
-    const modal = document.getElementById('test-data-modal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-
-    if (shouldShowNg) {
-        // إذا اختار 'Yes'، استدعاء دالة الإظهار
-        showNgTestingSection();
-    }
-}
-
-function showNgTestingSection() {
-    const ngTabButton = document.getElementById('ng-test-section-tab'); 
-    const otherServicesTabButton = document.getElementById('other-tests-tab');
     
-    // 1. إظهار أزرار التبويبات المخفية (.sub-tab)
-    if (ngTabButton) {
-        ngTabButton.classList.remove('hidden-tab');
-    }
-    if (otherServicesTabButton) {
-        otherServicesTabButton.classList.remove('hidden-tab');
-    }
-
-    // 2. تفعيل التبويب والانتقال للمحتوى
-    if (typeof showSubTab === 'function') {
-        // يجب تمرير ID محتوى NG Testing الصحيح هنا
-        showSubTab('ngtest-content'); 
-    }
-}
-// Function to show the modal when the "Save" button is clicked
-function saveFieldDensityData() {
-    // 1. أظهر المودال
-    const modal = document.getElementById('test-data-modal');
-    if (modal) {
-        modal.style.display = 'flex'; // أو 'block' حسب تصميم المودال
-    }
-
-    // هنا يمكنك إضافة منطق  الـ Field Density الفعلي
-    // ...
 }
 
 
