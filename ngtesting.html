@@ -51,11 +51,11 @@
     </div>
 
     <!-- Main Content Container for the NG Testing Form -->
-    <div id="ngtesting-content" class="ngtesting-form-container form-disabled" style="display: none;">
+  <div id="ngtesting-content" class="ngtesting-form-container form-disabled" style="display: none;">
         <!-- Tabbed navigation for different test types -->
     <div class="sub-tabs">
     <span class="sub-tab active-sub-tab" onclick="showSubTab('field-density')">Field Density Test</span>
-    <span class="sub-tab hidden-tab" id="ng-test-section-tab" onclick="showSubTab('ng-test-section-content')">Test Section NG</span>
+   <span class="sub-tab" id="ng-test-section-tab" onclick="showSubTab('ng-test-section-content')">Test Section NG</span>
     <span class="sub-tab hidden-tab" id="other-tests-tab" onclick="showSubTab('other-tests')">Other Services</span>
 </div>
 
@@ -434,7 +434,7 @@
         </div>
     </div>
 </div>
- 
+ </form>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Hide all dropdowns on page load
@@ -1060,170 +1060,165 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 </style>
-<div id="ngtest-content" class="sub-tab-content" style="display: none;"> 
-    <form class="form-container mx-auto">
-        <h1 class="text-3xl font-extrabold text-gray-800 text-center">NG TESTING</h1>
+<div id="ng-test-section-content" class="sub-tab-content bg-white p-6 rounded-xl shadow-lg" style="display: none;">
+    <form class="ng-testing-form">
+        <h1 class="text-4xl font-extrabold text-blue-700 text-center mb-6 border-b pb-3">NG TESTING: اختبار الكثافة الميدانية</h1>
 
-    <div class="excel-table-container">
-        <div id="labels-column" class="labels-column-container"></div>
-    </div>
-
-            <div class="flex flex-col sm:flex-row justify-between items-center flex-wrap gap-4 pt-4 border-t border-gray-200 mt-3cm">
-                <div class="flex flex-wrap gap-2 items-center ml-small-gap">
-                    <button type="button" class="btn btn-icon btn-minus btn-icon-red" onclick="removeColumn()">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-icon btn-plus btn-icon-green" onclick="addColumn()">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440 Plus', 'Acquiring data...')">
-                        <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440 Plus
-                    </button>
-                    <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440', 'Acquiring data...')">
-                        <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440
-                    </button>
-                    <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440 Instrotek', 'Acquiring data...')">
-                        <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440 Instrotek
-                    </button>
-                    <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Humboldt', 'Acquiring data...')">
-                        <i class="fas fa-link mr-2"></i> Acquire from Humboldt
-                    </button>
-                    <button type="button" class="btn btn-gray" onclick="showMessage('Show Map', 'Displaying map...')">
-                        <i class="fas fa-map-marked-alt mr-2"></i> Show Map
-                    </button>
-                    <button type="button" class="btn btn-icon btn-gray" onclick="resetTable()">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-            </div>
-            </div>
-        </form>
+        <div class="flex justify-end gap-2 mb-4">
+            <button class="btn btn-success" id="save-btn-top" onclick="saveFieldDensityData()" type="button">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <button class="btn btn-primary" id="new-btn-top" onclick="enableForm()" type="button">
+                <i class="fas fa-plus"></i> New
+            </button>
+        </div>
         
-         <!-- Footer Bar is now part of the Field Density content -->
-        <div class="form-footer-buttons" id="form-footer-buttons">
-        <div class="order-no-footer">
-            <label for="order-number-footer">Order no#:</label>
-            <div class="input-with-icon custom-autocomplete-container">
-                <input type="text" id="order-number-footer" class="form-control footer-order-no-input" placeholder="[EditValue is null]">
-                <i class="fas fa-caret-down icon-btn" onclick="toggleOrderNoDropdown()"></i>
-                <div id="order-no-dropdown" class="custom-dropdown-order-no" style="display: none;">
-                    <input type="text" id="order-search-input" class="search-input" placeholder="Search for order no...">
-                    <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00001')">AAM-CO-25-00001</div>
-                    <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00002')">AAM-CO-25-00002</div>
-                    <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00003')">AAM-CO-25-00003</div>
-                    <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00004')">AAM-CO-25-00004</div>
-                    <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00005')">AAM-CO-25-00005</div>
+        <div class="excel-table-container border border-gray-300 rounded-lg shadow-inner bg-white overflow-hidden">
+            
+            <div class="flex">
+                <div id="labels-column" class="labels-column-container flex-shrink-0 bg-gray-50 border-r border-gray-300 sticky left-0 z-10">
                 </div>
+                <div id="ng-testing-table-container" class="flex overflow-x-auto custom-scrollbar">
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="flex flex-col sm:flex-row justify-between items-center flex-wrap gap-4 pt-4 border-t border-gray-200 mt-6">
+            
+            <div class="flex flex-wrap gap-2 items-center">
+                <button type="button" class="btn btn-icon btn-minus btn-icon-red hover:bg-red-600 transition duration-150 shadow-md" title="إزالة عمود" onclick="removeColumn()">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-icon btn-plus btn-icon-green" onclick="addColumn()">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                <button type="button" class="btn btn-gray" onclick="showMessage('Acquire from Troxler 3440 Plus', 'Acquiring data...')">
+                    <i class="fas fa-link mr-2"></i> Acquire from Troxler 3440 Plus
+                </button>
+                <button type="button" class="btn btn-gray" onclick="showMessage('Show Map', 'Displaying map...')">
+                    <i class="fas fa-map-marked-alt mr-2"></i> Show Map
+                </button>
+                <button type="button" class="btn btn-icon btn-gray" onclick="resetTable()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
         </div>
-   
+    </form>
+</div>
 
-<button class="btn btn-secondary" id="create-report-btn" type="button" onclick="openReportModal()">
-    <i class="fas fa-file-alt"></i> Create Report
-</button>
-
-<div id="report-modal" class="report-modal">
-    <div class="report-modal-header">
-        <div class="modal-controls">
-            <button class="control-btn" onclick="maximizeModal()">
-                <i class="fas fa-expand"></i>
-            </button>
-            <button class="control-btn" onclick="minimizeModal()">
-                <i class="fas fa-compress"></i>
-            </button>
-            <button class="control-btn close-btn" onclick="closeReportModal()">
-                <i class="fas fa-times"></i>
-            </button>
+<div class="form-footer-buttons" id="form-footer-buttons">
+    <div class="order-no-footer">
+        <label for="order-number-footer">Order no#:</label>
+        <div class="input-with-icon custom-autocomplete-container">
+            <input type="text" id="order-number-footer" class="form-control footer-order-no-input" placeholder="[EditValue is null]">
+            <i class="fas fa-caret-down icon-btn" onclick="toggleOrderNoDropdown()"></i>
+            <div id="order-no-dropdown" class="custom-dropdown-order-no" style="display: none;">
+                <input type="text" id="order-search-input" class="search-input" placeholder="Search for order no...">
+                <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00001')">AAM-CO-25-00001</div>
+                <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00002')">AAM-CO-25-00002</div>
+                <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00003')">AAM-CO-25-00003</div>
+                <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00004')">AAM-CO-25-00004</div>
+                <div class="dropdown-item" onclick="selectOrderNo('AAM-CO-25-00005')">AAM-CO-25-00005</div>
+            </div>
         </div>
     </div>
     
-    <div class="report-container">
-        </div>
-</div>
+    <button class="btn btn-secondary" id="create-report-btn" type="button" onclick="openReportModal()">
+        <i class="fas fa-file-alt"></i> Create Report
+    </button>
 
-
-                <button class="btn btn-secondary" id="open-report-btn" disabled>
-                    <i class="fas fa-folder-open"></i> Open Report
+    <div id="report-modal" class="report-modal">
+        <div class="report-modal-header">
+            <div class="modal-controls">
+                <button class="control-btn" onclick="maximizeModal()">
+                    <i class="fas fa-expand"></i>
                 </button>
-                <button class="btn btn-secondary" id="open-pdf-btn" disabled>
-                    <i class="fas fa-file-pdf"></i> Open PDF File
+                <button class="control-btn" onclick="minimizeModal()">
+                    <i class="fas fa-compress"></i>
                 </button>
-                <div class="action-dropdown-container">
-                    <button type="button" class="btn btn-secondary" id="actions-btn" disabled onclick="toggleActionDropdown(event)">
-                        <i class="fas fa-cogs"></i> Actions
-                    </button>
-                    <ul id="actionDropdown" class="action-dropdown-menu">
-                        <li onclick="handleAction('Preview Order')">
-                            <i class="fas fa-search-plus"></i> Preview Order...
-                        </li>
-                        <li onclick="handleAction('Preview Slip')">
-                            <i class="fas fa-file-alt"></i> Preview Slip...
-                        </li>
-                        <li onclick="handleAction('Print Barcodes')">
-                            <i class="fas fa-barcode"></i> Print Barcodes...
-                        </li>
-                        <li onclick="handleAction('Preview Labsheets')">
-                            <i class="fas fa-clipboard-list"></i> Preview Labsheets...
-                        </li>
-                        <li onclick="handleAction('Edit Order (Materials Editor)')">
-                            <i class="fas fa-edit"></i> Edit Order (Materials Editor)
-                        </li>
-                        <li onclick="handleAction('Duplicate Order')">
-                            <i class="fas fa-copy"></i> Duplicate Order
-                        </li>
-                        <li onclick="handleAction('Revise Order')">
-                            <i class="fas fa-sync-alt"></i> Revise Order
-                        </li>
-                        <li onclick="handleAction('File Manager')">
-                            <i class="fas fa-folder"></i> File Manager
-                        </li>
-                        <li onclick="handleAction('Create New Customer')">
-                            <i class="fas fa-user-plus"></i> Create New Customer
-                        </li>
-                        <li onclick="handleAction('Apply Sample Preferences (Force)')">
-                            <i class="fas fa-cogs"></i> Apply Sample Preferences (Force)
-                        </li>
-                        <li onclick="handleAction('Apply Last Registered Sample (Force)')">
-                            <i class="fas fa-cogs"></i> Apply Last Registered Sample (Force)
-                        </li>
-                        <li onclick="handleAction('Create New Project')">
-                            <i class="fas fa-plus"></i> Create New Project
-                        </li>
-                        <li onclick="handleAction('Unbill')">
-                            <i class="fas fa-dollar-sign"></i> Unbill
-                        </li>
-                        <li onclick="handleAction('Delete Order')">
-                            <i class="fas fa-times"></i> Delete Order
-                        </li>
-                    </ul>
-                </div>
-           
-                <!-- نهاية الإضافة -->
-                <button class="btn btn-secondary" id="preview-btn" disabled type=button>
-                    <i class="fas fa-print"></i> Preview...
+                <button class="control-btn close-btn" onclick="closeReportModal()">
+                    <i class="fas fa-times"></i>
                 </button>
-                <button class="btn btn-danger" id="close-btn" onclick="closeNgtestingTab()" type=button>
-                    <i class="fas fa-times"></i> Close
-                </button>
-                <button class="btn btn-primary" id="new-btn" onclick="enableForm()">
-                    <i class="fas fa-plus"></i> New
-                </button>
-                <button class="btn btn-success" id="save-close-btn" disabled type=button>
-                    <i class="fas fa-save"></i> Save & Close
-                </button>
-<button type="button" class="btn btn-primary" onclick="saveFieldDensityData()">Save</button>
             </div>
         </div>
+        
+        <div class="report-container">
+        </div>
+    </div>
+    <button class="btn btn-secondary" id="open-report-btn" disabled>
+        <i class="fas fa-folder-open"></i> Open Report
+    </button>
+    <button class="btn btn-secondary" id="open-pdf-btn" disabled>
+        <i class="fas fa-file-pdf"></i> Open PDF File
+    </button>
+    <div class="action-dropdown-container">
+        <button type="button" class="btn btn-secondary" id="actions-btn" disabled onclick="toggleActionDropdown(event)">
+            <i class="fas fa-cogs"></i> Actions
+        </button>
+        <ul id="actionDropdown" class="action-dropdown-menu">
+            <li onclick="handleAction('Preview Order')">
+                <i class="fas fa-search-plus"></i> Preview Order...
+            </li>
+            <li onclick="handleAction('Preview Slip')">
+                <i class="fas fa-file-alt"></i> Preview Slip...
+            </li>
+            <li onclick="handleAction('Print Barcodes')">
+                <i class="fas fa-barcode"></i> Print Barcodes...
+            </li>
+            <li onclick="handleAction('Preview Labsheets')">
+                <i class="fas fa-clipboard-list"></i> Preview Labsheets...
+            </li>
+            <li onclick="handleAction('Edit Order (Materials Editor)')">
+                <i class="fas fa-edit"></i> Edit Order (Materials Editor)
+            </li>
+            <li onclick="handleAction('Duplicate Order')">
+                <i class="fas fa-copy"></i> Duplicate Order
+            </li>
+            <li onclick="handleAction('Revise Order')">
+                <i class="fas fa-sync-alt"></i> Revise Order
+            </li>
+            <li onclick="handleAction('File Manager')">
+                <i class="fas fa-folder"></i> File Manager
+            </li>
+            <li onclick="handleAction('Create New Customer')">
+                <i class="fas fa-user-plus"></i> Create New Customer
+            </li>
+            <li onclick="handleAction('Apply Sample Preferences (Force)')">
+                <i class="fas fa-cogs"></i> Apply Sample Preferences (Force)
+            </li>
+            <li onclick="handleAction('Apply Last Registered Sample (Force)')">
+                <i class="fas fa-cogs"></i> Apply Last Registered Sample (Force)
+            </li>
+            <li onclick="handleAction('Create New Project')">
+                <i class="fas fa-plus"></i> Create New Project
+            </li>
+            <li onclick="handleAction('Unbill')">
+                <i class="fas fa-dollar-sign"></i> Unbill
+            </li>
+            <li onclick="handleAction('Delete Order')">
+                <i class="fas fa-times"></i> Delete Order
+            </li>
+        </ul>
+    </div>
+    <button class="btn btn-secondary" id="preview-btn" disabled type="button">
+        <i class="fas fa-print"></i> Preview...
+    </button>
+    <button class="btn btn-danger" id="close-btn" onclick="closeNgtestingTab()" type="button">
+        <i class="fas fa-times"></i> Close
+    </button>
+    <button class="btn btn-primary" id="new-btn" onclick="enableForm()">
+        <i class="fas fa-plus"></i> New
+    </button>
+    <button class="btn btn-success" id="save-close-btn" disabled type="button">
+        <i class="fas fa-save"></i> Save & Close
+    </button>
+    <button type="button" class="btn btn-primary" id="save-btn" onclick="saveFieldDensityData()">Save</button>
+</div>
 
-
-
-
-             
-                <button class="btn btn-success" id="save-btn" disabled type=button>
-                </button>
-         
 <div id="message-box" class="message-box">
     <h3 id="message-title" class="text-lg font-bold mb-2"></h3>
     <p id="message-body" class="text-gray-600"></p>
@@ -1231,207 +1226,221 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script>
-  const tableContainer = document.querySelector('.excel-table-container');
-const labelsColumn = document.getElementById('labels-column');
-let columnCount = 0;
+    let columnCount = 0;
 
-const rows = [
-    { id: 'test_number', label: 'Test #', type: 'text', disabled: true },
-    { id: 'reference', label: 'Reference', type: 'text' },
-    { id: 'location', label: 'Location', type: 'text' },
-    {
-        id: 'soil_type',
-        label: 'Soil Type/Desc',
-        type: 'dropdown',
-        options: [
-            'Sub Grade', 'Select Fill', 'Existing Material', 'Embankment', 'Sand', 'Other', 'Base Course', 'Subbase', 'Fill', 'Topsoil', 'Unsuitable Material', 'Gravel', 'Clay', 'Silt', 'Asphalt Concrete', 'Concrete', 'Aggregate', 'Rock', 'Bentonite'
-        ]
-    },
-    { id: 'lat', label: 'Lat.', type: 'number' },
-    { id: 'long', label: 'Long.', type: 'number' },
+    const rows = [
+        { id: 'test_number', label: 'Test #', type: 'text', disabled: true },
+        { id: 'reference', label: 'Reference', type: 'text' },
+        { id: 'location', label: 'Location', type: 'text' },
+        {
+            id: 'soil_type',
+            label: 'Soil Type/Desc',
+            type: 'dropdown',
+            options: [
+                'Sub Grade', 'Select Fill', 'Existing Material', 'Embankment', 'Sand', 'Other', 'Base Course', 'Subbase', 'Fill', 'Topsoil', 'Unsuitable Material', 'Gravel', 'Clay', 'Silt', 'Asphalt Concrete', 'Concrete', 'Aggregate', 'Rock', 'Bentonite'
+            ]
+        },
+        { id: 'lat', label: 'Lat.', type: 'number' },
+        { id: 'long', label: 'Long.', type: 'number' },
 
-    // الخانات المظللة بالبرتقالي (بيانات بروكتور)
-    { id: 'optimum_moisture', label: 'Optimum Moisture Content (%)', type: 'number', highlighted: true },
-    { id: 'maximum_dry_density', label: 'Maximum Dry Density (g/cm³)', type: 'number', highlighted: true }, // مُهم للحساب التلقائي
+        // الخانات المظللة بالبرتقالي (بيانات بروكتور)
+        { id: 'optimum_moisture', label: 'Optimum Moisture Content (%)', type: 'number', highlighted: true },
+        { id: 'maximum_dry_density', label: 'Maximum Dry Density (g/cm³)', type: 'number', highlighted: true },
 
-    { id: 'wet_density', label: 'Wet Density (g/cm³)', type: 'number' },
-    { id: 'layer', label: 'Layer', type: 'text' },
-    { id: 'test_depth', label: 'Test Depth (mm)', type: 'number' },
-    { id: 'moisture_content', label: 'Moisture Content (%)', type: 'number' },
+        { id: 'wet_density', label: 'Wet Density (g/cm³)', type: 'number' },
+        { id: 'layer', label: 'Layer', type: 'text' },
+        { id: 'test_depth', label: 'Test Depth (mm)', type: 'number' },
+        { id: 'moisture_content', label: 'Moisture Content (%)', type: 'number' },
 
-    // خانات النتائج التلقائية
-    { id: 'dry_density', label: 'Dry Density (g/cm³)', type: 'number', disabled: true },
-    { id: 'degree_of_compaction', label: 'Degree of Compaction (%)', type: 'number', disabled: true },
+        // خانات النتائج التلقائية
+        { id: 'dry_density', label: 'Dry Density (g/cm³)', type: 'number', disabled: true },
+        { id: 'degree_of_compaction', label: 'Degree of Compaction (%)', type: 'number', disabled: true },
 
-    // تعبئة قائمة Pass/Fail
-    { id: 'pass_fail', label: 'Pass/Fail', type: 'dropdown', options: ['Pass', 'Fail'] },
+        // تعبئة قائمة Pass/Fail
+        { id: 'pass_fail', label: 'Pass/Fail', type: 'dropdown', options: ['Pass', 'Fail'] },
 
-    // تعبئة قائمة Test/Retest
-    { id: 'test_retest', label: 'Test/Retest', type: 'dropdown', options: ['Test', 'Retest'] }
-];
+        // تعبئة قائمة Test/Retest
+        { id: 'test_retest', label: 'Test/Retest', type: 'dropdown', options: ['Test', 'Retest'] }
+    ];
 
-
-const showMessage = (title, message) => {
-    const messageBox = document.getElementById('message-box');
-    document.getElementById('message-title').textContent = title;
-    document.getElementById('message-body').textContent = message;
-    messageBox.style.display = 'block';
-};
-
-window.hideMessage = () => {
-    const messageBox = document.getElementById('message-box');
-    messageBox.style.display = 'none';
-};
-
-const createLabelsColumn = () => {
-    labelsColumn.innerHTML = '';
-    rows.forEach(row => {
-        const labelDiv = document.createElement('div');
-        labelDiv.className = `labels-column-item ${row.highlighted ? 'highlighted-row' : ''}`;
-        labelDiv.textContent = row.label;
-        labelsColumn.appendChild(labelDiv);
-    });
-};
-
-// الدالة المُعدَّلة لحساب الكثافة الجافة ودرجة الرص
-const calculateResults = (column) => {
-    const wetDensityInput = document.getElementById(`wet_density-${column}`);
-    const moistureContentInput = document.getElementById(`moisture_content-${column}`);
-    const maxDryDensityInput = document.getElementById(`maximum_dry_density-${column}`);
-
-    const dryDensityInput = document.getElementById(`dry_density-${column}`);
-    const degreeCompactionInput = document.getElementById(`degree_of_compaction-${column}`);
-
-    const wetDensity = parseFloat(wetDensityInput ? wetDensityInput.value : '');
-    const moistureContent = parseFloat(moistureContentInput ? moistureContentInput.value : '');
-    const maxDryDensity = parseFloat(maxDryDensityInput ? maxDryDensityInput.value : '');
-
-    let dryDensityValue = NaN;
-    let degreeCompactionValue = NaN;
-
-    // أ. حساب Dry Density (الكثافة الجافة)
-    if (!isNaN(wetDensity) && !isNaN(moistureContent) && moistureContent >= 0) {
-        dryDensityValue = wetDensity / (1 + (moistureContent / 100));
-        dryDensityInput.value = dryDensityValue.toFixed(3);
-    } else {
-        dryDensityInput.value = '';
-    }
-
-    // ب. حساب Degree of Compaction (درجة الرص)
-    if (!isNaN(dryDensityValue) && !isNaN(maxDryDensity) && maxDryDensity > 0) {
-        degreeCompactionValue = (dryDensityValue / maxDryDensity) * 100;
-        degreeCompactionInput.value = degreeCompactionValue.toFixed(2);
-    } else {
-        degreeCompactionInput.value = '';
-    }
-};
-
-window.addColumn = () => {
-    columnCount++;
-    const newColumnContainer = document.createElement('div');
-    newColumnContainer.className = 'data-column-container';
-
-    rows.forEach(row => {
-        const cellDiv = document.createElement('div');
-        cellDiv.className = `test-input-wrapper ${row.highlighted ? 'highlighted-row' : ''}`;
-
-      
-        if (row.type === 'dropdown') {
-            const dropdownContainer = document.createElement('div');
-            dropdownContainer.className = 'custom-dropdown';
-
-            const dropdownButton = document.createElement('div');
-            dropdownButton.className = 'custom-dropdown-button';
-            dropdownButton.setAttribute('tabindex', '0');
-
-            const selectedText = document.createElement('span');
-            selectedText.className = 'selected-text';
-           
-            selectedText.textContent = ''; 
-            
-            const icon = document.createElement('i');
-            icon.className = 'fas fa-chevron-down'; // يتطلب Font Awesome
-
-            dropdownButton.appendChild(selectedText);
-            dropdownButton.appendChild(icon);
-
-            const dropdownList = document.createElement('div');
-            dropdownList.className = 'custom-dropdown-list';
-            
-            // إضافة الخيارات (options)
-            row.options.forEach(optionText => {
-                const optionItem = document.createElement('div');
-                optionItem.className = 'custom-dropdown-item';
-                optionItem.textContent = optionText;
-                dropdownList.appendChild(optionItem);
-            });
-
-            dropdownContainer.appendChild(dropdownButton);
-            dropdownContainer.appendChild(dropdownList);
-            cellDiv.appendChild(dropdownContainer);
-            
-            // ربط الأحداث لفتح/إغلاق القائمة
-            dropdownButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownContainer.classList.toggle('active');
-            });
-            
-            // ربط الأحداث لاختيار عنصر
-            dropdownList.querySelectorAll('.custom-dropdown-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    // إزالة التحديد من الخيارات الأخرى
-                    dropdownList.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('is-selected'));
-                    e.target.classList.add('is-selected');
-
-                    const selectedValue = e.target.textContent;
-                    selectedText.textContent = selectedValue;
-                    dropdownContainer.classList.remove('active');
-                    
-                    // إذا كان الخيار يؤثر على الحساب (مثل Pass/Fail)، يمكن إضافة منطق تحديث هنا
-                });
-            });
-
-            // إغلاق القائمة عند الضغط خارجها
-            window.addEventListener('click', (e) => {
-                if (!dropdownContainer.contains(e.target)) {
-                    dropdownContainer.classList.remove('active');
-                }
-            });
-            
-        } else {
-            let inputElement = document.createElement('input');
-            inputElement.type = row.type;
-            inputElement.className = `test-input text-sm px-2 ${row.highlighted ? 'highlighted-input' : ''}`;
-            inputElement.id = `${row.id}-${columnCount}`; 
-            
-            if (row.id === 'test_number') {
-                inputElement.value = columnCount;
-            } else if (row.id === 'optimum_moisture') {
-                inputElement.value = '5.90';
-            } else if (row.id === 'maximum_dry_density') {
-                inputElement.value = '2.2130'; // تعيين قيمة افتراضية
-            }
-            
-            if (row.disabled) {
-                inputElement.disabled = true;
-            }
-
-            // ==========================================================
-            // التعديل الرئيسي: ربط جميع الخانات المؤثرة بـ calculateResults
-            // ==========================================================
-            if (row.id === 'moisture_content' || row.id === 'wet_density' || row.id === 'maximum_dry_density') {
-                inputElement.addEventListener('input', () => calculateResults(columnCount));
-            }
-
-            cellDiv.appendChild(inputElement);
+    /**
+     * وظائف الرسائل المنبثقة
+     */
+    const showMessage = (title, message) => {
+        const messageBox = document.getElementById('message-box');
+        if (messageBox) {
+            document.getElementById('message-title').textContent = title;
+            document.getElementById('message-body').textContent = message;
+            messageBox.style.display = 'block';
         }
-        newColumnContainer.appendChild(cellDiv);
-    });
+    };
 
-    tableContainer.appendChild(newColumnContainer);
-    tableContainer.scrollLeft = tableContainer.scrollWidth;
-};
+    window.hideMessage = () => {
+        const messageBox = document.getElementById('message-box');
+        if (messageBox) {
+            messageBox.style.display = 'none';
+        }
+    };
+
+    
+    const createLabelsColumn = () => {
+        const labelsColumnElement = document.getElementById('labels-column');
+        
+        if (labelsColumnElement) { 
+            labelsColumnElement.innerHTML = '';
+            
+            rows.forEach(row => { 
+                const labelDiv = document.createElement('div');
+                
+                labelDiv.className = `labels-column-item p-2 text-sm font-medium border-b border-gray-300 h-10 flex items-center ${row.highlighted ? 'highlighted-row bg-yellow-100' : ''}`;
+                labelDiv.textContent = row.label;
+                labelsColumnElement.appendChild(labelDiv);
+            });
+        }
+    };
+
+    /**
+     * دالة حساب الكثافة الجافة ودرجة الرص التلقائي
+     */
+    const calculateResults = (column) => {
+        const wetDensityInput = document.getElementById(`wet_density-${column}`);
+        const moistureContentInput = document.getElementById(`moisture_content-${column}`);
+        const maxDryDensityInput = document.getElementById(`maximum_dry_density-${column}`);
+
+        const dryDensityInput = document.getElementById(`dry_density-${column}`);
+        const degreeCompactionInput = document.getElementById(`degree_of_compaction-${column}`);
+
+        const wetDensity = parseFloat(wetDensityInput ? wetDensityInput.value : '');
+        const moistureContent = parseFloat(moistureContentInput ? moistureContentInput.value : '');
+        const maxDryDensity = parseFloat(maxDryDensityInput ? maxDryDensityInput.value : '');
+
+        let dryDensityValue = NaN;
+        let degreeCompactionValue = NaN;
+
+        // أ. حساب Dry Density (الكثافة الجافة)
+        if (!isNaN(wetDensity) && !isNaN(moistureContent) && moistureContent >= 0) {
+            dryDensityValue = wetDensity / (1 + (moistureContent / 100));
+            dryDensityInput.value = dryDensityValue.toFixed(3);
+        } else {
+            dryDensityInput.value = '';
+        }
+
+        // ب. حساب Degree of Compaction (درجة الرص)
+        if (!isNaN(dryDensityValue) && !isNaN(maxDryDensity) && maxDryDensity > 0) {
+            degreeCompactionValue = (dryDensityValue / maxDryDensity) * 100;
+            degreeCompactionInput.value = degreeCompactionValue.toFixed(2);
+        } else {
+            degreeCompactionInput.value = '';
+        }
+    };
+
+    /**
+     * دالة إضافة عمود بيانات جديد
+     */
+    window.addColumn = () => {
+        columnCount++;
+        const newColumnContainer = document.createElement('div');
+        newColumnContainer.className = 'data-column-container flex-shrink-0 w-32 border-r border-gray-200';
+
+        rows.forEach(row => {
+            const cellDiv = document.createElement('div');
+            // تنسيق الخلايا
+            cellDiv.className = `test-input-wrapper h-10 border-b border-gray-200 flex items-center ${row.highlighted ? 'highlighted-row bg-yellow-50' : ''}`;
+
+            if (row.type === 'dropdown') {
+                // منطق إنشاء القائمة المنسدلة
+                const dropdownContainer = document.createElement('div');
+                dropdownContainer.className = 'custom-dropdown relative w-full h-full';
+
+                const dropdownButton = document.createElement('div');
+                dropdownButton.className = 'custom-dropdown-button flex justify-between items-center w-full h-full cursor-pointer hover:bg-gray-100 p-1';
+                dropdownButton.setAttribute('tabindex', '0');
+
+                const selectedText = document.createElement('span');
+                selectedText.className = 'selected-text w-full text-sm p-1 truncate block';
+                selectedText.textContent = ''; 
+                
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-chevron-down text-xs text-gray-500 mr-1'; 
+
+                dropdownButton.appendChild(selectedText);
+                dropdownButton.appendChild(icon);
+
+                const dropdownList = document.createElement('div');
+                dropdownList.className = 'custom-dropdown-list absolute top-full left-0 mt-1 bg-white border rounded-md shadow-lg z-20 w-48 hidden max-h-40 overflow-y-auto';
+                
+                row.options.forEach(optionText => {
+                    const optionItem = document.createElement('div');
+                    optionItem.className = 'custom-dropdown-item p-2 text-sm hover:bg-blue-100 cursor-pointer';
+                    optionItem.textContent = optionText;
+                    dropdownList.appendChild(optionItem);
+                });
+
+                dropdownContainer.appendChild(dropdownButton);
+                dropdownContainer.appendChild(dropdownList);
+                cellDiv.appendChild(dropdownContainer);
+                
+                dropdownButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdownList.classList.toggle('hidden');
+                });
+                
+                dropdownList.querySelectorAll('.custom-dropdown-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdownList.querySelectorAll('.custom-dropdown-item').forEach(el => el.classList.remove('is-selected'));
+                        e.target.classList.add('is-selected');
+                        const selectedValue = e.target.textContent;
+                        selectedText.textContent = selectedValue;
+                        dropdownList.classList.add('hidden');
+                    });
+                });
+
+                window.addEventListener('click', (e) => {
+                    if (!dropdownContainer.contains(e.target)) {
+                        dropdownList.classList.add('hidden');
+                    }
+                });
+                
+            } else {
+                let inputElement = document.createElement('input');
+                inputElement.type = row.type;
+                // تنسيق حقول الإدخال
+                inputElement.className = `test-input w-full h-full text-sm px-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${row.highlighted ? 'highlighted-input bg-yellow-50' : 'bg-transparent'}`;
+                inputElement.id = `${row.id}-${columnCount}`;
+                
+                if (row.id === 'test_number') {
+                    inputElement.value = columnCount;
+                } else if (row.id === 'optimum_moisture') {
+                    inputElement.value = '5.90';
+                } else if (row.id === 'maximum_dry_density') {
+                    inputElement.value = '2.2130';
+                }
+                
+                if (row.disabled) {
+                    inputElement.disabled = true;
+                    inputElement.classList.add('text-gray-50', 'bg-gray-100');
+                }
+
+                if (['moisture_content', 'wet_density', 'maximum_dry_density'].includes(row.id)) {
+                    inputElement.addEventListener('input', () => calculateResults(columnCount));
+                }
+
+                cellDiv.appendChild(inputElement);
+            }
+            newColumnContainer.appendChild(cellDiv);
+        });
+
+        const dataColumnsContainer = document.getElementById('ng-testing-table-container');
+        if (dataColumnsContainer) {
+            dataColumnsContainer.appendChild(newColumnContainer);
+            dataColumnsContainer.scrollLeft = dataColumnsContainer.scrollWidth;
+        }
+    };
+
+    /**
+     * دالة إزالة عمود بيانات
+     */
     window.removeColumn = () => {
         const columns = document.querySelectorAll('.data-column-container');
         if (columns.length > 0) {
@@ -1443,19 +1452,114 @@ window.addColumn = () => {
         }
     };
 
+    /**
+     * دالة إعادة تعيين الجدول
+     */
     window.resetTable = () => {
-        const columns = document.querySelectorAll('.data-column-container');
-        columns.forEach(column => {
-            column.remove();
-        });
-        columnCount = 0;
-        showMessage('تم تحديث الجدول', 'تم مسح جميع البيانات بنجاح.');
+        const dataColumnsContainer = document.getElementById('ng-testing-table-container');
+        if (dataColumnsContainer) {
+            dataColumnsContainer.innerHTML = '';
+            columnCount = 0;
+            showMessage('تم تحديث الجدول', 'تم مسح جميع البيانات بنجاح.');
+            // إعادة إنشاء عمود التسميات والعمود الأول
+            createLabelsColumn();
+            addColumn();
+        }
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        createLabelsColumn();
-    });
-  
+    // -----------------------------------------------------------------
+    // وظائف الأزرار والإجراءات في شريط التذييل (Footer Functions)
+    // -----------------------------------------------------------------
+
+    window.toggleOrderNoDropdown = () => {
+        const dropdown = document.getElementById('order-no-dropdown');
+        if (dropdown) {
+            // توقيف الانتشار لعدم إغلاق القائمة عند النقر داخلها
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+    };
+    
+    window.selectOrderNo = (orderNo) => {
+        const input = document.getElementById('order-number-footer');
+        const dropdown = document.getElementById('order-no-dropdown');
+        if (input) input.value = orderNo;
+        if (dropdown) dropdown.style.display = 'none';
+    };
+
+    window.openReportModal = () => {
+        const modal = document.getElementById('report-modal');
+        if (modal) modal.style.display = 'flex';
+    };
+
+    window.closeReportModal = () => {
+        const modal = document.getElementById('report-modal');
+        if (modal) modal.style.display = 'none';
+    };
+    
+    // دوال وهمية للتكبير/التصغير
+    window.maximizeModal = () => { showMessage('تكبير', 'تم استدعاء دالة تكبير التقرير.'); };
+    window.minimizeModal = () => { showMessage('تصغير', 'تم استدعاء دالة تصغير التقرير.'); };
+
+    window.toggleActionDropdown = (event) => {
+        event.stopPropagation();
+        const dropdown = document.getElementById('actionDropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('hidden');
+        }
+    };
+    
+    window.handleAction = (action) => {
+        showMessage('الإجراء المُحدد', `تم تحديد الإجراء: ${action}`);
+        const dropdown = document.getElementById('actionDropdown');
+        if (dropdown) dropdown.classList.add('hidden');
+    };
+
+    window.closeNgtestingTab = () => { showMessage('إغلاق', 'تم استدعاء دالة إغلاق التبويب.'); };
+    
+    window.enableForm = () => { 
+        showMessage('نموذج جديد', 'تم استدعاء دالة نموذج جديد. سيتم تصفير الجدول.'); 
+        resetTable(); // لتصفير الجدول وإضافة عمود جديد
+    };
+    
+    window.saveFieldDensityData = () => { showMessage('تم الحفظ', 'تم استدعاء دالة حفظ البيانات.'); };
+
+
+    // -----------------------------------------------------------------
+    // وظائف إدارة التبويبات والتهيئة
+    // -----------------------------------------------------------------
+
+    window.showSubTab = (contentId) => {
+        // إخفاء جميع الأقسام الفرعية
+        document.querySelectorAll('.sub-tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        
+        // إظهار المحتوى المطلوب
+        const targetContent = document.getElementById(contentId);
+        if (targetContent) {
+            targetContent.style.display = 'block';
+        }
+
+        // منطق تهيئة قسم NG Testing (الجدول)
+        if (contentId === 'ng-test-section-content') {
+            if (columnCount === 0) {
+                createLabelsColumn();  
+                addColumn();   
+            }
+        }
+    };
+
+    window.handleNgTest = (isConfirmed) => {
+        const modal = document.getElementById('test-data-modal');
+        if (modal) modal.style.display = 'none';
+
+        if (isConfirmed) {
+            showSubTab('ng-test-section-content');  
+        }
+    };
+
+   
+
 </script>
 
 <div id="test-data-modal" class="custom-modal" style="display: none;">
